@@ -1,5 +1,10 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
-var API_URL = API_BASE_URL;
+const API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
+
+const API_URL = API_BASE_URL;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadDashboardStats();
@@ -15,16 +20,18 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================= */
 async function loadDashboardStats() {
     try {
-        const res  = await fetch(`${API_URL}/dashboard`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const res = await fetch(`${API_URL}/dashboard`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         const data = await res.json();
 
-        document.getElementById("totalRequests").textContent      = data.total_requests       || 0;
-        document.getElementById("pendingRequests").textContent    = data.pending_requests     || 0;
-        document.getElementById("availableResources").textContent = data.total_resources      || 0;
-        document.getElementById("activeDistributions").textContent= data.processing_requests  || 0;
+        document.getElementById("totalRequests").textContent = data.total_requests || 0;
+        document.getElementById("pendingRequests").textContent = data.pending_requests || 0;
+        document.getElementById("availableResources").textContent = data.total_resources || 0;
+        document.getElementById("activeDistributions").textContent = data.processing_requests || 0;
 
     } catch (error) {
         console.error("Dashboard Stats Error:", error);
@@ -36,19 +43,21 @@ async function loadDashboardStats() {
 ========================= */
 async function loadPriorityRequests() {
     try {
-        const res      = await fetch(`${API_URL}/requests/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const res = await fetch(`${API_URL}/requests/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         const requests = await res.json();
 
-        const high   = requests.filter(r => (r.priority_level || "").toLowerCase() === "high").length;
+        const high = requests.filter(r => (r.priority_level || "").toLowerCase() === "high").length;
         const medium = requests.filter(r => (r.priority_level || "").toLowerCase() === "medium").length;
-        const low    = requests.filter(r => (r.priority_level || "").toLowerCase() === "low").length;
+        const low = requests.filter(r => (r.priority_level || "").toLowerCase() === "low").length;
 
-        document.getElementById("highPriorityCount").textContent   = high;
+        document.getElementById("highPriorityCount").textContent = high;
         document.getElementById("mediumPriorityCount").textContent = medium;
-        document.getElementById("lowPriorityCount").textContent    = low;
+        document.getElementById("lowPriorityCount").textContent = low;
 
     } catch (error) {
         console.error("Priority Error:", error);
@@ -60,10 +69,12 @@ async function loadPriorityRequests() {
 ========================= */
 async function loadResourceAlerts() {
     try {
-        const res       = await fetch(`${API_URL}/resources/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const res = await fetch(`${API_URL}/resources/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         const resources = await res.json();
         const container = document.getElementById("resourceAlerts");
         if (!container) return;
@@ -101,11 +112,13 @@ async function loadResourceAlerts() {
 ========================= */
 async function loadActiveDistributions() {
     try {
-        const res          = await fetch(`${API_URL}/distributions/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
-        const distributions= await res.json();
+        const res = await fetch(`${API_URL}/distributions/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const distributions = await res.json();
 
         // FIX: target activeDistributionsBody (matches dashboard.html)
         const tbody = document.getElementById("activeDistributionsBody");
@@ -144,12 +157,14 @@ async function loadActiveDistributions() {
 ========================= */
 async function loadRecentRequests() {
     try {
-        const res      = await fetch(`${API_URL}/requests/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const res = await fetch(`${API_URL}/requests/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         const requests = await res.json();
-        const tbody    = document.getElementById("recentRequestsBody");
+        const tbody = document.getElementById("recentRequestsBody");
         if (!tbody) return;
 
         tbody.innerHTML = "";
@@ -163,7 +178,7 @@ async function loadRecentRequests() {
         }
 
         requests.slice(0, 5).forEach(r => {
-            const status   = (r.status || "pending").toLowerCase();
+            const status = (r.status || "pending").toLowerCase();
             const priority = (r.priority_level || "medium").toLowerCase();
 
             tbody.innerHTML += `
@@ -189,10 +204,12 @@ async function loadRecentActivity() {
     if (!activityList) return;
 
     try {
-        const res      = await fetch(`${API_URL}/requests/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const res = await fetch(`${API_URL}/requests/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         const requests = await res.json();
 
         activityList.innerHTML = "";

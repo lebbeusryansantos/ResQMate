@@ -1,4 +1,4 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 const registerForm =
     document.getElementById("registerForm");
 
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const today = new Date().toISOString().split('T')[0];
         dobInput.max = today;
     }
-    
+
     const phoneInput = document.getElementById("registerPhone");
     if (phoneInput) {
         phoneInput.addEventListener('input', function (e) {
@@ -25,13 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPasswordInput = document.getElementById("confirmPassword");
     const passwordInput = document.getElementById("registerPassword");
     const registerInputs = registerForm.querySelectorAll("input");
-    
+
     let isPasswordSecure = false;
 
     function validateForm() {
         const isFormValid = registerForm.checkValidity();
         const doPasswordsMatch = passwordInput.value === confirmPasswordInput.value && passwordInput.value.length > 0;
-        
+
         if (isFormValid && doPasswordsMatch && isPasswordSecure) {
             registerBtn.disabled = false;
         } else {
@@ -57,25 +57,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const reqSym = document.getElementById("req-sym");
 
         let lengthValid = val.length >= 8;
-        
+
         let hasUpper = /[A-Z]/.test(val);
         let hasLower = /[a-z]/.test(val);
         let hasNum = /[0-9]/.test(val);
         let hasSym = /[^A-Za-z0-9]/.test(val);
-        
+
         let conditionsMet = [hasUpper, hasLower, hasNum, hasSym].filter(Boolean).length;
         let complexValid = conditionsMet >= 3;
-        
+
         if (reqLength) {
             reqLength.className = lengthValid ? "req-item req-valid" : "req-item req-invalid";
-            reqLength.innerHTML = lengthValid 
+            reqLength.innerHTML = lengthValid
                 ? `<i class="fa-solid fa-check"></i> At least 8 characters long`
                 : `<i class="fa-solid fa-xmark"></i> At least 8 characters long`;
         }
 
         if (reqComplex) {
             reqComplex.className = complexValid ? "req-item req-valid" : "req-item req-invalid";
-            reqComplex.innerHTML = complexValid 
+            reqComplex.innerHTML = complexValid
                 ? `<i class="fa-solid fa-check"></i> At least 3 of the following:`
                 : `<i class="fa-solid fa-xmark"></i> At least 3 of the following:`;
         }
@@ -96,10 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
     passwordInput.addEventListener("input", validatePasswordRequirements);
     passwordInput.addEventListener("input", validateConfirmPassword);
     confirmPasswordInput.addEventListener("input", validateConfirmPassword);
-    
+
     const emailInput = document.getElementById("registerEmail");
     if (emailInput) {
-        emailInput.addEventListener("input", function() {
+        emailInput.addEventListener("input", function () {
             if (this.validity.customError) {
                 this.setCustomValidity("");
                 validateSingleInput(this);
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function validateSingleInput(input) {
         let errorMsg = "";
-        
+
         if (!input.validity.valid) {
             if (input.validity.valueMissing) {
                 errorMsg = "please fill up this part";
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         let errorEl = parentToAppendTo.nextElementSibling;
-        
+
         if (!errorEl || !errorEl.classList.contains("field-error-msg")) {
             errorEl = document.createElement("span");
             errorEl.className = "field-error-msg";
@@ -188,17 +188,17 @@ registerForm.addEventListener(
 
         const first_name =
             document.getElementById("firstName").value;
-            
+
         const last_name =
             document.getElementById("lastName").value;
 
         const email =
             document.getElementById("registerEmail").value;
 
-        const phone_number = 
+        const phone_number =
             document.getElementById("registerPhone").value;
-            
-        const dob = 
+
+        const dob =
             document.getElementById("registerDob").value;
 
         const password =

@@ -1,8 +1,12 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
 var API_URL = API_BASE_URL;
 
 let requestsData = [];
-let usersData    = [];
+let usersData = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRequests();
@@ -20,18 +24,22 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadRequests() {
     try {
         const [requestsRes, usersRes] = await Promise.all([
-            fetch(`${API_URL}/requests/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} }),
-            fetch(`${API_URL}/users/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} })
+            fetch(`${API_URL}/requests/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            }),
+            fetch(`${API_URL}/users/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
         ]);
 
         requestsData = await requestsRes.json();
-        usersData    = await usersRes.json();
+        usersData = await usersRes.json();
 
         if (!Array.isArray(requestsData)) requestsData = [];
 
@@ -47,15 +55,15 @@ async function loadRequests() {
    STATISTICS
 =========================== */
 function renderStatistics() {
-    const total      = requestsData.length;
-    const pending    = requestsData.filter(r => (r.status||"").toLowerCase() === "pending").length;
-    const processing = requestsData.filter(r => (r.status||"").toLowerCase() === "processing").length;
-    const completed  = requestsData.filter(r => (r.status||"").toLowerCase() === "completed").length;
+    const total = requestsData.length;
+    const pending = requestsData.filter(r => (r.status || "").toLowerCase() === "pending").length;
+    const processing = requestsData.filter(r => (r.status || "").toLowerCase() === "processing").length;
+    const completed = requestsData.filter(r => (r.status || "").toLowerCase() === "completed").length;
 
-    document.getElementById("totalRequests").textContent      = total;
-    document.getElementById("pendingRequests").textContent    = pending;
+    document.getElementById("totalRequests").textContent = total;
+    document.getElementById("pendingRequests").textContent = pending;
     document.getElementById("processingRequests").textContent = processing;
-    document.getElementById("completedRequests").textContent  = completed;
+    document.getElementById("completedRequests").textContent = completed;
 }
 
 /* ===========================
@@ -73,7 +81,7 @@ function renderRequestsTable(data = requestsData) {
 
     data.forEach(request => {
 
-        const status   = (request.status || "pending").toLowerCase();
+        const status = (request.status || "pending").toLowerCase();
         const priority = (request.priority_level || "medium").toLowerCase();
 
         // Action buttons based on current status
@@ -119,21 +127,23 @@ function renderRequestsTable(data = requestsData) {
 /* ===========================
    UPDATE STATUS (process / complete)
 =========================== */
-window.updateStatus = async function(requestId, newStatus) {
+window.updateStatus = async function (requestId, newStatus) {
 
     const label = newStatus === "processing" ? "move to Processing" : "mark as Completed";
     if (!confirm(`Are you sure you want to ${label} Request #${requestId}?`)) return;
 
-    const user      = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
     const updatedBy = user ? user.user_id : 1;
 
     try {
         const res = await fetch(
             `${API_URL}/requests/${requestId}/status?status=${newStatus}&updated_by=${updatedBy}`,
-            { method: "PUT", headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            } }
+            {
+                method: "PUT", headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            }
         );
 
         if (!res.ok) {
@@ -154,12 +164,12 @@ window.updateStatus = async function(requestId, newStatus) {
 /* ===========================
    REJECT REQUEST
 =========================== */
-window.rejectRequest = async function(requestId) {
+window.rejectRequest = async function (requestId) {
 
     const reason = prompt(`Enter rejection reason for Request #${requestId}:`);
     if (reason === null) return;   // cancelled
 
-    const user      = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
     const updatedBy = user ? user.user_id : 1;
 
     try {
@@ -192,17 +202,17 @@ window.rejectRequest = async function(requestId) {
 /* ===========================
    VIEW MODAL
 =========================== */
-window.viewRequest = function(requestId) {
+window.viewRequest = function (requestId) {
 
     const request = requestsData.find(r => r.request_id === requestId);
     if (!request) return;
 
-    document.getElementById("modalRequestId").textContent   = `#${request.request_id}`;
-    document.getElementById("modalRequester").textContent   = request.full_name || "—";
-    document.getElementById("modalCategory").textContent    = request.category_name || "—";
-    document.getElementById("modalLocation").textContent    = request.location_name || "—";
-    document.getElementById("modalPriority").textContent    = request.priority_level || "—";
-    document.getElementById("modalStatus").textContent      = request.status || "—";
+    document.getElementById("modalRequestId").textContent = `#${request.request_id}`;
+    document.getElementById("modalRequester").textContent = request.full_name || "—";
+    document.getElementById("modalCategory").textContent = request.category_name || "—";
+    document.getElementById("modalLocation").textContent = request.location_name || "—";
+    document.getElementById("modalPriority").textContent = request.priority_level || "—";
+    document.getElementById("modalStatus").textContent = request.status || "—";
     document.getElementById("modalDescription").textContent = request.request_details || "—";
 
     const rejectionRow = document.getElementById("rejectionReasonRow");
@@ -220,25 +230,25 @@ window.viewRequest = function(requestId) {
    FILTERS
 =========================== */
 function setupFilters() {
-    document.getElementById("requestSearch")?.addEventListener("input",  filterRequests);
-    document.getElementById("statusFilter")?.addEventListener("change",  filterRequests);
-    document.getElementById("provinceFilter")?.addEventListener("change",filterRequests);
-    document.getElementById("cityFilter")?.addEventListener("change",    filterRequests);
+    document.getElementById("requestSearch")?.addEventListener("input", filterRequests);
+    document.getElementById("statusFilter")?.addEventListener("change", filterRequests);
+    document.getElementById("provinceFilter")?.addEventListener("change", filterRequests);
+    document.getElementById("cityFilter")?.addEventListener("change", filterRequests);
 }
 
 function filterRequests() {
-    const search   = (document.getElementById("requestSearch")?.value || "").toLowerCase();
-    const status   = (document.getElementById("statusFilter")?.value  || "all").toLowerCase();
+    const search = (document.getElementById("requestSearch")?.value || "").toLowerCase();
+    const status = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
     const province = (document.getElementById("provinceFilter")?.value || "all").toLowerCase();
-    const city     = (document.getElementById("cityFilter")?.value     || "all").toLowerCase();
+    const city = (document.getElementById("cityFilter")?.value || "all").toLowerCase();
 
     const filtered = requestsData.filter(r => {
-        const text    = `${r.full_name} ${r.request_id} ${r.category_name}`.toLowerCase();
-        const loc     = (r.location_name || "").toLowerCase();
+        const text = `${r.full_name} ${r.request_id} ${r.category_name}`.toLowerCase();
+        const loc = (r.location_name || "").toLowerCase();
         const mSearch = text.includes(search);
         const mStatus = status === "all" || (r.status || "").toLowerCase() === status;
-        const mProv   = province === "all" || loc.includes(province);
-        const mCity   = city === "all" || loc.includes(city);
+        const mProv = province === "all" || loc.includes(province);
+        const mCity = city === "all" || loc.includes(city);
         return mSearch && mStatus && mProv && mCity;
     });
 
@@ -260,11 +270,11 @@ function showToast(message, success = true) {
             transition:opacity .3s;display:none;`;
         document.body.appendChild(toast);
     }
-    toast.textContent      = message;
+    toast.textContent = message;
     toast.style.background = success ? "#dcfce7" : "#fee2e2";
-    toast.style.color      = success ? "#15803d" : "#991b1b";
-    toast.style.opacity    = "1";
-    toast.style.display    = "block";
+    toast.style.color = success ? "#15803d" : "#991b1b";
+    toast.style.opacity = "1";
+    toast.style.display = "block";
     setTimeout(() => {
         toast.style.opacity = "0";
         setTimeout(() => { toast.style.display = "none"; }, 300);

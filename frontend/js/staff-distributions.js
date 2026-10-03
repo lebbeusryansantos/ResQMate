@@ -1,4 +1,4 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 /* ============================================================
    staff-distributions.js  — READ ONLY for staff
    Per the defined flow, only Admin creates distributions.
@@ -18,13 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadDistributions() {
 
     try {
-        const user    = JSON.parse(localStorage.getItem("user"));
+        const user = JSON.parse(localStorage.getItem("user"));
         const staffId = user ? user.user_id : null;
 
-        const response = await fetch(`${API_URL}/distributions/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        const response = await fetch(`${API_URL}/distributions/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
         if (!response.ok) throw new Error("Failed to fetch distributions.");
 
@@ -75,7 +77,7 @@ function renderDistributions(distributions) {
 
 function filterDistributions() {
     const search = document.getElementById("searchInput").value.toLowerCase();
-    const rows   = document.querySelectorAll("#distributionTableBody tr");
+    const rows = document.querySelectorAll("#distributionTableBody tr");
 
     rows.forEach(row => {
         row.style.display = row.textContent.toLowerCase().includes(search) ? "" : "none";
@@ -85,8 +87,8 @@ function filterDistributions() {
 function showMessage(message, success) {
     const box = document.getElementById("messageBox");
     if (!box) return;
-    box.textContent  = message;
-    box.className    = success ? "success-message" : "error-message";
+    box.textContent = message;
+    box.className = success ? "success-message" : "error-message";
     box.style.display = "block";
     setTimeout(() => { box.style.display = "none"; }, 3000);
 }

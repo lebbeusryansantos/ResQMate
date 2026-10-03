@@ -1,4 +1,10 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+const API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
+
+const API_URL = API_BASE_URL;
 async function loadModals() {
 
     // Login Modal
@@ -82,14 +88,14 @@ function initializeModals() {
     function resetLoginModal() {
         const loginForm = document.getElementById("loginForm");
         if (loginForm) loginForm.reset();
-        
+
         const loginError = document.getElementById("loginError");
         if (loginError) loginError.classList.remove("show");
-        
+
         document.querySelectorAll("#loginForm input").forEach(input => {
             input.classList.remove("input-error");
         });
-        
+
         const loginBtn = document.getElementById("loginBtn");
         if (loginBtn) loginBtn.disabled = true;
     }
@@ -97,17 +103,17 @@ function initializeModals() {
     function resetRegisterModal() {
         const registerForm = document.getElementById("registerForm");
         if (registerForm) registerForm.reset();
-        
+
         const registerError = document.getElementById("registerError");
         if (registerError) {
             registerError.classList.remove("show");
             registerError.classList.remove("success-alert");
         }
-        
+
         document.querySelectorAll("#registerForm input").forEach(input => {
             input.classList.remove("input-error");
         });
-        
+
         const registerBtn = document.getElementById("registerBtn");
         if (registerBtn) registerBtn.disabled = true;
     }
@@ -178,12 +184,12 @@ function initializeModals() {
                 e.preventDefault();
                 loginModal.classList.remove("show");
                 resetLoginModal();
-                
+
                 const dobInput = document.getElementById("registerDob");
                 if (dobInput) {
                     dobInput.max = new Date().toISOString().split('T')[0];
                 }
-                
+
                 registerModal.classList.add("show");
             }
         );
@@ -192,7 +198,7 @@ function initializeModals() {
     // ==========================
     // REGISTER
     // ==========================
-    
+
     const phoneInput = document.getElementById("registerPhone");
     if (phoneInput) {
         phoneInput.addEventListener('input', function (e) {
@@ -214,13 +220,13 @@ function initializeModals() {
         const confirmPasswordInput = document.getElementById("confirmPassword");
         const passwordInput = document.getElementById("registerPassword");
         const registerInputs = registerForm.querySelectorAll("input");
-        
+
         let isPasswordSecure = false;
 
         function validateForm() {
             const isFormValid = registerForm.checkValidity();
             const doPasswordsMatch = passwordInput.value === confirmPasswordInput.value && passwordInput.value.length > 0;
-            
+
             if (isFormValid && doPasswordsMatch && isPasswordSecure) {
                 registerBtn.disabled = false;
             } else {
@@ -242,7 +248,7 @@ function initializeModals() {
             } else {
                 confirmPasswordInput.setCustomValidity("");
             }
-            
+
             // Only update the UI if the user has already interacted with it or if there's an active error to clear
             if (confirmPasswordInput.classList.contains("input-error") || confirmPasswordInput.value.length > 0) {
                 validateSingleInput(confirmPasswordInput);
@@ -259,25 +265,25 @@ function initializeModals() {
             const reqSym = document.getElementById("req-sym");
 
             let lengthValid = val.length >= 8;
-            
+
             let hasUpper = /[A-Z]/.test(val);
             let hasLower = /[a-z]/.test(val);
             let hasNum = /[0-9]/.test(val);
             let hasSym = /[^A-Za-z0-9]/.test(val);
-            
+
             let conditionsMet = [hasUpper, hasLower, hasNum, hasSym].filter(Boolean).length;
             let complexValid = conditionsMet >= 4;
-            
+
             if (reqLength) {
                 reqLength.className = lengthValid ? "req-item req-valid" : "req-item req-invalid";
-                reqLength.innerHTML = lengthValid 
+                reqLength.innerHTML = lengthValid
                     ? `<i class="fa-solid fa-check"></i> At least 8 characters long`
                     : `<i class="fa-solid fa-xmark"></i> At least 8 characters long`;
             }
 
             if (reqComplex) {
                 reqComplex.className = complexValid ? "req-item req-valid" : "req-item req-invalid";
-                reqComplex.innerHTML = complexValid 
+                reqComplex.innerHTML = complexValid
                     ? `<i class="fa-solid fa-check"></i> Must contain all of the following:`
                     : `<i class="fa-solid fa-xmark"></i> Must contain all of the following:`;
             }
@@ -298,16 +304,16 @@ function initializeModals() {
         passwordInput.addEventListener("input", validatePasswordRequirements);
         passwordInput.addEventListener("input", validateConfirmPassword);
         confirmPasswordInput.addEventListener("input", validateConfirmPassword);
-        
+
         const emailInput = document.getElementById("registerEmail");
         if (emailInput) {
-            emailInput.addEventListener("input", function() {
+            emailInput.addEventListener("input", function () {
                 if (this.validity.customError) {
                     this.setCustomValidity("");
                     validateSingleInput(this);
                 }
             });
-            emailInput.addEventListener("blur", async function() {
+            emailInput.addEventListener("blur", async function () {
                 if (this.value && !this.validity.typeMismatch && !this.validity.valueMissing) {
                     try {
                         const response = await fetch(`${API_BASE_URL}/users/check-email?email=${encodeURIComponent(this.value)}`);
@@ -331,7 +337,7 @@ function initializeModals() {
         function validateSingleInput(input) {
             let errorMsg = "";
             let isMaxCharWarning = false;
-            
+
             if (input.maxLength > 0 && input.value.length >= input.maxLength) {
                 errorMsg = `Maximum of ${input.maxLength} characters reached.`;
                 isMaxCharWarning = true;
@@ -356,7 +362,7 @@ function initializeModals() {
             }
 
             let errorEl = parentToAppendTo.nextElementSibling;
-            
+
             if (!errorEl || !errorEl.classList.contains("field-error-msg")) {
                 errorEl = document.createElement("span");
                 errorEl.className = "field-error-msg";
@@ -422,7 +428,7 @@ function initializeModals() {
 
                 const first_name =
                     document.getElementById("firstName").value;
-                    
+
                 const last_name =
                     document.getElementById("lastName").value;
 
@@ -431,10 +437,10 @@ function initializeModals() {
 
                 const password =
                     document.getElementById("registerPassword").value;
-                    
+
                 const phone_number =
                     document.getElementById("registerPhone").value;
-                    
+
                 const dob =
                     document.getElementById("registerDob").value;
 
@@ -585,7 +591,7 @@ function initializeModals() {
 
         function validateSingleLoginInput(input) {
             let errorMsg = "";
-            
+
             if (!input.validity.valid) {
                 if (input.validity.valueMissing) {
                     errorMsg = "please fill up this part";
@@ -605,7 +611,7 @@ function initializeModals() {
             }
 
             let errorEl = parentToAppendTo.nextElementSibling;
-            
+
             if (!errorEl || !errorEl.classList.contains("field-error-msg")) {
                 errorEl = document.createElement("span");
                 errorEl.className = "field-error-msg";

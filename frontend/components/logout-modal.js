@@ -1,7 +1,9 @@
-(function() {
-    const API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" 
-        ? "http://127.0.0.1:8000" 
-        : "https://res-q-mate-ten.vercel.app";
+(function () {
+    const API_BASE_URL =
+        window.location.hostname === "127.0.0.1" ||
+            window.location.hostname === "localhost"
+            ? "http://127.0.0.1:8000"
+            : "https://resqmate-backend.onrender.com";
 
     if (!window.logoutModalInitialized) {
         document.addEventListener("click", function (e) {
@@ -39,23 +41,23 @@
             // Confirm Logout
             if (e.target.closest("#confirmLogoutBtn")) {
                 e.preventDefault();
-                
+
                 const btn = e.target.closest("#confirmLogoutBtn");
                 btn.textContent = "Logging out...";
                 btn.style.pointerEvents = "none";
-                
+
                 const token = localStorage.getItem("token");
-                
+
                 const finalizeLogout = () => {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
-                    
+
                     // Robust redirect that works locally and on Vercel
                     let redirectPath = "../index.html";
                     if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
                         redirectPath = "/";
                     }
-                    
+
                     window.location.href = redirectPath;
                 };
 
@@ -71,10 +73,10 @@
                 }
             }
         });
-        
+
         window.logoutModalInitialized = true;
     }
 })();
 
 // Keep a dummy function for loadSidebar.js compatibility
-window.initLogoutModal = function() {};
+window.initLogoutModal = function () { };

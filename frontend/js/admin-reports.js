@@ -1,6 +1,10 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
-var API_URL =
-    `${API_BASE_URL}/reports`;
+var API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
+
+var API_URL = `${API_BASE_URL}/reports`;
 
 /* ===========================
    LOAD REPORTS
@@ -11,10 +15,12 @@ async function loadReports() {
     try {
 
         const response =
-            await fetch(API_URL, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+            await fetch(API_URL, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
         const data =
             await response.json();
@@ -112,40 +118,42 @@ async function loadMonthlyChart() {
 
     try {
 
-    const response =
-        await fetch(
-            `${API_BASE_URL}/reports/monthly`,
-            { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} }
-        );
+        const response =
+            await fetch(
+                `${API_BASE_URL}/reports/monthly`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
 
-    if (!response.ok) throw new Error("Monthly fetch failed");
+        if (!response.ok) throw new Error("Monthly fetch failed");
 
-    const data =
-        await response.json();
+        const data =
+            await response.json();
 
-    const max =
-        Math.max(...Object.values(data), 1);
+        const max =
+            Math.max(...Object.values(data), 1);
 
-    document.getElementById("barApr").style.height =
-        `${(data.Apr / max) * 100}%`;
+        document.getElementById("barApr").style.height =
+            `${(data.Apr / max) * 100}%`;
 
-    document.getElementById("barMay").style.height =
-        `${(data.May / max) * 100}%`;
+        document.getElementById("barMay").style.height =
+            `${(data.May / max) * 100}%`;
 
-    document.getElementById("barJun").style.height =
-        `${(data.Jun / max) * 100}%`;
+        document.getElementById("barJun").style.height =
+            `${(data.Jun / max) * 100}%`;
 
-    document.getElementById("barJul").style.height =
-        `${(data.Jul / max) * 100}%`;
+        document.getElementById("barJul").style.height =
+            `${(data.Jul / max) * 100}%`;
 
-    document.getElementById("barAug").style.height =
-        `${(data.Aug / max) * 100}%`;
+        document.getElementById("barAug").style.height =
+            `${(data.Aug / max) * 100}%`;
 
-    document.getElementById("barSep").style.height =
-        `${(data.Sep / max) * 100}%`;
+        document.getElementById("barSep").style.height =
+            `${(data.Sep / max) * 100}%`;
 
     } catch (error) {
         console.error("Failed to load monthly chart", error);

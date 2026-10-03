@@ -1,4 +1,4 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 var API_URL =
     API_BASE_URL;
 
@@ -25,10 +25,12 @@ async function loadResources() {
         const response =
             await fetch(
                 `${API_URL}/resources/`
-            , { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+                , {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
         if (!response.ok) {
             console.error("Failed to load resources:", await response.text());
@@ -61,7 +63,7 @@ function renderResources(
         document.getElementById(
             "resourcesTableBody"
         );
-        
+
     const emptyState = document.getElementById("emptyState");
 
     tbody.innerHTML = "";

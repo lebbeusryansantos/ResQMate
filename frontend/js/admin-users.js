@@ -1,23 +1,25 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 var API_URL = `${API_BASE_URL}/users/`;
 
 const usersTableBody = document.getElementById("usersTableBody");
-const modal          = document.getElementById("userModal");
+const modal = document.getElementById("userModal");
 
 let editingUserId = null;
-let allUsers      = [];
+let allUsers = [];
 
 /* ===========================
    LOAD USERS
 =========================== */
 async function loadUsers() {
     try {
-        const response = await fetch(API_URL, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
-        const users    = await response.json();
-        allUsers       = users;
+        const response = await fetch(API_URL, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const users = await response.json();
+        allUsers = users;
         renderUsers(users);
     } catch (error) {
         console.error("Failed to load users", error);
@@ -60,7 +62,7 @@ function renderUsers(users) {
                 <td><span class="rq-badge ${roleClass}">${roleText}</span></td>
                 <td>
                     <button class="rq-btn-edit"
-                        onclick="editUser(${user.user_id}, '${user.full_name.replace(/'/g,"\\'")}', '${user.email}', '${user.role}')">
+                        onclick="editUser(${user.user_id}, '${user.full_name.replace(/'/g, "\\'")}', '${user.email}', '${user.role}')">
                         Edit
                     </button>
                     <button class="rq-btn-delete" onclick="deleteUser(${user.user_id})">
@@ -78,10 +80,10 @@ function renderUsers(users) {
 document.getElementById("addUserBtn").addEventListener("click", () => {
     editingUserId = null;
     document.getElementById("userModalTitle").textContent = "Add New User";
-    document.getElementById("userName").value     = "";
-    document.getElementById("userEmail").value    = "";
+    document.getElementById("userName").value = "";
+    document.getElementById("userEmail").value = "";
     document.getElementById("userPassword").value = "";
-    document.getElementById("userRole").value     = "community_user";
+    document.getElementById("userRole").value = "community_user";
     modal.classList.add("active");
 });
 
@@ -91,9 +93,9 @@ document.getElementById("addUserBtn").addEventListener("click", () => {
 document.getElementById("saveUserBtn").addEventListener("click", async () => {
 
     const fullName = document.getElementById("userName").value.trim();
-    const email    = document.getElementById("userEmail").value.trim();
+    const email = document.getElementById("userEmail").value.trim();
     const password = document.getElementById("userPassword").value.trim();
-    const role     = document.getElementById("userRole").value;
+    const role = document.getElementById("userRole").value;
 
     if (!fullName || !email) {
         alert("Please fill in Name and Email.");
@@ -125,9 +127,9 @@ document.getElementById("saveUserBtn").addEventListener("click", async () => {
 
         } else {
             // EDIT: split name into first/last for PUT endpoint
-            const parts     = fullName.split(" ");
+            const parts = fullName.split(" ");
             const firstName = parts[0];
-            const lastName  = parts.slice(1).join(" ") || "";
+            const lastName = parts.slice(1).join(" ") || "";
 
             const res = await fetch(`${API_URL}/${editingUserId}`, {
                 method: "PUT",
@@ -160,12 +162,12 @@ document.getElementById("saveUserBtn").addEventListener("click", async () => {
 /* ===========================
    EDIT USER
 =========================== */
-window.editUser = function(id, fullName, email, role) {
+window.editUser = function (id, fullName, email, role) {
     editingUserId = id;
     document.getElementById("userModalTitle").textContent = "Edit User";
-    document.getElementById("userName").value   = fullName;
-    document.getElementById("userEmail").value  = email;
-    document.getElementById("userRole").value   = role;
+    document.getElementById("userName").value = fullName;
+    document.getElementById("userEmail").value = email;
+    document.getElementById("userRole").value = role;
     document.getElementById("userPassword").value = "";
     modal.classList.add("active");
 };
@@ -173,13 +175,15 @@ window.editUser = function(id, fullName, email, role) {
 /* ===========================
    DELETE USER
 =========================== */
-window.deleteUser = async function(userId) {
+window.deleteUser = async function (userId) {
     if (!confirm("Delete this user? This cannot be undone.")) return;
     try {
-        await fetch(`${API_URL}/${userId}`, { method: "DELETE", headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+        await fetch(`${API_URL}/${userId}`, {
+            method: "DELETE", headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
         loadUsers();
     } catch (error) {
         console.error(error);
@@ -194,12 +198,12 @@ document.getElementById("roleFilter")?.addEventListener("change", applyFilters);
 
 function applyFilters() {
     const search = document.getElementById("userSearch").value.toLowerCase();
-    const role   = document.getElementById("roleFilter")?.value || "all";
+    const role = document.getElementById("roleFilter")?.value || "all";
 
     const filtered = allUsers.filter(user => {
         const matchSearch = user.full_name.toLowerCase().includes(search) ||
-                            user.email.toLowerCase().includes(search);
-        const matchRole   = role === "all" || user.role === role || (role === "community_user" && user.role === "community_user");
+            user.email.toLowerCase().includes(search);
+        const matchRole = role === "all" || user.role === role || (role === "community_user" && user.role === "community_user");
         return matchSearch && matchRole;
     });
 
@@ -209,7 +213,7 @@ function applyFilters() {
 /* ===========================
    CLOSE MODAL
 =========================== */
-document.getElementById("closeUserModal").addEventListener("click",  () => modal.classList.remove("active"));
+document.getElementById("closeUserModal").addEventListener("click", () => modal.classList.remove("active"));
 document.getElementById("cancelUserModal").addEventListener("click", () => modal.classList.remove("active"));
 modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("active"); });
 

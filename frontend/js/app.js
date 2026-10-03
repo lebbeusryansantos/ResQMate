@@ -1,10 +1,10 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 document.addEventListener('DOMContentLoaded', () => {
     // Select the form - assuming it's the first form on the page since index.html is currently empty
     const form = document.querySelector('form');
 
     if (form) {
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', function (event) {
             let isValid = true;
 
             // Clear previous error messages
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             requiredFields.forEach(field => {
                 if (field.value.trim() === '') {
                     isValid = false;
-                    
+
                     // Create dynamic error message element
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'error-message';
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorDiv.style.fontSize = '0.875em';
                     errorDiv.style.marginTop = '4px';
                     errorDiv.innerText = 'This field is required.';
-                    
+
                     // Insert error message just below the input field
                     field.parentNode.insertBefore(errorDiv, field.nextSibling);
                 }
@@ -42,27 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // Phase 3: Search and Filter implementation
 document.addEventListener('DOMContentLoaded', () => {
     // Replace these selectors with the actual IDs/classes used in HTML
-    const searchInput = document.getElementById('searchBar'); 
+    const searchInput = document.getElementById('searchBar');
     const statusSelect = document.getElementById('statusFilter');
-    const tableBody = document.querySelector('table tbody'); 
+    const tableBody = document.querySelector('table tbody');
 
     if (searchInput && statusSelect && tableBody) {
         const filterTable = () => {
             const searchQuery = searchInput.value.toLowerCase().trim();
             const statusFilter = statusSelect.value.toLowerCase().trim();
-            
+
             // Iterate through all table rows
             const rows = tableBody.querySelectorAll('tr');
-            
+
             rows.forEach(row => {
                 const rowText = row.textContent.toLowerCase();
-                
+
                 // For a more specific status check, you might want to target a specific column:
                 // e.g., const statusCellText = row.querySelector('.status-cell').textContent.toLowerCase();
                 // Here, we're assuming the status text exists somewhere in the row or we check a specific data attribute.
                 // As a generic fallback, we check if the row's text content includes the status, 
                 // or if the status filter is empty/"all"
-                
+
                 const matchesSearch = rowText.includes(searchQuery);
                 const matchesStatus = statusFilter === '' || statusFilter === 'all' || rowText.includes(statusFilter);
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Listen for user input on the search bar
         searchInput.addEventListener('input', filterTable);
-        
+
         // Listen for changes on the status filter dropdown
         statusSelect.addEventListener('change', filterTable);
     }
@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Phase 3: AJAX Form Submission
 document.addEventListener('DOMContentLoaded', () => {
     const assistanceForm = document.getElementById('assistance-form');
-    
+
     if (assistanceForm) {
-        assistanceForm.addEventListener('submit', async function(event) {
+        assistanceForm.addEventListener('submit', async function (event) {
             event.preventDefault();
-            
+
             // Package the input values into a JSON object
             const payload = {
                 category: assistanceForm.elements['category']?.value || document.getElementById('category')?.value,
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priority: assistanceForm.elements['priority']?.value || document.getElementById('priority')?.value,
                 details: assistanceForm.elements['details']?.value || document.getElementById('details')?.value
             };
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/requests/create`, {
                     method: 'POST',
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(payload)
                 });
-                
+
                 if (response.ok) {
                     alert('Request submitted successfully!');
                     assistanceForm.reset(); // Optional: reset form after success

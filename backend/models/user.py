@@ -15,7 +15,8 @@ class User(Base):
         Enum(
             "community_user",
             "staff",
-            "admin"
+            "admin",
+            name="user_role_enum"
         )
     )
 

@@ -1,30 +1,36 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://res-q-mate-ten.vercel.app";
+var API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
 const API_BASE = API_BASE_URL;
 
-const distributionModal      = document.getElementById("distributionModal");
-const deleteDistributionModal= document.getElementById("deleteDistributionModal");
-const addDistributionBtn     = document.getElementById("addDistributionBtn");
-const cancelDistribution     = document.getElementById("cancelDistribution");
-const saveDistribution       = document.getElementById("saveDistribution");
-const cancelDeleteDistribution   = document.getElementById("cancelDeleteDistribution");
-const confirmDeleteDistribution  = document.getElementById("confirmDeleteDistribution");
-const distributionTableBody  = document.querySelector("#distributionTable tbody");
+const distributionModal = document.getElementById("distributionModal");
+const deleteDistributionModal = document.getElementById("deleteDistributionModal");
+const addDistributionBtn = document.getElementById("addDistributionBtn");
+const cancelDistribution = document.getElementById("cancelDistribution");
+const saveDistribution = document.getElementById("saveDistribution");
+const cancelDeleteDistribution = document.getElementById("cancelDeleteDistribution");
+const confirmDeleteDistribution = document.getElementById("confirmDeleteDistribution");
+const distributionTableBody = document.querySelector("#distributionTable tbody");
 
 let editingDistributionId = null;
-let deletingDistributionId= null;
-let allDistributions      = [];
+let deletingDistributionId = null;
+let allDistributions = [];
 
 /* ===========================
    LOAD DISTRIBUTIONS
 =========================== */
 async function loadDistributions() {
     try {
-        const response     = await fetch(`${API_BASE}/distributions/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
-        const distributions= await response.json();
-        allDistributions   = distributions;
+        const response = await fetch(`${API_BASE}/distributions/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const distributions = await response.json();
+        allDistributions = distributions;
         renderTable(distributions);
         updateStats(distributions);
     } catch (error) {
@@ -84,7 +90,7 @@ function updateStats(data) {
     document.getElementById("totalQuantity").textContent = totalQty;
 
     document.getElementById("resourceCount").textContent = new Set(data.map(d => d.resource_id)).size;
-    document.getElementById("staffCount").textContent    = new Set(data.map(d => d.staff_id)).size;
+    document.getElementById("staffCount").textContent = new Set(data.map(d => d.staff_id)).size;
 }
 
 /* ===========================
@@ -95,9 +101,9 @@ if (addDistributionBtn) {
         editingDistributionId = null;
         document.getElementById("distributionModalTitle").textContent = "Create Distribution";
         document.getElementById("requestId").value = "";
-        document.getElementById("quantity").value  = "";
-        document.getElementById("resource").value  = "";
-        document.getElementById("staff").value     = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("resource").value = "";
+        document.getElementById("staff").value = "";
         distributionModal.classList.add("show");
     });
 }
@@ -108,10 +114,10 @@ if (addDistributionBtn) {
 if (saveDistribution) {
     saveDistribution.addEventListener("click", async () => {
 
-        const requestId    = document.getElementById("requestId").value.trim();
-        const resourceId   = document.getElementById("resource").value;
-        const staffId      = document.getElementById("staff").value;
-        const quantity     = document.getElementById("quantity").value;
+        const requestId = document.getElementById("requestId").value.trim();
+        const resourceId = document.getElementById("resource").value;
+        const staffId = document.getElementById("staff").value;
+        const quantity = document.getElementById("quantity").value;
 
         if (!requestId || !resourceId || !staffId || !quantity) {
             alert("Please complete all fields.");
@@ -122,17 +128,19 @@ if (saveDistribution) {
             let url, method;
 
             if (!editingDistributionId) {
-                url    = `${API_BASE}/distributions/create?request_id=${requestId}&resource_id=${resourceId}&staff_id=${staffId}&quantity_given=${quantity}`;
+                url = `${API_BASE}/distributions/create?request_id=${requestId}&resource_id=${resourceId}&staff_id=${staffId}&quantity_given=${quantity}`;
                 method = "POST";
             } else {
-                url    = `${API_BASE}/distributions/${editingDistributionId}?request_id=${requestId}&resource_id=${resourceId}&staff_id=${staffId}&quantity_given=${quantity}`;
+                url = `${API_BASE}/distributions/${editingDistributionId}?request_id=${requestId}&resource_id=${resourceId}&staff_id=${staffId}&quantity_given=${quantity}`;
                 method = "PUT";
             }
 
-            const res = await fetch(url, { method, headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+            const res = await fetch(url, {
+                method, headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
             if (!res.ok) {
                 const err = await res.json();
@@ -153,20 +161,20 @@ if (saveDistribution) {
 /* ===========================
    EDIT
 =========================== */
-window.editDistribution = function(id, requestId, resourceId, staffId, quantity) {
+window.editDistribution = function (id, requestId, resourceId, staffId, quantity) {
     editingDistributionId = id;
     document.getElementById("distributionModalTitle").textContent = "Edit Distribution";
     document.getElementById("requestId").value = requestId;
-    document.getElementById("resource").value  = resourceId;
-    document.getElementById("staff").value     = staffId;
-    document.getElementById("quantity").value  = quantity;
+    document.getElementById("resource").value = resourceId;
+    document.getElementById("staff").value = staffId;
+    document.getElementById("quantity").value = quantity;
     distributionModal.classList.add("show");
 };
 
 /* ===========================
    DELETE
 =========================== */
-window.openDeleteDistribution = function(id) {
+window.openDeleteDistribution = function (id) {
     deletingDistributionId = id;
     deleteDistributionModal.classList.add("show");
 };
@@ -174,10 +182,12 @@ window.openDeleteDistribution = function(id) {
 if (confirmDeleteDistribution) {
     confirmDeleteDistribution.addEventListener("click", async () => {
         try {
-            const res = await fetch(`${API_BASE}/distributions/${deletingDistributionId}`, { method: "DELETE", headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} });
+            const res = await fetch(`${API_BASE}/distributions/${deletingDistributionId}`, {
+                method: "DELETE", headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (!res.ok) {
                 const err = await res.json();
                 alert(err.detail || "Delete failed.");
@@ -194,17 +204,17 @@ if (confirmDeleteDistribution) {
 /* ===========================
    CLOSE MODALS
 =========================== */
-if (cancelDistribution)       cancelDistribution.addEventListener("click",       () => distributionModal.classList.remove("show"));
+if (cancelDistribution) cancelDistribution.addEventListener("click", () => distributionModal.classList.remove("show"));
 if (cancelDeleteDistribution) cancelDeleteDistribution.addEventListener("click", () => deleteDistributionModal.classList.remove("show"));
 
-distributionModal?.addEventListener("click",       e => { if (e.target === distributionModal)       distributionModal.classList.remove("show"); });
+distributionModal?.addEventListener("click", e => { if (e.target === distributionModal) distributionModal.classList.remove("show"); });
 deleteDistributionModal?.addEventListener("click", e => { if (e.target === deleteDistributionModal) deleteDistributionModal.classList.remove("show"); });
 
 /* ===========================
    SEARCH + STATUS FILTER
 =========================== */
 document.getElementById("distributionSearch")?.addEventListener("keyup", () => {
-    const value    = document.getElementById("distributionSearch").value.toLowerCase();
+    const value = document.getElementById("distributionSearch").value.toLowerCase();
     const filtered = allDistributions.filter(d => JSON.stringify(d).toLowerCase().includes(value));
     renderTable(filtered);
 });
@@ -220,10 +230,12 @@ document.getElementById("statusFilter")?.addEventListener("change", () => {
 =========================== */
 async function loadResources() {
     try {
-        const resources   = await (await fetch(`${API_BASE}/resources/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} })).json();
+        const resources = await (await fetch(`${API_BASE}/resources/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        })).json();
         const resourceSel = document.getElementById("resource");
         resourceSel.innerHTML = '<option value="">Select Resource</option>';
         resources.forEach(r => {
@@ -234,10 +246,12 @@ async function loadResources() {
 
 async function loadStaff() {
     try {
-        const users    = await (await fetch(`${API_BASE}/users/`, { headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-} })).json();
+        const users = await (await fetch(`${API_BASE}/users/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        })).json();
         const staffSel = document.getElementById("staff");
         staffSel.innerHTML = '<option value="">Select Staff</option>';
         users.filter(u => u.role === "staff").forEach(u => {

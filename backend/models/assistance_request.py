@@ -20,7 +20,7 @@ class AssistanceRequest(Base):
     request_details = Column(Text)
 
     priority_level = Column(
-        Enum("low", "medium", "high", "critical"),
+        Enum("low", "medium", "high", "critical", name="priority_level_enum"),
         default="medium"
     )
 

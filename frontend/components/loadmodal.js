@@ -751,6 +751,13 @@ function initializeModals() {
                         JSON.stringify(data)
                     );
 
+                    localStorage.setItem(
+                        "token",
+                        data.token
+                    );
+
+                    console.log("TOKEN:", data.token);
+
                     if (data.role === "admin") {
 
                         window.location.href =

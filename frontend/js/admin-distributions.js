@@ -32,7 +32,6 @@ async function loadDistributions() {
         const distributions = await response.json();
         allDistributions = distributions;
         renderTable(distributions);
-        updateStats(distributions);
     } catch (error) {
         console.error("Failed to load distributions", error);
     }
@@ -81,31 +80,80 @@ function renderTable(data) {
 }
 
 /* ===========================
-   UPDATE STATS
-=========================== */
-function updateStats(data) {
-    document.getElementById("totalDistributions").textContent = data.length;
-
-    const totalQty = data.reduce((sum, d) => sum + Number(d.quantity_given), 0);
-    document.getElementById("totalQuantity").textContent = totalQty;
-
-    document.getElementById("resourceCount").textContent = new Set(data.map(d => d.resource_id)).size;
-    document.getElementById("staffCount").textContent = new Set(data.map(d => d.staff_id)).size;
-}
-
-/* ===========================
    OPEN CREATE MODAL
 =========================== */
 if (addDistributionBtn) {
-    addDistributionBtn.addEventListener("click", () => {
+    addDistributionBtn.addEventListener("click", async () => {
+
+        await loadRequests();
+
         editingDistributionId = null;
-        document.getElementById("distributionModalTitle").textContent = "Create Distribution";
+
+        document.getElementById(
+            "distributionModalTitle"
+        ).textContent = "Create Distribution";
+
         document.getElementById("requestId").value = "";
         document.getElementById("quantity").value = "";
         document.getElementById("resource").value = "";
         document.getElementById("staff").value = "";
+
         distributionModal.classList.add("show");
     });
+}
+
+/* ===========================
+   REQUESTS LOADER
+=========================== */
+
+async function loadRequests() {
+    try {
+        const [requestsRes, distributionsRes] = await Promise.all([
+            fetch(`${API_BASE}/requests/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            }),
+            fetch(`${API_BASE}/distributions/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+        ]);
+
+        const requests = await requestsRes.json();
+        const distributions = await distributionsRes.json();
+
+        const assignedRequestIds = distributions.map(
+            d => Number(d.request_id)
+        );
+
+        const requestSelect =
+            document.getElementById("requestId");
+
+        requestSelect.innerHTML =
+            '<option value="">Select Request</option>';
+
+        requests
+            .filter(r =>
+                !assignedRequestIds.includes(
+                    Number(r.request_id)
+                )
+            )
+            .forEach(r => {
+                requestSelect.innerHTML += `
+                    <option value="${r.request_id}">
+                        #${r.request_id} - ${r.full_name || "Unknown"}
+                    </option>
+                `;
+            });
+
+    } catch (error) {
+        console.error(
+            "Failed to load requests",
+            error
+        );
+    }
 }
 
 /* ===========================
@@ -168,13 +216,40 @@ if (saveDistribution) {
 /* ===========================
    EDIT
 =========================== */
-window.editDistribution = function (id, requestId, resourceId, staffId, quantity) {
+window.editDistribution = async function (
+    id,
+    requestId,
+    resourceId,
+    staffId,
+    quantity
+) {
     editingDistributionId = id;
-    document.getElementById("distributionModalTitle").textContent = "Edit Distribution";
-    document.getElementById("requestId").value = requestId;
+
+    document.getElementById(
+        "distributionModalTitle"
+    ).textContent = "Edit Distribution";
+
+    await loadRequests();
+
+    const requestSelect =
+        document.getElementById("requestId");
+
+    if (
+        !Array.from(requestSelect.options)
+            .some(opt => opt.value == requestId)
+    ) {
+        requestSelect.innerHTML += `
+            <option value="${requestId}">
+                #${requestId}
+            </option>
+        `;
+    }
+
+    requestSelect.value = requestId;
     document.getElementById("resource").value = resourceId;
     document.getElementById("staff").value = staffId;
     document.getElementById("quantity").value = quantity;
+
     distributionModal.classList.add("show");
 };
 
@@ -277,5 +352,6 @@ async function loadStaff() {
    INITIAL LOAD
 =========================== */
 loadResources();
+loadRequests();
 loadStaff();
 loadDistributions();

@@ -347,6 +347,5 @@ async function loadStaff() {
 =========================== */
 loadRequests();
 loadResources();
-loadRequests();
 loadStaff();
 loadDistributions();

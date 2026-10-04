@@ -27,7 +27,7 @@ async function loadDocumentations() {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/delivery-documentations/delivery-documentations/`,
+                `${API_BASE_URL}/delivery-documentations/`,
                 {
                     headers: {
                         Authorization:
@@ -151,7 +151,7 @@ async function approveDocumentation(id) {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/delivery-documentations/delivery-documentations/${id}/approve`,
+                `${API_BASE_URL}/delivery-documentations/${id}/approve`,
                 {
                     method: "PUT",
                     headers: {
@@ -191,7 +191,7 @@ async function rejectDocumentation(id) {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/delivery-documentations/delivery-documentations/${id}/reject`,
+                `${API_BASE_URL}/delivery-documentations/${id}/reject`,
                 {
                     method: "PUT",
                     headers: {

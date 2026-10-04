@@ -30,7 +30,7 @@ async function loadDashboardStats() {
 
         document.getElementById("totalRequests").textContent = data.total_requests || 0;
         document.getElementById("pendingRequests").textContent = data.pending_requests || 0;
-        document.getElementById("availableResources").textContent = data.total_resources || 0;
+        document.getElementById("availableResources").textContent = data.available_resources || 0;
         document.getElementById("activeDistributions").textContent = data.processing_requests || 0;
 
     } catch (error) {
@@ -79,7 +79,21 @@ async function loadResourceAlerts() {
         const container = document.getElementById("resourceAlerts");
         if (!container) return;
 
-        const lowStock = resources.filter(r => parseInt(r.quantity_available) < 20);
+        const lowStock = resources.filter(r => {
+            const qty = parseInt(r.quantity_available) || 0;
+            const maxStock = parseInt(r.max_stock) || 100;
+
+            const stockPercentage =
+                maxStock > 0
+                    ? (qty / maxStock) * 100
+                    : 0;
+
+            return qty > 0 && stockPercentage <= 30;
+        });
+
+        const depleted = resources.filter(
+            r => (parseInt(r.quantity_available) || 0) <= 0
+        );
 
         if (lowStock.length === 0) {
             container.innerHTML = `<div class="alert-item">✅ All resources sufficiently stocked</div>`;
@@ -97,9 +111,19 @@ async function loadResourceAlerts() {
         }
         lowStock.forEach(r => {
             container.innerHTML += `
-                <div class="alert-item">
-                    ⚠ ${r.resource_name} running low (${r.quantity_available} ${r.unit || "units"})
-                </div>`;
+        <div class="alert-item">
+            ⚠ ${r.resource_name} is running low
+            (${r.quantity_available}/${r.max_stock} ${r.unit || "units"})
+        </div>
+    `;
+        });
+
+        depleted.forEach(r => {
+            container.innerHTML += `
+        <div class="alert-item">
+            ❌ ${r.resource_name} is depleted
+        </div>
+    `;
         });
 
     } catch (error) {
@@ -178,8 +202,8 @@ async function loadRecentRequests() {
         }
 
         requests.slice(0, 5).forEach(r => {
-            const status = (r.status || "pending").toLowerCase();
-            const priority = (r.priority_level || "medium").toLowerCase();
+            const status = (r.status || "pending").toUpperCase();
+            const priority = (r.priority_level || "medium").toUpperCase();
 
             tbody.innerHTML += `
                 <tr>

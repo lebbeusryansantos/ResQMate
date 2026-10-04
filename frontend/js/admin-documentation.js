@@ -244,42 +244,80 @@ async function approveDocumentation(id) {
     }
 }
 
-async function rejectDocumentation(id) {
+let currentRejectDocId = null;
 
-    if (
-        !confirm(
-            "Reject this documentation?"
-        )
-    ) return;
+window.rejectDocumentation = function(id) {
+    currentRejectDocId = id;
+    const modal = document.getElementById("rejectionModal");
+    if(modal) {
+        modal.classList.add("show");
+        const form = document.getElementById("rejectionForm");
+        if (form) form.reset();
+        const otherContainer = document.getElementById("otherReasonContainer");
+        if (otherContainer) otherContainer.style.display = "none";
+    }
+};
 
-    try {
+document.addEventListener("DOMContentLoaded", () => {
+    const rejectionSelect = document.getElementById("rejectionReasonSelect");
+    const otherContainer = document.getElementById("otherReasonContainer");
+    const otherInput = document.getElementById("otherRejectionReason");
+    const rejectionForm = document.getElementById("rejectionForm");
+    const closeBtn = document.getElementById("closeRejectionModal");
+    const cancelBtn = document.getElementById("cancelRejectionBtn");
+    const rejectionModal = document.getElementById("rejectionModal");
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/delivery-documentations/${id}/reject`,
-                {
+    if(rejectionSelect) {
+        rejectionSelect.addEventListener("change", (e) => {
+            if (e.target.value === "Others") {
+                otherContainer.style.display = "block";
+                otherInput.required = true;
+            } else {
+                otherContainer.style.display = "none";
+                otherInput.required = false;
+                otherInput.value = "";
+            }
+        });
+    }
+
+    const hideModal = () => {
+        if(rejectionModal) rejectionModal.classList.remove("show");
+    };
+
+    if(closeBtn) closeBtn.addEventListener("click", hideModal);
+    if(cancelBtn) cancelBtn.addEventListener("click", hideModal);
+
+    if(rejectionForm) {
+        rejectionForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentRejectDocId) return;
+            
+            let reason = rejectionSelect.value;
+            if (reason === "Others") {
+                reason = otherInput.value.trim();
+            }
+
+            try {
+                // Attach the reason as query param (payload handling)
+                const url = `${API_BASE_URL}/delivery-documentations/${currentRejectDocId}/reject?rejection_reason=${encodeURIComponent(reason)}`;
+                const response = await fetch(url, {
                     method: "PUT",
                     headers: {
-                        Authorization:
-                            `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
+                });
+
+                if (!response.ok) {
+                    throw new Error();
                 }
-            );
 
-        if (!response.ok) {
-            throw new Error();
-        }
+                alert("Documentation rejected.");
+                hideModal();
+                loadDocumentations();
 
-        alert(
-            "Documentation rejected."
-        );
-
-        loadDocumentations();
-
-    } catch {
-
-        alert(
-            "Rejection failed."
-        );
+            } catch {
+                alert("Rejection failed.");
+            }
+        });
     }
-}
+});

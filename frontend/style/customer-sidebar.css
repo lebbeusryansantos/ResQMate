@@ -92,6 +92,12 @@
     display: flex;
     align-items: center;
     gap: 14px;
+}
+
+.menu li a i {
+    width: 24px;
+    text-align: center;
+}
     padding: 13px 16px;
     border-radius: 12px;
     text-decoration: none;
@@ -488,3 +494,4 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
+

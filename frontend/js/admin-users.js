@@ -127,7 +127,11 @@ document.getElementById(
     ).textContent = "Add New User";
 
     document.getElementById(
-        "userName"
+        "userFirstName"
+    ).value = "";
+
+    document.getElementById(
+        "userLastName"
     ).value = "";
 
     document.getElementById(
@@ -152,9 +156,14 @@ document.getElementById(
     "saveUserBtn"
 ).addEventListener("click", async () => {
 
-    const fullName =
+    const firstName =
         document.getElementById(
-            "userName"
+            "userFirstName"
+        ).value.trim();
+
+    const lastName =
+        document.getElementById(
+            "userLastName"
         ).value.trim();
 
     const email =
@@ -172,9 +181,9 @@ document.getElementById(
             "userRole"
         ).value;
 
-    if (!fullName || !email) {
+    if (!firstName || !lastName || !email) {
         alert(
-            "Please fill in Name and Email."
+            "Please fill in First Name, Last Name and Email."
         );
         return;
     }
@@ -200,7 +209,8 @@ document.getElementById(
                     method: "POST",
                     headers: getAuthHeaders(),
                     body: JSON.stringify({
-                        full_name: fullName,
+                        first_name: firstName,
+                        last_name: lastName,
                         email,
                         password:
                             password ||
@@ -223,14 +233,8 @@ document.getElementById(
 
         } else {
 
-            const parts =
-                fullName.split(" ");
-
-            const firstName =
-                parts[0];
-
-            const lastName =
-                parts.slice(1).join(" ") || "";
+            const firstNameValue = firstName;
+            const lastNameValue = lastName;
 
             const res = await fetch(
                 `${API_URL}/${editingUserId}`,
@@ -238,8 +242,8 @@ document.getElementById(
                     method: "PUT",
                     headers: getAuthHeaders(),
                     body: JSON.stringify({
-                        first_name: firstName,
-                        last_name: lastName,
+                        first_name: firstNameValue,
+                        last_name: lastNameValue,
                         email,
                         role,
                         password
@@ -297,9 +301,17 @@ window.editUser = function (
         "userModalTitle"
     ).textContent = "Edit User";
 
+    const parts = fullName.split(" ");
+    const firstName = parts[0];
+    const lastName = parts.slice(1).join(" ");
+
     document.getElementById(
-        "userName"
-    ).value = fullName;
+        "userFirstName"
+    ).value = firstName;
+
+    document.getElementById(
+        "userLastName"
+    ).value = lastName;
 
     document.getElementById(
         "userEmail"

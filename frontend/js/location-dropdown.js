@@ -10,6 +10,9 @@ const citySelect = document.getElementById("city");
 const barangaySelect = document.getElementById("barangay");
 
 document.addEventListener("DOMContentLoaded", () => {
+    provinceSelect.disabled = true;
+    citySelect.disabled = true;
+    barangaySelect.disabled = true;
     loadRegions();
 });
 
@@ -108,7 +111,12 @@ regionSelect.addEventListener(
         barangaySelect.innerHTML =
             '<option value="">Select Barangay</option>';
 
-        if (!regionCode) return;
+        if (!regionCode) {
+            provinceSelect.disabled = true;
+            citySelect.disabled = true;
+            barangaySelect.disabled = true;
+            return;
+        }
 
         if (
             regionCode === "1300000000" ||
@@ -122,10 +130,16 @@ regionSelect.addEventListener(
                     Metro Manila
                 </option>
             `;
+            
+            provinceSelect.disabled = false;
 
             loadCities("1300000000");
             return;
         }
+
+        provinceSelect.disabled = false;
+        citySelect.disabled = true;
+        barangaySelect.disabled = true;
 
         try {
 
@@ -194,7 +208,14 @@ async function loadCities(
     barangaySelect.innerHTML =
         '<option value="">Select Barangay</option>';
 
-    if (!codeToFetch) return;
+    if (!codeToFetch) {
+        citySelect.disabled = true;
+        barangaySelect.disabled = true;
+        return;
+    }
+
+    citySelect.disabled = false;
+    barangaySelect.disabled = true;
 
     try {
 
@@ -257,7 +278,12 @@ citySelect.addEventListener(
         barangaySelect.innerHTML =
             '<option value="">Select Barangay</option>';
 
-        if (!cityCode) return;
+        if (!cityCode) {
+            barangaySelect.disabled = true;
+            return;
+        }
+
+        barangaySelect.disabled = false;
 
         try {
 

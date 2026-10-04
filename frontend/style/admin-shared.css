@@ -422,12 +422,13 @@ body {
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 th,
 td {
-  padding: 14px 14px;
+  padding: 16px 14px;
   border-bottom: 1px solid #fee2e2;
   text-align: left;
   vertical-align: middle;
@@ -435,18 +436,25 @@ td {
 }
 
 thead {
-  background: #fef2f2;
+  background: #fdf2f2;
 }
 
 th {
   color: #7f1d1d;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
 }
 
 tbody tr:hover {
   background: #fff8f8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 /* ===========================
@@ -468,6 +476,11 @@ tbody tr:hover {
 .rq-badge-pending {
   background: #fef3c7;
   color: #b45309;
+}
+
+.rq-badge-under_review {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .rq-badge-approved {

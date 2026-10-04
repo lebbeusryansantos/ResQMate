@@ -188,6 +188,7 @@ body {
     max-width: 100%;
     height: auto;
     mix-blend-mode: multiply;
+    background-color: transparent;
     /* floating animation */
     animation: imageFloat 6s ease-in-out infinite;
 }

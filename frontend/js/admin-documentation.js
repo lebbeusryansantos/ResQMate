@@ -70,7 +70,13 @@ async function loadDocumentations() {
 
                     <td>${doc.staff_name || "-"}</td>
 
-                    <td>${doc.remarks}</td>
+                    <td>
+                        <button
+                            class="btn-view-remarks"
+                            onclick='viewRemarks(${JSON.stringify(doc.remarks || "")})'>
+                            View
+                        </button>
+                    </td>
 
                     <td>
                         <a
@@ -96,8 +102,7 @@ async function loadDocumentations() {
 
                     <td>
 
-                        ${doc.status ===
-                    "pending_review"
+                        ${doc.status === "pending_review"
 
                     ?
 
@@ -117,7 +122,33 @@ async function loadDocumentations() {
 
                     :
 
-                    "-"
+                    doc.status === "approved"
+
+                        ?
+
+                        `
+                            <span class="status-completed">
+                                <i class="fas fa-check-circle"></i>
+                                Completed
+                            </span>
+                            `
+
+                        :
+
+                        doc.status === "rejected"
+
+                            ?
+
+                            `
+                            <span class="status-rejected-badge">
+                                <i class="fas fa-times-circle"></i>
+                                Rejected
+                            </span>
+                            `
+
+                            :
+
+                            "-"
                 }
 
                     </td>
@@ -138,6 +169,40 @@ async function loadDocumentations() {
             </tr>`;
     }
 }
+
+function viewRemarks(remarks) {
+
+    document.getElementById(
+        "remarksContent"
+    ).textContent = remarks || "No remarks provided.";
+
+    document.getElementById(
+        "remarksModal"
+    ).classList.add("show");
+}
+
+document
+    .getElementById("closeRemarksModal")
+    ?.addEventListener("click", () => {
+
+        document
+            .getElementById("remarksModal")
+            .classList.remove("show");
+    });
+
+document
+    .getElementById("remarksModal")
+    ?.addEventListener("click", e => {
+
+        if (
+            e.target ===
+            document.getElementById("remarksModal")
+        ) {
+            document
+                .getElementById("remarksModal")
+                .classList.remove("show");
+        }
+    });
 
 async function approveDocumentation(id) {
 

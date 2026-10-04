@@ -51,27 +51,57 @@ function renderTable(data) {
     }
 
     data.forEach(d => {
+
+        let status =
+            (d.request_status || "assigned")
+                .toLowerCase();
+
+        if (status === "awaiting_verification") {
+            status = "processing";
+        }
+
+        const statusLabel = {
+            assigned: "Assigned",
+            processing: "Processing",
+            completed: "Completed",
+            rejected: "Rejected"
+        }[status] || "Assigned";
+
+        const statusClass = {
+            assigned: "approved",
+            processing: "warning",
+            completed: "success",
+            rejected: "danger"
+        }[status] || "approved";
+
         distributionTableBody.innerHTML += `
-            <tr>
-                <td><strong>#${d.distribution_id}</strong></td>
-                <td>#${d.request_id}</td>
-                <td>${d.staff_name || "—"}</td>
-                <td>${d.resource_name || "—"}</td>
-                <td>${d.quantity_given}</td>
-                <td>${d.staff_id}</td>
-                <td><span class="rq-badge rq-badge-approved">Assigned</span></td>
-                <td>
-                    <button class="rq-btn-edit"
-                        onclick="editDistribution(${d.distribution_id}, ${d.request_id}, ${d.resource_id}, ${d.staff_id}, ${d.quantity_given})">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button class="rq-btn-delete"
-                        onclick="openDeleteDistribution(${d.distribution_id})">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
+        <tr>
+            <td><strong>#${d.distribution_id}</strong></td>
+            <td>#${d.request_id}</td>
+            <td>${d.staff_name || "—"}</td>
+            <td>${d.resource_name || "—"}</td>
+            <td>${d.quantity_given}</td>
+            <td>${d.staff_id}</td>
+
+            <td>
+                <span class="rq-badge rq-badge-${statusClass}">
+                    ${statusLabel}
+                </span>
+            </td>
+
+            <td>
+                <button class="rq-btn-edit"
+                    onclick="editDistribution(${d.distribution_id}, ${d.request_id}, ${d.resource_id}, ${d.staff_id}, ${d.quantity_given})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="rq-btn-delete"
+                    onclick="openDeleteDistribution(${d.distribution_id})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `;
     });
 }
 

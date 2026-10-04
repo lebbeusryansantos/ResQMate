@@ -37,24 +37,20 @@ loginForm.addEventListener("submit", async (e) => {
         );
 
         const data = await response.json();
+        
+        const loginError = document.getElementById("loginError");
 
         if (!response.ok) {
 
-            let errorMsg = "Invalid username or password";
-            if (data.detail) {
-                if (data.detail.error) {
-                    errorMsg = data.detail.error;
-                    if (data.detail.attempts_remaining !== undefined) {
-                        errorMsg += ` (${data.detail.attempts_remaining} attempts remaining)`;
-                    }
-                } else if (typeof data.detail === "string") {
-                    errorMsg = data.detail;
-                }
+            let errorMsg = "Invalid email or password";
+            if (data.detail && typeof data.detail === "string") {
+                errorMsg = data.detail;
             }
             
-            loginError.textContent = errorMsg;
-
-            loginError.classList.add("show");
+            if (loginError) {
+                loginError.textContent = errorMsg;
+                loginError.classList.add("show");
+            }
 
             if (submitBtn) {
                 submitBtn.disabled = false;
@@ -64,7 +60,9 @@ loginForm.addEventListener("submit", async (e) => {
             return;
         }
 
-        loginError.classList.remove("show");
+        if (loginError) {
+            loginError.classList.remove("show");
+        }
 
         localStorage.setItem(
             "user",

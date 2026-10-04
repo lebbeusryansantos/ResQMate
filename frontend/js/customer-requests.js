@@ -1,4 +1,9 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : `${window.location.origin}/api`;
+var API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
+
 var API_URL = API_BASE_URL;
 
 function getAuthHeaders() {

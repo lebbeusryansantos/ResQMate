@@ -27,18 +27,36 @@
         <!-- MAIN CONTENT -->
         <main class="main-content">
 
-            <div class="rq-topbar">
-                <h4>Delivery Documentation</h4>
-                <small>
-                    Review submitted proof of delivery from staff members.
-                </small>
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <h2>Delivery Documentation</h2>
+                <p>Review submitted proof of delivery from staff members.</p>
             </div>
 
-            <div class="rq-card">
+            <!-- TABLE -->
+            <div class="table-card">
+
+                <div class="toolbar-row">
+                    <h5 class="section-title">
+                        Submitted Documentation
+                    </h5>
+                    <div class="toolbar-actions">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="docSearch" placeholder="Search documentation...">
+                        </div>
+                        <select id="statusFilter" class="rq-input" aria-label="Filter by Status">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
 
                 <div class="table-responsive">
 
-                    <table class="table">
+                    <table class="table" id="documentationTable">
 
                         <thead>
                             <tr>

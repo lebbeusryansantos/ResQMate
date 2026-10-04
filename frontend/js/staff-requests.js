@@ -9,6 +9,30 @@ var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.h
 
 var API_URL = API_BASE_URL;
 
+const documentationModal =
+    document.getElementById("documentationModal");
+
+let currentRequestId = null;
+
+window.openDocumentationModal = function (requestId) {
+
+    currentRequestId = requestId;
+
+    document.getElementById(
+        "documentationRequestId"
+    ).value = requestId;
+
+    document.getElementById(
+        "deliveryRemarks"
+    ).value = "";
+
+    document.getElementById(
+        "deliveryFile"
+    ).value = "";
+
+    documentationModal.classList.add("show");
+};
+
 document.addEventListener("DOMContentLoaded", () => {
 
     loadRequests();
@@ -141,12 +165,15 @@ function renderTable(requests) {
 
         // Only "processing" requests can be marked completed
         const actionBtn = status === "processing"
-            ? `<button class="rq-btn-approve" onclick="markCompleted(${r.request_id})">
-                   <i class="fas fa-check me-1"></i> Mark Delivered
-               </button>`
-            : `<span style="color:#15803d; font-size:12px; font-weight:600;">
-                   <i class="fas fa-check-circle me-1"></i>Delivered
-               </span>`;
+            ? `<button class="rq-btn-approve"
+                onclick="openDocumentationModal(${r.request_id})">
+                <i class="fas fa-check me-1"></i>
+                Submit Documentation
+            </button>`
+            : `<span style="color:#d97706; font-size:12px; font-weight:600;">
+                    <i class="fas fa-clock me-1"></i>
+                    Awaiting Admin Review
+                </span>`;
 
         tbody.innerHTML += `
             <tr data-status="${status}">
@@ -166,39 +193,6 @@ function renderTable(requests) {
     });
 
     filterRequests();
-}
-
-
-/* ============================================================
-   MARK AS COMPLETED
-   ============================================================ */
-async function markCompleted(requestId) {
-
-    if (!confirm(`Mark Request #${String(requestId).padStart(4, "0")} as Completed?\n\nThis confirms you have delivered the assistance.`)) return;
-
-    try {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const updatedBy = user ? user.user_id : 1;
-
-        const res = await fetch(
-            `${API_URL}/requests/${requestId}/status?status=completed&updated_by=${updatedBy}`,
-            {
-                method: "PUT", headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        if (!res.ok) throw new Error("Update failed");
-
-        showToast(`Request #${String(requestId).padStart(4, "0")} marked as Completed.`, true);
-        loadRequests();
-
-    } catch (err) {
-        console.error(err);
-        showToast("Failed to update. Check if backend is running.", false);
-    }
 }
 
 
@@ -268,6 +262,137 @@ function filterRequests() {
     document.getElementById("emptyState")?.classList.toggle("d-none", visible > 0);
 }
 
+document
+    .getElementById("closeDocumentationModal")
+    ?.addEventListener("click", () => {
+        documentationModal.classList.remove("show");
+    });
+
+document
+    .getElementById("cancelDocumentation")
+    ?.addEventListener("click", () => {
+        documentationModal.classList.remove("show");
+    });
+
+documentationModal?.addEventListener(
+    "click",
+    e => {
+        if (e.target === documentationModal) {
+            documentationModal.classList.remove("show");
+        }
+    }
+);
+
+/* ============================================================
+   SUBMIT DELIVERY DOCUMENTATION
+   ============================================================ */
+document
+    .getElementById("submitDocumentation")
+    ?.addEventListener("click", submitDocumentation);
+
+async function submitDocumentation() {
+
+    const remarks =
+        document.getElementById(
+            "deliveryRemarks"
+        ).value.trim();
+
+    const file =
+        document.getElementById(
+            "deliveryFile"
+        ).files[0];
+
+    if (!remarks) {
+        showToast(
+            "Remarks are required.",
+            false
+        );
+        return;
+    }
+
+    if (!file) {
+        showToast(
+            "Please upload documentation.",
+            false
+        );
+        return;
+    }
+
+    try {
+
+        const user =
+            JSON.parse(
+                localStorage.getItem("user")
+            );
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "request_id",
+            currentRequestId
+        );
+
+        formData.append(
+            "staff_id",
+            user.user_id
+        );
+
+        formData.append(
+            "remarks",
+            remarks
+        );
+
+        formData.append(
+            "file",
+            file
+        );
+
+        const response =
+            await fetch(
+                `${API_URL}/delivery-documentations/upload`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization:
+                            `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: formData
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                "Upload failed"
+            );
+        }
+
+        documentationModal
+            .classList
+            .remove("show");
+
+        showToast(
+            "Documentation submitted successfully.",
+            true
+        );
+
+        loadRequests();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Upload failed.",
+            false
+        );
+    }
+}
 
 /* ============================================================
    TOAST — replaces alert()

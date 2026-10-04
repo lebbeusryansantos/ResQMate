@@ -125,6 +125,50 @@
     </div>
   </div>
 
+  <!-- Delivery Documentation Modal -->
+  <div class="custom-modal-overlay" id="documentationModal">
+    <div class="custom-modal">
+
+      <div class="custom-modal-header">
+        <h3>Delivery Documentation</h3>
+        <button id="closeDocumentationModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="custom-modal-body">
+
+        <input type="hidden" id="documentationRequestId">
+
+        <div class="mb-3">
+          <label class="form-label">Delivery Remarks</label>
+          <textarea id="deliveryRemarks" class="form-control" rows="4"
+            placeholder="Describe delivery details..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            Upload Delivery Proof
+          </label>
+
+          <input type="file" id="deliveryFile" class="form-control" accept="image/*">
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-secondary" id="cancelDocumentation">
+            Cancel
+          </button>
+
+          <button class="btn btn-success" id="submitDocumentation">
+            Submit Documentation
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../components/logout-modal.js"></script>
   <script src="../components/loadStaffSidebar.js"></script>
@@ -132,4 +176,5 @@
   <script src="../js/app.js"></script>
 
 </body>
+
 </html>

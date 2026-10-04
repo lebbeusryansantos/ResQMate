@@ -203,6 +203,12 @@ if (requestForm) {
         }
 
         const assistanceType = assistanceTypeInput.value.trim();
+        console.log("Region:", regionInput.value);
+        console.log("Province:", provinceInput.value);
+        console.log("City:", cityInput.value);
+        console.log("Barangay:", barangayInput.value);
+        console.log("Priority:", priorityInput.value);
+        console.log("Details:", detailsInput.value);
 
         // --- CAPTURE TEXT NAMES PROPERLY FOR SUBMISSION ---
         const regionSelectedOption = regionInput ? regionInput.options[regionInput.selectedIndex] : null;
@@ -224,13 +230,23 @@ if (requestForm) {
             : "";
 
         // Smart fallback for Metro Manila / NCR
-        if (regionText.includes("NCR") || regionText.includes("National Capital Region") || regionText.includes("Metro Manila") || !provinceText || provinceText === "Select Province") {
+        if (
+            regionText.includes("NCR") ||
+            regionText.includes("National Capital Region") ||
+            regionText.includes("Metro Manila")
+        ) {
             provinceText = "Metro Manila";
         }
         // ----------------------------------------------
 
         const details = detailsInput.value.trim();
         const priority = priorityInput.value;
+
+        console.log("assistanceType =", assistanceType);
+        console.log("barangayText =", barangayText);
+        console.log("cityText =", cityText);
+        console.log("details =", details);
+        console.log("priority =", priority);
 
         if (!assistanceType || !barangayText || !cityText || !details || !priority) {
             if (requestError) {

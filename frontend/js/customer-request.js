@@ -1,4 +1,8 @@
-var API_URL = "http://127.0.0.1:8000";
+var API_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
 
 const requestForm = document.getElementById("requestForm");
 const assistanceTypeInput = document.getElementById("assistanceType");
@@ -251,6 +255,8 @@ if (requestForm) {
             );
 
             const token = userData.token;
+
+            console.log("Submitting to:", `${API_URL}/requests/create`);
             const response = await fetch(
                 `${API_URL}/requests/create`,
                 {

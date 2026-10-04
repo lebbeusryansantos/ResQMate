@@ -1,4 +1,8 @@
-const LOCATION_API_URL = "http://127.0.0.1:8000";
+const LOCATION_API_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
 
 const regionSelect = document.getElementById("region");
 const provinceSelect = document.getElementById("province");

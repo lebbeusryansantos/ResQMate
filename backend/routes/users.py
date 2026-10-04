@@ -218,6 +218,41 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
 
 @router.post("/login")
 def login_user(data: LoginRequest):
+
+    print("===== LOGIN ATTEMPT =====")
+    print("Email:", data.email)
+
+    JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")
+
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("""
+                SELECT
+                    user_id,
+                    CONCAT_WS(' ', first_name, last_name) AS full_name,
+                    email,
+                    password,
+                    role,
+                    failed_login_attempts,
+                    locked_until
+                FROM users
+                WHERE email = :email
+            """),
+            {"email": data.email}
+        ).fetchone()
+
+    print("User found:", result is not None)
+
+    if result:
+        print("User ID:", result.user_id)
+        print("Role:", result.role)
+        print("Stored Password Hash:", result.password)
+
+    if not result:
+        raise HTTPException(
+            status_code=401,
+            detail={"error": "Invalid email or password"}
+        )
     JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")
 
     with engine.connect() as conn:

@@ -24,6 +24,7 @@ from backend.routes.distribution import router as distribution_router
 from backend.routes.dashboard import router as dashboard_router
 from backend.routes import reports
 from backend.routes import location
+from backend.routes import delivery_documentations
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
@@ -101,6 +102,12 @@ app.include_router(
 
 app.include_router(
     location.router
+)
+
+app.include_router(
+    delivery_documentations.router,
+    prefix="/delivery-documentations",
+    tags=["Delivery Documentation"]
 )
 
 # Root Endpoint

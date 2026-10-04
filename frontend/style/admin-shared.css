@@ -505,19 +505,20 @@ tbody tr:hover {
   color: #dc2626;
 }
 
-.rq-badge-high {
-  background: #fee2e2;
-  color: #dc2626;
+.rq-badge-high,
+.rq-badge-critical {
+  background: #ffe4e6;
+  color: #be123c;
 }
 
 .rq-badge-medium {
-  background: #fef3c7;
-  color: #b45309;
+  background: #ffedd5;
+  color: #c2410c;
 }
 
 .rq-badge-low {
-  background: #dcfce7;
-  color: #15803d;
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .rq-badge-active {
@@ -1113,4 +1114,5 @@ a.btn:active,
 .rejection-cancel-btn { padding: 8px 16px; border-radius: 6px; border: none; background: #e2e8f0; cursor: pointer; }
 .rejection-submit-btn { padding: 8px 16px; border-radius: 6px; border: none; background: #ef4444; color: white; cursor: pointer; }
 .text-danger-medium { color: #ef4444; font-weight: 500; }
+
 

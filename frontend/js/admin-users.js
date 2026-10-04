@@ -1,5 +1,10 @@
-var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
-var API_URL = `${API_BASE_URL}/users/`;
+var API_BASE_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
+
+var API_URL = `${API_BASE_URL}/users`;
 
 const usersTableBody = document.getElementById("usersTableBody");
 const modal = document.getElementById("userModal");
@@ -7,20 +12,35 @@ const modal = document.getElementById("userModal");
 let editingUserId = null;
 let allUsers = [];
 
+function getAuthHeaders() {
+    const user = JSON.parse(
+        localStorage.getItem("user") || "{}"
+    );
+
+    return {
+        "Authorization": `Bearer ${user.token || ""}`,
+        "Content-Type": "application/json"
+    };
+}
+
 /* ===========================
    LOAD USERS
 =========================== */
 async function loadUsers() {
     try {
         const response = await fetch(API_URL, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            }
+            headers: getAuthHeaders()
         });
+
+        if (!response.ok) {
+            throw new Error("Failed to load users");
+        }
+
         const users = await response.json();
+
         allUsers = users;
         renderUsers(users);
+
     } catch (error) {
         console.error("Failed to load users", error);
     }
@@ -34,38 +54,57 @@ function renderUsers(users) {
     usersTableBody.innerHTML = "";
 
     if (users.length === 0) {
-        document.getElementById("emptyUsersMessage").style.display = "block";
+        document.getElementById(
+            "emptyUsersMessage"
+        ).style.display = "block";
         return;
     }
 
-    document.getElementById("emptyUsersMessage").style.display = "none";
+    document.getElementById(
+        "emptyUsersMessage"
+    ).style.display = "none";
 
     users.forEach(user => {
 
-        const roleClass = user.role === "admin"
-            ? "rq-badge-admin"
-            : user.role === "staff"
-                ? "rq-badge-staff"
-                : "rq-badge-community";
+        const roleClass =
+            user.role === "admin"
+                ? "rq-badge-admin"
+                : user.role === "staff"
+                    ? "rq-badge-staff"
+                    : "rq-badge-community";
 
-        const roleText = user.role === "admin"
-            ? "ADMIN"
-            : user.role === "staff"
-                ? "STAFF"
-                : "USER";
+        const roleText =
+            user.role === "admin"
+                ? "ADMIN"
+                : user.role === "staff"
+                    ? "STAFF"
+                    : "USER";
 
         usersTableBody.innerHTML += `
             <tr data-role="${user.role}">
                 <td>${user.user_id}</td>
                 <td>${user.full_name}</td>
                 <td>${user.email}</td>
-                <td><span class="rq-badge ${roleClass}">${roleText}</span></td>
                 <td>
-                    <button class="rq-btn-edit"
-                        onclick="editUser(${user.user_id}, '${user.full_name.replace(/'/g, "\\'")}', '${user.email}', '${user.role}')">
+                    <span class="rq-badge ${roleClass}">
+                        ${roleText}
+                    </span>
+                </td>
+                <td>
+                    <button
+                        class="rq-btn-edit"
+                        onclick="editUser(
+                            ${user.user_id},
+                            '${user.full_name.replace(/'/g, "\\'")}',
+                            '${user.email}',
+                            '${user.role}'
+                        )">
                         Edit
                     </button>
-                    <button class="rq-btn-delete" onclick="deleteUser(${user.user_id})">
+
+                    <button
+                        class="rq-btn-delete"
+                        onclick="deleteUser(${user.user_id})">
                         Delete
                     </button>
                 </td>
@@ -75,137 +114,312 @@ function renderUsers(users) {
 }
 
 /* ===========================
-   ADD USER BUTTON
+   ADD USER
 =========================== */
-document.getElementById("addUserBtn").addEventListener("click", () => {
+document.getElementById(
+    "addUserBtn"
+).addEventListener("click", () => {
+
     editingUserId = null;
-    document.getElementById("userModalTitle").textContent = "Add New User";
-    document.getElementById("userName").value = "";
-    document.getElementById("userEmail").value = "";
-    document.getElementById("userPassword").value = "";
-    document.getElementById("userRole").value = "community_user";
+
+    document.getElementById(
+        "userModalTitle"
+    ).textContent = "Add New User";
+
+    document.getElementById(
+        "userName"
+    ).value = "";
+
+    document.getElementById(
+        "userEmail"
+    ).value = "";
+
+    document.getElementById(
+        "userPassword"
+    ).value = "";
+
+    document.getElementById(
+        "userRole"
+    ).value = "community_user";
+
     modal.classList.add("active");
 });
 
 /* ===========================
    SAVE USER
 =========================== */
-document.getElementById("saveUserBtn").addEventListener("click", async () => {
+document.getElementById(
+    "saveUserBtn"
+).addEventListener("click", async () => {
 
-    const fullName = document.getElementById("userName").value.trim();
-    const email = document.getElementById("userEmail").value.trim();
-    const password = document.getElementById("userPassword").value.trim();
-    const role = document.getElementById("userRole").value;
+    const fullName =
+        document.getElementById(
+            "userName"
+        ).value.trim();
+
+    const email =
+        document.getElementById(
+            "userEmail"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "userPassword"
+        ).value.trim();
+
+    const role =
+        document.getElementById(
+            "userRole"
+        ).value;
 
     if (!fullName || !email) {
-        alert("Please fill in Name and Email.");
+        alert(
+            "Please fill in Name and Email."
+        );
         return;
     }
 
-    const saveBtn = document.getElementById("saveUserBtn");
-    const originalText = saveBtn.textContent;
+    const saveBtn =
+        document.getElementById(
+            "saveUserBtn"
+        );
+
+    const originalText =
+        saveBtn.textContent;
+
     saveBtn.disabled = true;
     saveBtn.textContent = "Processing...";
 
     try {
+
         if (!editingUserId) {
-            // CREATE via /users/create (accepts full_name)
-            const res = await fetch(`${API_URL}/create`, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ full_name: fullName, email, password: password || "ResQMate2024!", role })
-            });
+
+            const res = await fetch(
+                `${API_URL}/create`,
+                {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        full_name: fullName,
+                        email,
+                        password:
+                            password ||
+                            "ResQMate2024!",
+                        role
+                    })
+                }
+            );
 
             if (!res.ok) {
-                const err = await res.json();
-                alert(err.detail || "Failed to create user.");
+                const err =
+                    await res.json();
+
+                alert(
+                    err.detail ||
+                    "Failed to create user."
+                );
                 return;
             }
 
         } else {
-            // EDIT: split name into first/last for PUT endpoint
-            const parts = fullName.split(" ");
-            const firstName = parts[0];
-            const lastName = parts.slice(1).join(" ") || "";
 
-            const res = await fetch(`${API_URL}/${editingUserId}`, {
-                method: "PUT",
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ first_name: firstName, last_name: lastName, email, role })
-            });
+            const parts =
+                fullName.split(" ");
+
+            const firstName =
+                parts[0];
+
+            const lastName =
+                parts.slice(1).join(" ") || "";
+
+            const res = await fetch(
+                `${API_URL}/${editingUserId}`,
+                {
+                    method: "PUT",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        first_name: firstName,
+                        last_name: lastName,
+                        email,
+                        role
+                    })
+                }
+            );
 
             if (!res.ok) {
-                const err = await res.json();
-                alert(err.detail || "Failed to update user.");
+                const err =
+                    await res.json();
+
+                alert(
+                    err.detail ||
+                    "Failed to update user."
+                );
                 return;
             }
         }
 
-        modal.classList.remove("active");
+        modal.classList.remove(
+            "active"
+        );
+
         loadUsers();
 
     } catch (error) {
+
         console.error(error);
-        alert("Request failed. Is the backend running?");
+
+        alert(
+            "Request failed. Is the backend running?"
+        );
+
     } finally {
+
         saveBtn.disabled = false;
-        saveBtn.textContent = originalText;
+        saveBtn.textContent =
+            originalText;
     }
 });
 
 /* ===========================
    EDIT USER
 =========================== */
-window.editUser = function (id, fullName, email, role) {
+window.editUser = function (
+    id,
+    fullName,
+    email,
+    role
+) {
+
     editingUserId = id;
-    document.getElementById("userModalTitle").textContent = "Edit User";
-    document.getElementById("userName").value = fullName;
-    document.getElementById("userEmail").value = email;
-    document.getElementById("userRole").value = role;
-    document.getElementById("userPassword").value = "";
-    modal.classList.add("active");
+
+    document.getElementById(
+        "userModalTitle"
+    ).textContent = "Edit User";
+
+    document.getElementById(
+        "userName"
+    ).value = fullName;
+
+    document.getElementById(
+        "userEmail"
+    ).value = email;
+
+    document.getElementById(
+        "userRole"
+    ).value = role;
+
+    document.getElementById(
+        "userPassword"
+    ).value = "";
+
+    modal.classList.add(
+        "active"
+    );
 };
 
 /* ===========================
    DELETE USER
 =========================== */
-window.deleteUser = async function (userId) {
-    if (!confirm("Delete this user? This cannot be undone.")) return;
+window.deleteUser = async function (
+    userId
+) {
+
+    if (
+        !confirm(
+            "Delete this user? This cannot be undone."
+        )
+    ) return;
+
     try {
-        await fetch(`${API_URL}/${userId}`, {
-            method: "DELETE", headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            }
-        });
+
+        const response =
+            await fetch(
+                `${API_URL}/${userId}`,
+                {
+                    method: "DELETE",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (!response.ok) {
+
+            const error =
+                await response.json();
+
+            alert(
+                error.detail ||
+                "Failed to delete user."
+            );
+
+            return;
+        }
+
         loadUsers();
+
     } catch (error) {
+
         console.error(error);
+
+        alert(
+            "Failed to delete user."
+        );
     }
 };
 
 /* ===========================
-   SEARCH + ROLE FILTER
+   SEARCH + FILTER
 =========================== */
-document.getElementById("userSearch").addEventListener("input", applyFilters);
-document.getElementById("roleFilter")?.addEventListener("change", applyFilters);
+document.getElementById(
+    "userSearch"
+).addEventListener(
+    "input",
+    applyFilters
+);
+
+document.getElementById(
+    "roleFilter"
+)?.addEventListener(
+    "change",
+    applyFilters
+);
 
 function applyFilters() {
-    const search = document.getElementById("userSearch").value.toLowerCase();
-    const role = document.getElementById("roleFilter")?.value || "all";
 
-    const filtered = allUsers.filter(user => {
-        const matchSearch = user.full_name.toLowerCase().includes(search) ||
-            user.email.toLowerCase().includes(search);
-        const matchRole = role === "all" || user.role === role || (role === "community_user" && user.role === "community_user");
-        return matchSearch && matchRole;
-    });
+    const search =
+        document
+            .getElementById(
+                "userSearch"
+            )
+            .value
+            .toLowerCase();
+
+    const role =
+        document
+            .getElementById(
+                "roleFilter"
+            )?.value || "all";
+
+    const filtered =
+        allUsers.filter(user => {
+
+            const matchSearch =
+                user.full_name
+                    .toLowerCase()
+                    .includes(search) ||
+                user.email
+                    .toLowerCase()
+                    .includes(search);
+
+            const matchRole =
+                role === "all" ||
+                user.role === role;
+
+            return (
+                matchSearch &&
+                matchRole
+            );
+        });
 
     renderUsers(filtered);
 }
@@ -213,9 +427,40 @@ function applyFilters() {
 /* ===========================
    CLOSE MODAL
 =========================== */
-document.getElementById("closeUserModal").addEventListener("click", () => modal.classList.remove("active"));
-document.getElementById("cancelUserModal").addEventListener("click", () => modal.classList.remove("active"));
-modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("active"); });
+document
+    .getElementById(
+        "closeUserModal"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            modal.classList.remove(
+                "active"
+            )
+    );
+
+document
+    .getElementById(
+        "cancelUserModal"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            modal.classList.remove(
+                "active"
+            )
+    );
+
+modal.addEventListener(
+    "click",
+    e => {
+        if (e.target === modal) {
+            modal.classList.remove(
+                "active"
+            );
+        }
+    }
+);
 
 /* ===========================
    INITIAL LOAD

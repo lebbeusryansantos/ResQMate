@@ -156,9 +156,9 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
     }
 
     priority_mapping = {
-        "Normal": "medium",
-        "High": "high",
-        "Critical": "critical"
+        "Low": "low",
+        "Medium": "medium",
+        "High": "high"
     }
 
     if assistance_type not in category_mapping:

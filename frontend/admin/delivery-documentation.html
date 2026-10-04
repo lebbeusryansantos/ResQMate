@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Documentation</title>
+
+    <link rel="stylesheet" href="../style/customer-sidebar.css">
+    <link rel="stylesheet" href="../style/admin-shared.css">
+    <link rel="stylesheet" href="../style/logout-modal.css">
+    <link rel="stylesheet" href="../style/profile-modal.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <div id="sidebar-container"></div>
+        <div id="logout-modal-wrapper"></div>
+        <div id="profile-modal-wrapper"></div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <div class="rq-topbar">
+                <h4>Delivery Documentation</h4>
+                <small>
+                    Review submitted proof of delivery from staff members.
+                </small>
+            </div>
+
+            <div class="rq-card">
+
+                <div class="table-responsive">
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Request ID</th>
+                                <th>Staff</th>
+                                <th>Remarks</th>
+                                <th>Proof</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="documentationTableBody">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="../components/profile-modal.js"></script>
+    <script src="../components/loadAdminSidebar.js"></script>
+    <script src="../components/logout-modal.js"></script>
+    <script src="../js/admin-documentation.js"></script>
+
+</body>
+
+</html>

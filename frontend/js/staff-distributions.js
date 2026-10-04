@@ -1,6 +1,10 @@
-// Core logic and operations for staff-distributions
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
-
+/* ============================================================
+   staff-distributions.js  — READ ONLY for staff
+   Per the defined flow, only Admin creates distributions.
+   Staff only views what has been assigned to them.
+   The "New Distribution" button has been removed from the HTML.
+   ============================================================ */
 
 var API_URL = API_BASE_URL;
 
@@ -41,7 +45,6 @@ async function loadDistributions() {
     }
 }
 
-// Handles renderDistributions logic and operations
 function renderDistributions(distributions) {
 
     const table = document.getElementById("distributionTableBody");
@@ -72,7 +75,6 @@ function renderDistributions(distributions) {
     });
 }
 
-// Handles filterDistributions logic and operations
 function filterDistributions() {
     const search = document.getElementById("searchInput").value.toLowerCase();
     const rows = document.querySelectorAll("#distributionTableBody tr");
@@ -82,7 +84,6 @@ function filterDistributions() {
     });
 }
 
-// Handles showMessage logic and operations
 function showMessage(message, success) {
     const box = document.getElementById("messageBox");
     if (!box) return;

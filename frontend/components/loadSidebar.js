@@ -1,4 +1,3 @@
-// Core logic and operations for loadSidebar
 fetch("../components/customer-sidebar.html")
     .then(response => {
 
@@ -71,7 +70,6 @@ fetch("../components/customer-sidebar.html")
         );
     });
 
-// Handles setActiveSidebarLink logic and operations
 function setActiveSidebarLink() {
 
     // Get current page filename
@@ -129,7 +127,6 @@ function setActiveSidebarLink() {
     });
 }
 
-// Handles toggleSidebar logic and operations
 function toggleSidebar() {
 
     const sidebar =
@@ -156,7 +153,6 @@ function toggleSidebar() {
 
 }
 
-// Handles loadUserProfile logic and operations
 function loadUserProfile() {
 
     const user =

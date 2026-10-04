@@ -1,4 +1,3 @@
-<!-- Main structure and layout for requests -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,8 +22,7 @@
     <div id="logout-modal-wrapper"></div>
         <div id="profile-modal-wrapper"></div>
 
-    <!-- Main Content Section -->
-<main class="main-content">
+    <main class="main-content">
 
       <!-- Topbar -->
       <div class="rq-topbar">
@@ -86,8 +84,7 @@
       <!-- Requests Table -->
       <div class="rq-card">
         <div class="table-responsive">
-          <!-- Data Table Section -->
-<table class="table align-middle">
+          <table class="table align-middle">
             <thead>
               <tr>
                 <th>ID</th>
@@ -119,47 +116,39 @@
   </div>
 
   <!-- View Request Modal -->
-  <!-- Modal UI Component -->
-<div class="custom-modal-overlay" id="requestModal">
-    <!-- Modal UI Component -->
-<div class="custom-modal">
-      <!-- Modal UI Component -->
-<div class="custom-modal-header">
+  <div class="custom-modal-overlay" id="requestModal">
+    <div class="custom-modal">
+      <div class="custom-modal-header">
         <h3>Request Details</h3>
         <button id="closeRequestModal" aria-label="Close request modal"><i class="fas fa-times"></i></button>
       </div>
-      <!-- Modal UI Component -->
-<div class="custom-modal-body" id="customRequestDetailBody"></div>
+      <div class="custom-modal-body" id="customRequestDetailBody"></div>
     </div>
   </div>
 
   <!-- Delivery Documentation Modal -->
-  <!-- Modal UI Component -->
-<div class="custom-modal-overlay" id="documentationModal">
-    <!-- Modal UI Component -->
-<div class="custom-modal">
+  <div class="custom-modal-overlay" id="documentationModal">
+    <div class="custom-modal">
 
-      <!-- Modal UI Component -->
-<div class="custom-modal-header">
+      <div class="custom-modal-header">
         <h3>Delivery Documentation</h3>
-        <button id="closeDocumentationModal" aria-label="Close Documentation Modal" title="Close Documentation Modal">
+        <button id="closeDocumentationModal">
           <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <!-- Modal UI Component -->
-<div class="custom-modal-body">
+      <div class="custom-modal-body">
 
-        <input type="hidden" id="documentationRequestId" title="Request ID">
+        <input type="hidden" id="documentationRequestId">
 
         <div class="mb-3">
-          <label for="deliveryRemarks" class="form-label">Delivery Remarks</label>
+          <label class="form-label">Delivery Remarks</label>
           <textarea id="deliveryRemarks" class="form-control" rows="4"
             placeholder="Describe delivery details..."></textarea>
         </div>
 
         <div class="mb-3">
-          <label for="deliveryFile" class="form-label">
+          <label class="form-label">
             Upload Delivery Proof
           </label>
 

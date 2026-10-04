@@ -1,4 +1,3 @@
-// Core logic and operations for profile-modal
 window.loadProfileModal = function () {
 
     fetch("../components/profile-modal.html")
@@ -20,7 +19,6 @@ window.loadProfileModal = function () {
         });
 }
 
-// Handles initProfileModal logic and operations
 function initProfileModal() {
 
     const profileBtn =

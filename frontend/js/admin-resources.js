@@ -1,4 +1,3 @@
-// Core logic and operations for admin-resources
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 var API_URL = `${API_BASE_URL}/resources`;
 
@@ -36,7 +35,6 @@ async function loadResources() {
 /* ==================================
    RENDER TABLE
 ================================== */
-// Handles renderTable logic and operations
 function renderTable(resources) {
 
     resourceTableBody.innerHTML = "";
@@ -132,7 +130,6 @@ function renderTable(resources) {
 /* ==================================
    UPDATE STATS
 ================================== */
-// Handles updateStats logic and operations
 function updateStats(resources) {
 
     const total = resources.length;

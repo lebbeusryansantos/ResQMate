@@ -1,4 +1,3 @@
-// Core logic and operations for admin-dashboard
 const API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -145,7 +144,7 @@ async function loadActiveDistributions() {
         });
         const distributions = await res.json();
 
-        
+        // FIX: target activeDistributionsBody (matches dashboard.html)
         const tbody = document.getElementById("activeDistributionsBody");
         if (!tbody) return;
 

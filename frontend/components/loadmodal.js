@@ -1,4 +1,3 @@
-// Core logic and operations for loadmodal
 const API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -22,7 +21,6 @@ async function loadModals() {
     initializeModals();
 }
 
-// Handles initializeModals logic and operations
 function initializeModals() {
 
     const loginBtn = document.querySelector(".login-btn");

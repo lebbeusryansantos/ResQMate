@@ -1,11 +1,9 @@
-// Core logic and operations for customer-dashboard
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 document.addEventListener(
     "DOMContentLoaded",
     loadDashboard
 );
 
-// Handles getAuthHeaders logic and operations
 function getAuthHeaders() {
     const userData = JSON.parse(
         localStorage.getItem("user") || "{}"
@@ -63,7 +61,6 @@ async function loadDashboard() {
     }
 }
 
-// Handles loadStats logic and operations
 function loadStats(requests) {
 
     const pending =
@@ -103,7 +100,6 @@ function loadStats(requests) {
     ).textContent = completed;
 }
 
-// Handles loadRecentRequests logic and operations
 function loadRecentRequests(requests) {
 
     const tableBody =

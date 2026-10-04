@@ -1,4 +1,3 @@
-// Core logic and operations for admin-requests
 var API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -55,7 +54,6 @@ async function loadRequests() {
 /* ===========================
    STATISTICS
 =========================== */
-// Handles renderStatistics logic and operations
 function renderStatistics() {
     const total = requestsData.length;
     const pending = requestsData.filter(r => (r.status || "").toLowerCase() === "pending").length;
@@ -71,7 +69,6 @@ function renderStatistics() {
 /* ===========================
    RENDER TABLE
 =========================== */
-// Handles renderRequestsTable logic and operations
 function renderRequestsTable(data = requestsData) {
 
     const tbody = document.getElementById("requestsTableBody");
@@ -283,7 +280,6 @@ window.viewRequest = function (requestId) {
 /* ===========================
    FILTERS
 =========================== */
-// Handles setupFilters logic and operations
 function setupFilters() {
     document.getElementById("requestSearch")?.addEventListener("input", filterRequests);
     document.getElementById("statusFilter")?.addEventListener("change", filterRequests);
@@ -291,7 +287,6 @@ function setupFilters() {
     document.getElementById("cityFilter")?.addEventListener("change", filterRequests);
 }
 
-// Handles filterRequests logic and operations
 function filterRequests() {
     const search = (document.getElementById("requestSearch")?.value || "").toLowerCase();
     const status = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
@@ -314,7 +309,6 @@ function filterRequests() {
 /* ===========================
    TOAST
 =========================== */
-// Handles showToast logic and operations
 function showToast(message, success = true) {
     let toast = document.getElementById("adminToast");
     if (!toast) {

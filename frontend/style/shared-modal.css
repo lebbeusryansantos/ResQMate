@@ -1,4 +1,52 @@
-/* Styling and presentation for shared-modal */
+/* ===========================
+   RESQMATE VIEW MODAL
+=========================== */
+.custom-modal {
+}
+
+.custom-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 16px;
+}
+
+.custom-modal-overlay.show {
+    display: flex;
+}
+
+.custom-modal {
+    width: 100%;
+    max-width: 650px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .12);
+    animation: modalFade .2s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
 .modal-header {
     background: #991b1b;
     color: white;

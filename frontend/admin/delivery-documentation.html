@@ -1,4 +1,3 @@
-<!-- Main structure and layout for delivery-documentation -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,8 +25,7 @@
         <div id="profile-modal-wrapper"></div>
 
         <!-- MAIN CONTENT -->
-        <!-- Main Content Section -->
-<main class="main-content">
+        <main class="main-content">
 
             <div class="rq-topbar">
                 <h4>Delivery Documentation</h4>
@@ -40,8 +38,7 @@
 
                 <div class="table-responsive">
 
-                    <!-- Data Table Section -->
-<table class="table">
+                    <table class="table">
 
                         <thead>
                             <tr>
@@ -69,14 +66,11 @@
 
     </div>
 
-    <!-- Modal UI Component -->
-<div class="modal-overlay" id="remarksModal">
+    <div class="modal-overlay" id="remarksModal">
 
-        <!-- Modal UI Component -->
-<div class="modal-content">
+        <div class="modal-content">
 
-            <!-- Modal UI Component -->
-<div class="modal-header">
+            <div class="modal-header">
                 <h3>Documentation Remarks</h3>
 
                 <button id="closeRemarksModal">
@@ -84,8 +78,7 @@
                 </button>
             </div>
 
-            <!-- Modal UI Component -->
-<div class="modal-body">
+            <div class="modal-body">
                 <p id="remarksContent"></p>
             </div>
 
@@ -94,12 +87,9 @@
     </div>
 
     <!-- REJECTION MODAL -->
-    <!-- Modal UI Component -->
-<div class="modal" id="rejectionModal">
-        <!-- Modal UI Component -->
-<div class="modal-content request-modal-card rejection-card">
-            <!-- Modal UI Component -->
-<div class="request-modal-header">
+    <div class="modal" id="rejectionModal">
+        <div class="modal-content request-modal-card" style="max-width: 400px;">
+            <div class="request-modal-header">
                 <div>
                     <h4>Reject</h4>
                     <p>Select a reason for rejection</p>
@@ -108,11 +98,11 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="request-details rejection-details">
+            <div class="request-details" style="padding: 20px;">
                 <form id="rejectionForm">
-                    <div class="form-group rejection-group">
-                        <label for="rejectionReasonSelect" class="rejection-label">Rejection Reason</label>
-                        <select id="rejectionReasonSelect" class="rq-input rejection-input" required>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="rejectionReasonSelect" style="display:block; margin-bottom: 5px; font-weight:500;">Rejection Reason</label>
+                        <select id="rejectionReasonSelect" class="rq-input" required style="width: 100%; padding: 10px;">
                             <option value="" disabled selected>Select a reason...</option>
                             <option value="Invalid Location">Invalid Location</option>
                             <option value="Duplicate Request">Duplicate Request</option>
@@ -121,13 +111,13 @@
                             <option value="Others">Others (Please specify)</option>
                         </select>
                     </div>
-                    <div class="form-group d-none rejection-group" id="otherReasonContainer">
-                        <label for="otherRejectionReason" class="rejection-label">Specify Reason</label>
-                        <input type="text" id="otherRejectionReason" class="rq-input rejection-input" placeholder="Enter reason here...">
+                    <div class="form-group" id="otherReasonContainer" style="display: none; margin-bottom: 15px;">
+                        <label for="otherRejectionReason" style="display:block; margin-bottom: 5px; font-weight:500;">Specify Reason</label>
+                        <input type="text" id="otherRejectionReason" class="rq-input" placeholder="Enter reason here..." style="width: 100%; padding: 10px;">
                     </div>
-                    <div class="rejection-actions">
-                        <button type="button" class="btn-secondary rejection-cancel-btn" id="cancelRejectionBtn">Cancel</button>
-                        <button type="submit" class="rq-btn-reject rejection-submit-btn" id="submitRejectionBtn">Reject</button>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="button" class="btn-secondary" id="cancelRejectionBtn" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e2e8f0; cursor: pointer;">Cancel</button>
+                        <button type="submit" class="rq-btn-reject" id="submitRejectionBtn" style="padding: 8px 16px; border-radius: 6px; border: none; background: #ef4444; color: white; cursor: pointer;">Reject</button>
                     </div>
                 </form>
             </div>

@@ -1,4 +1,28 @@
-/* Styling and presentation for style */
+/* ============================================================
+   ResQMate — Admin Dashboard Stylesheet
+   Revised to match Customer Side Theme & Reference Design
+   ============================================================ */
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #1f2937;
+  background: #fdf2f2;
+}
+
+.dashboard-container,
+.rq-dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Offset main for fixed sidebar ── */
 .main-content,
 .rq-main {
   margin-left: 260px;

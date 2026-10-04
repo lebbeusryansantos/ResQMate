@@ -1,4 +1,3 @@
-// Core logic and operations for loadStaffSidebar
 fetch("../components/staff-sidebar.html")
     .then(response => {
         if (!response.ok) {
@@ -49,7 +48,6 @@ fetch("../components/staff-sidebar.html")
         console.error("Error loading staff sidebar:", error);
     });
 
-// Handles setActiveSidebarLink logic and operations
 function setActiveSidebarLink() {
     const currentPage = window.location.pathname.split("/").pop().toLowerCase();
     const sidebarLinks = document.querySelectorAll(".menu li a");
@@ -67,7 +65,6 @@ function setActiveSidebarLink() {
     });
 }
 
-// Handles toggleSidebar logic and operations
 function toggleSidebar() {
     const sidebar = document.querySelector(".sidebar");
     const dashboardContainer = document.querySelector(".dashboard-container");
@@ -81,7 +78,6 @@ function toggleSidebar() {
     }
 }
 
-// Handles loadUserProfile logic and operations
 function loadUserProfile() {
     const user = JSON.parse(localStorage.getItem("user"));
     const profileName = document.getElementById("profileName");

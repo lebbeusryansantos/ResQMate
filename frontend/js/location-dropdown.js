@@ -1,4 +1,3 @@
-// Core logic and operations for location-dropdown
 const LOCATION_API_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadRegions();
 });
 
-// Handles decodeText logic and operations
 function decodeText(text) {
     try {
         return decodeURIComponent(escape(text));
@@ -26,7 +24,6 @@ function decodeText(text) {
     }
 }
 
-// Handles getToken logic and operations
 function getToken() {
     const user = JSON.parse(
         localStorage.getItem("user") || "{}"
@@ -35,7 +32,6 @@ function getToken() {
     return user.token || "";
 }
 
-// Handles getHeaders logic and operations
 function getHeaders() {
     return {
         Authorization: `Bearer ${getToken()}`

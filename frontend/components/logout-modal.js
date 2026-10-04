@@ -1,4 +1,3 @@
-// Core logic and operations for logout-modal
 (function () {
     const API_BASE_URL =
         window.location.hostname === "127.0.0.1" ||

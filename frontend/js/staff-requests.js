@@ -1,4 +1,3 @@
-// Core logic and operations for staff-requests
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 /* ============================================================
    staff-requests.js — REFACTORED FLOW
@@ -142,7 +141,6 @@ async function loadRequests() {
 /* ============================================================
    RENDER TABLE
    ============================================================ */
-// Handles renderTable logic and operations
 function renderTable(requests) {
 
     const tbody = document.getElementById("requestsTableBody");
@@ -208,7 +206,6 @@ function renderTable(requests) {
    VIEW REQUEST — uses data already loaded, no extra fetch needed
    (avoids the raw ID problem from single-request endpoint)
    ============================================================ */
-// Handles viewRequest logic and operations
 function viewRequest(id, name, type, location, priority, status, date) {
 
     const statusClass = (status || "").toLowerCase();
@@ -234,7 +231,6 @@ function viewRequest(id, name, type, location, priority, status, date) {
 /* ============================================================
    UPDATE COUNTS
    ============================================================ */
-// Handles updateCounts logic and operations
 function updateCounts(requests) {
     const processing = requests.filter(r => (r.status || "").toLowerCase() === "processing").length;
     const completed = requests.filter(r => (r.status || "").toLowerCase() === "completed").length;
@@ -249,7 +245,6 @@ function updateCounts(requests) {
 /* ============================================================
    FILTER
    ============================================================ */
-// Handles filterRequests logic and operations
 function filterRequests() {
     const search = (document.getElementById("searchBar")?.value || "").toLowerCase();
     const status = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
@@ -402,7 +397,6 @@ async function submitDocumentation() {
 /* ============================================================
    TOAST — replaces alert()
    ============================================================ */
-// Handles showToast logic and operations
 function showToast(message, success = true) {
     let toast = document.getElementById("staffToast");
     if (!toast) {

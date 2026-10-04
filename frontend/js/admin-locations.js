@@ -1,4 +1,3 @@
-// Core logic and operations for admin-locations
 let locations = [
 {
 location_id: 1,
@@ -50,7 +49,6 @@ new bootstrap.Modal(locationModalElement);
 const deleteModal =
 new bootstrap.Modal(deleteModalElement);
 
-// Handles displayLocations logic and operations
 function displayLocations() {
 
 const searchTerm =
@@ -153,7 +151,6 @@ filteredLocations.forEach(location => {
 
 }
 
-// Handles openAddLocationModal logic and operations
 function openAddLocationModal() {
 
 editingLocationId = null;
@@ -181,7 +178,6 @@ locationModal.show();
 
 }
 
-// Handles openEditLocation logic and operations
 function openEditLocation(locationId) {
 
 const location =
@@ -321,7 +317,6 @@ displayLocations();
 
 });
 
-// Handles openDeleteLocation logic and operations
 function openDeleteLocation(locationId) {
 
 const location =
@@ -379,7 +374,6 @@ searchInput.addEventListener(
 displayLocations
 );
 
-// Handles escapeHtml logic and operations
 function escapeHtml(value) {
 
 return String(value)

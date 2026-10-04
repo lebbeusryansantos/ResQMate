@@ -1,4 +1,3 @@
-// Core logic and operations for customer-requests
 var API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -7,7 +6,6 @@ var API_BASE_URL =
 
 var API_URL = API_BASE_URL;
 
-// Handles getAuthHeaders logic and operations
 function getAuthHeaders() {
     const userData = JSON.parse(
         localStorage.getItem("user") || "{}"
@@ -319,7 +317,6 @@ document.addEventListener(
     }
 );
 
-// Handles closeModal logic and operations
 function closeModal() {
 
     document

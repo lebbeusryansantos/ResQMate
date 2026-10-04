@@ -1,4 +1,25 @@
-/* Styling and presentation for customer-sidebar */
+/* ================= SIDEBAR & GLOBAL RED THEME ================= */
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #1a0505;
+    /* Updated to a deep dark red-maroon tint */
+    color: #ffffff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 24px 16px;
+    z-index: 100;
+    transition: width 0.3s ease;
+}
+
+
+/* ================= TOGGLE BUTTON ================= */
+
 .toggle-btn {
     background: transparent;
     border: none;

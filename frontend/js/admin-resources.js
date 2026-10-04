@@ -81,6 +81,7 @@ function renderTable(resources) {
                 <td><strong>#${resource.resource_id}</strong></td>
                 <td>${resource.resource_name}</td>
                 <td>${resource.category || "General"}</td>
+                <td>${maxStock} ${resource.unit || ""}</td>
                 <td>${qty} ${resource.unit || ""}</td>
                 <td>${resource.location || "—"}</td>
                 <td><span class="rq-badge ${badge}">${statusTxt}</span></td>

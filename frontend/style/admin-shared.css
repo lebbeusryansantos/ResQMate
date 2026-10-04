@@ -186,7 +186,7 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 30px;
 }
@@ -1115,6 +1115,7 @@ a.btn:active,
 .rejection-cancel-btn { padding: 8px 16px; border-radius: 6px; border: none; background: #e2e8f0; cursor: pointer; }
 .rejection-submit-btn { padding: 8px 16px; border-radius: 6px; border: none; background: #ef4444; color: white; cursor: pointer; }
 .text-danger-medium { color: #ef4444; font-weight: 500; }
+
 
 
 

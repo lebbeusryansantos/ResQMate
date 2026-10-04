@@ -194,7 +194,6 @@ thead {
     .table-responsive {
         overflow-x: auto;
         overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
     }
 
@@ -375,3 +374,4 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
+

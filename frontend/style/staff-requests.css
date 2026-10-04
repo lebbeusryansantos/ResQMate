@@ -390,7 +390,6 @@ body {
     .table-responsive {
         overflow-x: auto;
         overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
     }
 
@@ -478,7 +477,6 @@ body {
     .table-responsive {
         overflow-x: auto;
         overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
     }
 

@@ -105,9 +105,7 @@ app.include_router(
 )
 
 app.include_router(
-    delivery_documentations.router,
-    prefix="/delivery-documentations",
-    tags=["Delivery Documentation"]
+    delivery_documentations.router
 )
 
 # Root Endpoint

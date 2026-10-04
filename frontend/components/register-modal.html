@@ -47,11 +47,11 @@
                 <div class="name-group">
                     <div class="name-field">
                         <label for="firstName">First Name <span class="required-asterisk">*</span></label>
-                        <input type="text" id="firstName" placeholder="Juan" required maxlength="25">
+                        <input type="text" id="firstName" placeholder="Juan" required maxlength="25" pattern="^[^0-9]*$" oninput="this.value = this.value.replace(/[0-9]/g, '')">
                     </div>
                     <div class="name-field">
                         <label for="lastName">Last Name <span class="required-asterisk">*</span></label>
-                        <input type="text" id="lastName" placeholder="Dela Cruz" required maxlength="25">
+                        <input type="text" id="lastName" placeholder="Dela Cruz" required maxlength="25" pattern="^[^0-9]*$" oninput="this.value = this.value.replace(/[0-9]/g, '')">
                     </div>
                 </div>
 

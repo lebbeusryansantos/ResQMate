@@ -1,0 +1,61 @@
+.rq-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(127, 29, 29, .06);
+}
+
+.table th {
+    text-align: center;
+    background: #fef2f2;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn-proof {
+    background: #2563eb;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-proof:hover {
+    background: #1d4ed8;
+    color: white;
+}
+
+.btn-approve {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.btn-reject {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.status-pending_review {
+    color: #d97706;
+    font-weight: 600;
+}
+
+.status-approved {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.status-rejected {
+    color: #dc2626;
+    font-weight: 600;
+}

@@ -19,10 +19,20 @@ def get_distributions(user: dict = Depends(require_role(["admin", "staff"]))):
             d.staff_id,
             CONCAT_WS(' ', u.first_name, u.last_name) AS staff_name,
             d.quantity_given,
-            d.distribution_date
+            d.distribution_date,
+            ar.status AS request_status
+
         FROM distributions d
-        LEFT JOIN resources r  ON d.resource_id = r.resource_id
-        LEFT JOIN users u      ON d.staff_id    = u.user_id
+
+        LEFT JOIN resources r
+            ON d.resource_id = r.resource_id
+
+        LEFT JOIN users u
+            ON d.staff_id = u.user_id
+
+        LEFT JOIN assistance_requests ar
+            ON d.request_id = ar.request_id
+
         ORDER BY d.distribution_id DESC
     """)
 
@@ -33,14 +43,15 @@ def get_distributions(user: dict = Depends(require_role(["admin", "staff"]))):
         distributions = []
         for row in result:
             distributions.append({
-                "distribution_id":   row.distribution_id,
-                "request_id":        row.request_id,
-                "resource_id":       row.resource_id,
-                "resource_name":     row.resource_name,
-                "staff_id":          row.staff_id,
-                "staff_name":        row.staff_name,
-                "quantity_given":    row.quantity_given,
-                "distribution_date": str(row.distribution_date) if row.distribution_date else None
+                "distribution_id": row.distribution_id,
+                "request_id": row.request_id,
+                "resource_id": row.resource_id,
+                "resource_name": row.resource_name,
+                "staff_id": row.staff_id,
+                "staff_name": row.staff_name,
+                "quantity_given": row.quantity_given,
+                "distribution_date": str(row.distribution_date) if row.distribution_date else None,
+                "request_status": row.request_status
             })
 
         return distributions

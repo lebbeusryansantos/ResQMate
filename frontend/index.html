@@ -46,7 +46,7 @@
                 </p>
                 <div class="hero-buttons">
                     <button class="primary-btn" id="requestAssistanceBtn"
-                        onclick="document.getElementById('loginModal').classList.add('show')">
+                        onclick="document.getElementById('loginModal').classList.add('show'); if(typeof window.checkLockoutState==='function') window.checkLockoutState();">
                         Request Assistance
                     </button>
                     <button class="secondary-btn" id="learnMoreBtn">

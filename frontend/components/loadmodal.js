@@ -38,6 +38,7 @@ function initializeModals() {
     loginBtn.addEventListener("click", () => {
 
         loginModal.classList.add("show");
+        if (typeof window.checkLockoutState === "function") window.checkLockoutState();
 
         const loginError =
             document.getElementById("loginError");
@@ -50,6 +51,7 @@ function initializeModals() {
         requestBtn.addEventListener("click", () => {
 
             loginModal.classList.add("show");
+        if (typeof window.checkLockoutState === "function") window.checkLockoutState();
 
             const loginError =
                 document.getElementById("loginError");
@@ -169,6 +171,7 @@ function initializeModals() {
                 registerModal.classList.remove("show");
                 resetRegisterModal();
                 loginModal.classList.add("show");
+        if (typeof window.checkLockoutState === "function") window.checkLockoutState();
             }
         );
     }
@@ -522,6 +525,7 @@ function initializeModals() {
 
                     registerModal.classList.remove("show");
                     loginModal.classList.add("show");
+        if (typeof window.checkLockoutState === "function") window.checkLockoutState();
 
                     alert(
                         "Registration Successful! Please login."

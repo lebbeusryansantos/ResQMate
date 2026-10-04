@@ -9,55 +9,65 @@ const loginForm = document.getElementById("loginForm");
 
 let lockoutInterval = null;
 
-function checkLockoutState() {
-    const lockedUntilStr = localStorage.getItem("login_locked_until");
-    if (!lockedUntilStr) return;
+window.checkLockoutState = function() {
+    const lockoutExpirationStr = localStorage.getItem("lockoutExpiration");
+    if (!lockoutExpirationStr) return;
 
-    const lockedUntil = new Date(lockedUntilStr).getTime();
-    const submitBtn = loginForm ? loginForm.querySelector('button[type="submit"]') : null;
+    const expirationTime = parseInt(lockoutExpirationStr, 10);
+    const submitBtn = document.querySelector('#loginForm button[type="submit"]');
     const loginError = document.getElementById("loginError");
 
     if (lockoutInterval) {
         clearInterval(lockoutInterval);
     }
 
-    const updateTimer = () => {
-        const now = new Date().getTime();
-        const remaining = Math.ceil((lockedUntil - now) / 1000);
+    if (expirationTime > Date.now()) {
+        const updateTimer = () => {
+            const currentNow = Date.now();
+            if (expirationTime > currentNow) {
+                const remaining = Math.ceil((expirationTime - currentNow) / 1000);
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = `Locked (${remaining}s)`;
+                }
+                if (loginError) {
+                    loginError.textContent = `Too many failed attempts. Account locked. Try again in ${remaining}s.`;
+                    loginError.classList.add("show");
+                }
+            } else {
+                clearInterval(lockoutInterval);
+                lockoutInterval = null;
+                localStorage.removeItem("lockoutExpiration");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Login";
+                }
+                if (loginError) {
+                    loginError.classList.remove("show");
+                    loginError.textContent = "";
+                }
+            }
+        };
 
-        if (remaining > 0) {
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Locked";
-            }
-            if (loginError) {
-                loginError.textContent = `Too many failed attempts. Account locked for ${remaining}s.`;
-                loginError.classList.add("show");
-            }
-        } else {
-            clearInterval(lockoutInterval);
-            lockoutInterval = null;
-            localStorage.removeItem("login_locked_until");
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Login";
-            }
-            if (loginError) {
-                loginError.classList.remove("show");
-                loginError.textContent = "";
-            }
+        updateTimer();
+        lockoutInterval = setInterval(updateTimer, 1000);
+    } else {
+        localStorage.removeItem("lockoutExpiration");
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Login";
         }
-    };
-
-    updateTimer();
-    lockoutInterval = setInterval(updateTimer, 1000);
+        if (loginError) {
+            loginError.classList.remove("show");
+            loginError.textContent = "";
+        }
+    }
 }
 
-// Check state on load
-checkLockoutState();
+// Global Check
+window.checkLockoutState();
 
 loginForm.addEventListener("submit", async (e) => {
-
     e.preventDefault();
 
     const email = document.getElementById("email").value;
@@ -70,7 +80,6 @@ loginForm.addEventListener("submit", async (e) => {
     }
 
     try {
-
         const response = await fetch(
             `${API_BASE_URL}/users/login`,
             {
@@ -88,15 +97,17 @@ loginForm.addEventListener("submit", async (e) => {
         const data = await response.json();
 
         if (!response.ok) {
-
             let errorMsg = "Invalid username or password";
             if (data.detail) {
                 if (data.detail.error) {
                     if (data.detail.locked_until) {
                         let lu = data.detail.locked_until;
                         if (!lu.endsWith("Z")) lu += "Z";
-                        localStorage.setItem("login_locked_until", lu);
-                        checkLockoutState();
+                        const lockedUntilDate = new Date(lu);
+                        const remaining_seconds = (lockedUntilDate.getTime() - Date.now()) / 1000;
+                        const expirationTime = Date.now() + (remaining_seconds * 1000);
+                        localStorage.setItem("lockoutExpiration", expirationTime);
+                        window.checkLockoutState();
                         return;
                     }
                     errorMsg = data.detail.error;
@@ -108,11 +119,13 @@ loginForm.addEventListener("submit", async (e) => {
                 }
             }
             
-            loginError.textContent = errorMsg;
+            const errEl = document.getElementById("loginError");
+            if (errEl) {
+                errEl.textContent = errorMsg;
+                errEl.classList.add("show");
+            }
 
-            loginError.classList.add("show");
-
-            if (submitBtn && !localStorage.getItem("login_locked_until")) {
+            if (submitBtn && !localStorage.getItem("lockoutExpiration")) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Login";
             }
@@ -120,7 +133,8 @@ loginForm.addEventListener("submit", async (e) => {
             return;
         }
 
-        loginError.classList.remove("show");
+        const errEl = document.getElementById("loginError");
+        if (errEl) errEl.classList.remove("show");
 
         localStorage.setItem(
             "user",
@@ -138,33 +152,23 @@ loginForm.addEventListener("submit", async (e) => {
         alert("Login Successful");
 
         if (data.role === "admin") {
-            window.location.href =
-                "admin/dashboard.html";
+            window.location.href = "admin/dashboard.html";
         }
-
         else if (data.role === "staff") {
-            window.location.href =
-                "staff/dashboard.html";
+            window.location.href = "staff/dashboard.html";
         }
-
         else {
-            window.location.href =
-                "customer/dashboard.html";
+            window.location.href = "customer/dashboard.html";
         }
 
     }
     catch (error) {
-
         console.error(error);
-
-        alert(
-            "Cannot connect to server."
-        );
+        alert("Cannot connect to server.");
     } finally {
-        if (submitBtn && !localStorage.getItem("login_locked_until")) {
+        if (submitBtn && !localStorage.getItem("lockoutExpiration")) {
             submitBtn.disabled = false;
             submitBtn.textContent = "Login";
         }
     }
-
 });

@@ -241,7 +241,8 @@ document.getElementById(
                         first_name: firstName,
                         last_name: lastName,
                         email,
-                        role
+                        role,
+                        password
                     })
                 }
             );

@@ -306,21 +306,23 @@ resourceForm.addEventListener("submit", async (e) => {
             if (!res.ok) { const err = await res.json(); alert(err.detail || "Failed to add resource."); return; }
 
         } else {
-            // UPDATE
+
             const url =
-                `${API_URL}/${editingResourceId}?resource_name=${encodeURIComponent(resource_name)}
-                &category=${encodeURIComponent(category)}
-                &quantity_available=${quantity_available}
-                &max_stock=${max_stock}
-                &unit=${encodeURIComponent(unit)}
-                &location=${encodeURIComponent(location)}`;
+                `${API_URL}/${editingResourceId}?resource_name=${encodeURIComponent(resource_name)}&category=${encodeURIComponent(category)}&quantity_available=${quantity_available}&max_stock=${max_stock}&unit=${encodeURIComponent(unit)}&location=${encodeURIComponent(location)}`;
+
             const res = await fetch(url, {
-                method: "PUT", headers: {
+                method: "PUT",
+                headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
-            if (!res.ok) { const err = await res.json(); alert(err.detail || "Failed to update resource."); return; }
+
+            if (!res.ok) {
+                const err = await res.json();
+                alert(err.detail || "Failed to update resource.");
+                return;
+            }
         }
 
         resourceModal.classList.remove("show");

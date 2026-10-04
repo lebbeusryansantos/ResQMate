@@ -66,22 +66,22 @@ body {
 }
 
 .col-md-3:nth-child(1) .rq-stat-card {
-    background: #ef4444;
+    background: #3b82f6;
     color: white;
 }
 
 .col-md-3:nth-child(2) .rq-stat-card {
-    background: #dc2626;
+    background: #10b981;
     color: white;
 }
 
 .col-md-3:nth-child(3) .rq-stat-card {
-    background: #991b1b;
+    background: #6b7280;
     color: white;
 }
 
 .col-md-3:nth-child(4) .rq-stat-card {
-    background: #7f1d1d;
+    background: #8b5cf6;
     color: white;
 }
 
@@ -186,23 +186,35 @@ body {
 }
 
 .rq-badge-pending {
-    background: #fef3c7;
-    color: #b45309;
+  background: #fef3c7;
+  color: #b45309;
 }
 
-.rq-badge-approved {
-    background: #dbeafe;
-    color: #1d4ed8;
+.rq-badge-under_review {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.rq-badge-approved,
+.rq-badge-accepted {
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .rq-badge-processing {
-    background: #fee2e2;
-    color: #dc2626;
+  background: #e0e7ff;
+  color: #4338ca;
 }
 
 .rq-badge-completed {
-    background: #dcfce7;
-    color: #15803d;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.rq-badge-rejected,
+.rq-badge-cancelled {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .rq-badge-high {

@@ -77,23 +77,27 @@ STATISTICS CARDS
 }
 
 .stat-card.blue,
+.stat-card.blue,
 .stat-card:nth-child(1) {
-  background-color: #ef4444;
+  background-color: #3b82f6;
 }
 
 .stat-card.green,
+.stat-card.green,
 .stat-card:nth-child(2) {
-  background-color: #dc2626;
+  background-color: #10b981;
 }
 
 .stat-card.grey,
+.stat-card.grey,
 .stat-card:nth-child(3) {
-  background-color: #991b1b;
+  background-color: #6b7280;
 }
 
 .stat-card.purple,
+.stat-card.purple,
 .stat-card:nth-child(4) {
-  background-color: #7f1d1d;
+  background-color: #8b5cf6;
 }
 
 .stat-card-icon {
@@ -234,19 +238,31 @@ STATUS BADGES
   color: #b45309;
 }
 
-.rq-badge-approved {
+.rq-badge-under_review {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.rq-badge-approved,
+.rq-badge-accepted {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.rq-badge-processing {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.rq-badge-completed {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-.rq-badge-processing {
+.rq-badge-rejected,
+.rq-badge-cancelled {
   background: #fee2e2;
   color: #dc2626;
-}
-
-.rq-badge-completed {
-  background: #dcfce7;
-  color: #15803d;
 }
 
 .rq-badge-high {

@@ -201,19 +201,19 @@ body {
 }
 
 .stat-card:nth-child(1) {
-  background: #ef4444;
+  background: #3b82f6;
 }
 
 .stat-card:nth-child(2) {
-  background: #dc2626;
+  background: #10b981;
 }
 
 .stat-card:nth-child(3) {
-  background: #991b1b;
+  background: #6b7280;
 }
 
 .stat-card:nth-child(4) {
-  background: #7f1d1d;
+  background: #8b5cf6;
 }
 
 .stat-card h3 {
@@ -483,19 +483,26 @@ tbody tr:hover {
   color: #92400e;
 }
 
-.rq-badge-approved {
+.rq-badge-approved,
+.rq-badge-accepted {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.rq-badge-processing {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.rq-badge-completed {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-.rq-badge-processing {
+.rq-badge-rejected,
+.rq-badge-cancelled {
   background: #fee2e2;
   color: #dc2626;
-}
-
-.rq-badge-completed {
-  background: #dcfce7;
-  color: #15803d;
 }
 
 .rq-badge-high {

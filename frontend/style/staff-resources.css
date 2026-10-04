@@ -47,19 +47,19 @@ body {
 }
 
 .stat-card:nth-child(1) {
-    background: #ef4444;
+    background: #3b82f6;
 }
 
 .stat-card:nth-child(2) {
-    background: #dc2626;
+    background: #10b981;
 }
 
 .stat-card:nth-child(3) {
-    background: #991b1b;
+    background: #6b7280;
 }
 
 .stat-card:nth-child(4) {
-    background: #7f1d1d;
+    background: #8b5cf6;
 }
 
 .stat-card h3 {

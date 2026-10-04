@@ -120,8 +120,8 @@ body {
 }
 
 .status-badge.completed {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: #dcfce7;
+    color: #15803d;
 }
 
 .status-badge.processing {

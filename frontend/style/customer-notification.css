@@ -185,16 +185,16 @@ body {
 /* Processing */
 
 .notification-icon.processing {
-    background-color: #fee2e2;
-    color: #dc2626;
+    background-color: #e0e7ff;
+    color: #4338ca;
 }
 
 
 /* Completed */
 
 .notification-icon.completed {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: #dcfce7;
+    color: #15803d;
 }
 
 
@@ -338,4 +338,9 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
     transform: scale(0.96) !important;
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
+}
+
+.notification-icon.rejected {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }

@@ -53,9 +53,10 @@ class LoginRequest(BaseModel):
 
 class UpdateUserRequest(BaseModel):
     first_name: str
-    last_name:  str
-    email:      str
-    role:       str
+    last_name: str
+    email: str
+    role: str
+    password: Optional[str] = None
 
 
 class CreateUserRequest(BaseModel):
@@ -345,9 +346,77 @@ def logout_user(user: dict = Depends(get_current_user)):
 # =========================
 # UPDATE USER
 # =========================
-
 @router.put("/{user_id}")
-def update_user(user_id: int, data: UpdateUserRequest, admin: dict = Depends(get_current_admin)):
+def update_user(
+    user_id: int,
+    data: UpdateUserRequest,
+    admin: dict = Depends(get_current_admin)
+):
+
+    role_map = {
+        "community_user": "community_user",
+        "community": "community_user",
+        "staff": "staff",
+        "admin": "admin"
+    }
+
+    db_role = role_map.get(data.role, "community_user")
+
+    with engine.begin() as conn:
+
+        if data.password:
+
+            result = conn.execute(
+                text("""
+                    UPDATE users
+                    SET
+                        first_name = :first_name,
+                        last_name = :last_name,
+                        email = :email,
+                        role = :role,
+                        password = :password
+                    WHERE user_id = :user_id
+                """),
+                {
+                    "user_id": user_id,
+                    "first_name": data.first_name,
+                    "last_name": data.last_name,
+                    "email": data.email,
+                    "role": db_role,
+                    "password": pwd_context.hash(data.password)
+                }
+            )
+
+        else:
+
+            result = conn.execute(
+                text("""
+                    UPDATE users
+                    SET
+                        first_name = :first_name,
+                        last_name = :last_name,
+                        email = :email,
+                        role = :role
+                    WHERE user_id = :user_id
+                """),
+                {
+                    "user_id": user_id,
+                    "first_name": data.first_name,
+                    "last_name": data.last_name,
+                    "email": data.email,
+                    "role": db_role
+                }
+            )
+
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="User not found"
+            )
+
+    return {
+        "message": "User updated successfully"
+    }
 
     role_map = {
         "community_user": "community_user",

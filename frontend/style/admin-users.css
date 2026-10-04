@@ -278,3 +278,9 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
+
+/* Removed inline styles */
+.table-title { margin: 0; color: #7f1d1d; font-weight: 700; flex: 1; }
+.role-filter { max-width: 150px; }
+.d-none { display: none !important; }
+

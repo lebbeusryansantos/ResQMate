@@ -35,7 +35,7 @@
 
         <div class="toolbar-row">
 
-          <h5 style="margin:0;color:#7f1d1d;font-weight:700;flex:1;">
+          <h5 class="table-title">
             All Users
           </h5>
 
@@ -45,7 +45,7 @@
             <input type="text" id="userSearch" placeholder="Search users...">
           </div>
 
-          <select id="roleFilter" class="rq-input" style="max-width:150px;" aria-label="Filter users by role">
+          <select id="roleFilter" class="rq-input role-filter" aria-label="Filter users by role">
 
             <option value="all">
               All Roles
@@ -101,7 +101,7 @@
 
         </div>
 
-        <div id="emptyUsersMessage" class="empty-state" style="display:none;">
+        <div id="emptyUsersMessage" class="empty-state d-none">
 
           <i class="fa-solid fa-users-slash"></i>
 

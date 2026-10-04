@@ -142,7 +142,7 @@
       <!-- Modal UI Component -->
 <div class="custom-modal-header">
         <h3>Delivery Documentation</h3>
-        <button id="closeDocumentationModal">
+        <button id="closeDocumentationModal" aria-label="Close Documentation Modal" title="Close Documentation Modal">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -150,16 +150,16 @@
       <!-- Modal UI Component -->
 <div class="custom-modal-body">
 
-        <input type="hidden" id="documentationRequestId">
+        <input type="hidden" id="documentationRequestId" title="Request ID">
 
         <div class="mb-3">
-          <label class="form-label">Delivery Remarks</label>
+          <label for="deliveryRemarks" class="form-label">Delivery Remarks</label>
           <textarea id="deliveryRemarks" class="form-control" rows="4"
             placeholder="Describe delivery details..."></textarea>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">
+          <label for="deliveryFile" class="form-label">
             Upload Delivery Proof
           </label>
 

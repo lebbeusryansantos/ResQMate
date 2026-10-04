@@ -4,20 +4,16 @@
 <div id="logoutModal" class="modal">
     <!-- Modal UI Component -->
 <div class="modal-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="color: #991b1b; font-size: 1.25rem;">Confirm Logout</h3>
-            <button class="close-btn" id="closeModalBtn"
-                style="position: static; font-size: 20px; background: transparent; border: none; color: #777;">&times;</button>
+        <div class="logout-modal-header">
+            <h3>Confirm Logout</h3>
+            <button class="close-btn" id="closeModalBtn">&times;</button>
         </div>
-        <div style="margin-bottom: 25px;">
-            <p style="color: #4b5563; font-size: 0.95rem;">Are you sure you want to log out?</p>
+        <div class="logout-modal-body">
+            <p>Are you sure you want to log out?</p>
         </div>
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button id="cancelLogoutBtn"
-                style="padding: 10px 20px; background: transparent; border: 1px solid #d1d5db; border-radius: 8px; color: #374151; font-weight: 600; cursor: pointer;">Cancel</button>
-            <a href="../index.html" id="confirmLogoutBtn"
-                style="padding: 10px 20px; background: #EF4444; border: none; border-radius: 8px; color: white; font-weight: 600; text-decoration: none; text-align: center;">Log
-                Out</a>
+        <div class="logout-modal-footer">
+            <button id="cancelLogoutBtn" class="logout-cancel-btn">Cancel</button>
+            <a href="../index.html" id="confirmLogoutBtn" class="logout-confirm-btn">Log Out</a>
         </div>
     </div>
 </div>

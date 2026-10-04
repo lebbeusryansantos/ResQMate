@@ -13,3 +13,8 @@ class Resource(Base):
     location           = Column(String(150))         # warehouse/depot name
     status             = Column(String(50), default="Available")
     last_updated       = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    max_stock = Column(
+    Integer,
+    nullable=False,
+    default=100
+)

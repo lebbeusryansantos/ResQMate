@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
   <link rel="stylesheet" href="../style/profile-modal.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
   <div class="dashboard-container">
     <div id="sidebar-container"></div>
@@ -23,10 +25,22 @@
       </div>
 
       <div class="stats-grid">
-        <div class="stat-card"><h3>Total Resources</h3><div class="stat-number" id="totalResources">0</div></div>
-        <div class="stat-card"><h3>Available</h3><div class="stat-number" id="availableResources">0</div></div>
-        <div class="stat-card"><h3>Low Stock</h3><div class="stat-number" id="lowStockResources">0</div></div>
-        <div class="stat-card"><h3>Depleted</h3><div class="stat-number" id="depletedResources">0</div></div>
+        <div class="stat-card">
+          <h3>Total Resources</h3>
+          <div class="stat-number" id="totalResources">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Available Resources</h3>
+          <div class="stat-number" id="availableResources">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Low Stock Resources</h3>
+          <div class="stat-number" id="lowStockResources">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Depleted Resources</h3>
+          <div class="stat-number" id="depletedResources">0</div>
+        </div>
       </div>
 
       <div class="table-card">
@@ -55,8 +69,14 @@
           <table id="resourcesTable">
             <thead>
               <tr>
-                <th>ID</th><th>Resource</th><th>Category</th>
-                <th>Quantity</th><th>Location</th><th>Status</th><th>Actions</th>
+                <th>ID</th>
+                <th>Resource</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Capacity</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody><!-- Loaded by admin-resources.js --></tbody>
@@ -75,10 +95,15 @@
         <button id="closeModal" aria-label="Close Modal"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form id="resourceForm">
+
         <div class="form-group">
-          <label for="resourceName">Resource Name <span class="required-asterisk">*</span></label>
+          <label for="resourceName">
+            Resource Name
+            <span class="required-asterisk">*</span>
+          </label>
           <input type="text" id="resourceName" placeholder="e.g. Relief Food Packs" required>
         </div>
+
         <div class="form-group">
           <label for="resourceCategory">Category</label>
           <select id="resourceCategory">
@@ -89,28 +114,63 @@
             <option value="General">General</option>
           </select>
         </div>
+
         <div class="form-group">
-          <label for="resourceQty">Quantity <span class="required-asterisk">*</span></label>
-          <input type="number" id="resourceQty" min="0" placeholder="e.g. 100" required>
+          <label>Current Stock</label>
+          <input type="number" id="currentStock" readonly value="0">
         </div>
+
+        <div class="form-group">
+          <label>Add Stock</label>
+          <input type="number" id="addStock" value="0" min="0">
+        </div>
+
+        <div class="form-group">
+          <label>Maximum Capacity</label>
+          <input type="number" id="resourceMaxStock" value="100" min="1" required>
+        </div>
+
         <div class="form-group">
           <label for="resourceUnit">Unit</label>
-          <input type="text" id="resourceUnit" placeholder="e.g. packs, liters, kits" value="units">
+
+          <select id="resourceUnit">
+            <option value="pcs">Pieces (pcs)</option>
+            <option value="box">Box</option>
+            <option value="pack">Pack</option>
+            <option value="gallon">Gallon</option>
+            <option value="liter">Liter</option>
+            <option value="sack">Sack</option>
+            <option value="kit">Kit</option>
+            <option value="other">Other</option>
+          </select>
+
+          <input type="text" id="customUnit" placeholder="Enter custom unit" style="display:none; margin-top:8px;">
         </div>
+
         <div class="form-group">
           <label for="resourceLocation">Location</label>
+
           <select id="resourceLocation">
             <option value="QC Warehouse">QC Warehouse</option>
             <option value="Pasig Hub">Pasig Hub</option>
             <option value="Marikina Depot">Marikina Depot</option>
             <option value="other">Other</option>
           </select>
-          <input type="text" id="customLocation" placeholder="Enter location" class="custom-location-input" style="display:none; margin-top:8px;">
+
+          <input type="text" id="customLocation" placeholder="Enter location" class="custom-location-input"
+            style="display:none; margin-top:8px;">
         </div>
+
         <div class="modal-footer">
-          <button type="button" class="btn-secondary" id="cancelModal">Cancel</button>
-          <button type="submit" class="btn-primary">Save Resource</button>
+          <button type="button" class="btn-secondary" id="cancelModal">
+            Cancel
+          </button>
+
+          <button type="submit" class="btn-primary">
+            Save Resource
+          </button>
         </div>
+
       </form>
     </div>
   </div>
@@ -133,4 +193,5 @@
   <script src="../components/profile-modal.js"></script>
   <script src="../js/admin-resources.js"></script>
 </body>
+
 </html>

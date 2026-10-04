@@ -12,19 +12,36 @@ def get_resources(user: dict = Depends(get_current_user)):
 
     with engine.connect() as conn:
 
-        result = conn.execute(text("SELECT * FROM resources ORDER BY resource_id DESC"))
+        result = conn.execute(
+            text("SELECT * FROM resources ORDER BY resource_id DESC")
+        )
 
         resources = []
+
         for row in result:
+
+            qty = row.quantity_available
+            max_stock = row.max_stock
+
+            threshold = max_stock * 0.30
+
+            if qty <= 0:
+                status = "Depleted"
+            elif qty <= threshold:
+                status = "Low Stock"
+            else:
+                status = "Available"
+
             resources.append({
-                "resource_id":        row.resource_id,
-                "resource_name":      row.resource_name,
-                "category":           row.category,
-                "quantity_available": row.quantity_available,
-                "unit":               row.unit,
-                "location":           row.location,
-                "status":             row.status,
-                "last_updated":       str(row.last_updated)
+                "resource_id": row.resource_id,
+                "resource_name": row.resource_name,
+                "category": row.category,
+                "quantity_available": qty,
+                "max_stock": max_stock,
+                "unit": row.unit,
+                "location": row.location,
+                "status": status,
+                "last_updated": str(row.last_updated)
             })
 
         return resources
@@ -32,23 +49,45 @@ def get_resources(user: dict = Depends(get_current_user)):
 
 # CREATE RESOURCE
 @router.post("/create")
-def create_resource(resource_name:      str, admin: dict = Depends(get_current_admin), category:           str  = "General", quantity_available: int  = 0, unit:               str  = "units", location:           str  = "", status:             str  = "Available"):
+def create_resource(
+    resource_name: str,
+    admin: dict = Depends(get_current_admin),
+    category: str = "General",
+    quantity_available: int = 0,
+    max_stock: int = 100,
+    unit: str = "units",
+    location: str = ""
+):
 
     with engine.begin() as conn:
         conn.execute(
             text("""
                 INSERT INTO resources
-                    (resource_name, category, quantity_available, unit, location, status)
+                (
+                    resource_name,
+                    category,
+                    quantity_available,
+                    max_stock,
+                    unit,
+                    location
+                )
                 VALUES
-                    (:resource_name, :category, :quantity_available, :unit, :location, :status)
+                (
+                    :resource_name,
+                    :category,
+                    :quantity_available,
+                    :max_stock,
+                    :unit,
+                    :location
+                )
             """),
             {
                 "resource_name":      resource_name,
                 "category":           category,
                 "quantity_available": quantity_available,
+                "max_stock":          max_stock,
                 "unit":               unit,
-                "location":           location,
-                "status":             status
+                "location":           location
             }
         )
 
@@ -57,8 +96,16 @@ def create_resource(resource_name:      str, admin: dict = Depends(get_current_a
 
 # UPDATE RESOURCE
 @router.put("/{resource_id}")
-def update_resource(resource_id:        int, resource_name:      str, category:           str, quantity_available: int, unit:               str, location:           str  = "", status:             str  = "Available", admin: dict = Depends(get_current_admin)):
-
+def update_resource(
+    resource_id: int,
+    resource_name: str,
+    category: str,
+    quantity_available: int,
+    max_stock: int,
+    unit: str,
+    location: str = "",
+    admin: dict = Depends(get_current_admin)
+):
     with engine.begin() as conn:
 
         result = conn.execute(
@@ -68,9 +115,9 @@ def update_resource(resource_id:        int, resource_name:      str, category: 
                     resource_name      = :resource_name,
                     category           = :category,
                     quantity_available = :quantity_available,
+                    max_stock          = :max_stock,
                     unit               = :unit,
-                    location           = :location,
-                    status             = :status
+                    location           = :location
                 WHERE resource_id = :resource_id
             """),
             {
@@ -78,9 +125,9 @@ def update_resource(resource_id:        int, resource_name:      str, category: 
                 "resource_name":      resource_name,
                 "category":           category,
                 "quantity_available": quantity_available,
+                "max_stock":          max_stock,
                 "unit":               unit,
-                "location":           location,
-                "status":             status
+                "location":           location
             }
         )
 

@@ -21,6 +21,14 @@ if "ssl-mode" in DATABASE_URL:
 
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
 
+try:
+    with engine.connect() as conn:
+        print("Successfully connected to the database.")
+except Exception as e:
+    print(f"Error connecting to the database: {e}")
+    # Optional: we can raise or let it fail later
+    # raise e
+
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,

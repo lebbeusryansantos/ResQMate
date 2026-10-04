@@ -124,6 +124,10 @@ if (saveDistribution) {
             return;
         }
 
+        const originalText = saveDistribution.textContent;
+        saveDistribution.disabled = true;
+        saveDistribution.textContent = "Saving...";
+
         try {
             let url, method;
 
@@ -154,6 +158,9 @@ if (saveDistribution) {
         } catch (error) {
             console.error(error);
             alert("Request failed. Is the backend running?");
+        } finally {
+            saveDistribution.disabled = false;
+            saveDistribution.textContent = originalText;
         }
     });
 }
@@ -181,6 +188,9 @@ window.openDeleteDistribution = function (id) {
 
 if (confirmDeleteDistribution) {
     confirmDeleteDistribution.addEventListener("click", async () => {
+        const originalText = confirmDeleteDistribution.textContent;
+        confirmDeleteDistribution.disabled = true;
+        confirmDeleteDistribution.textContent = "Deleting...";
         try {
             const res = await fetch(`${API_BASE}/distributions/${deletingDistributionId}`, {
                 method: "DELETE", headers: {
@@ -197,6 +207,9 @@ if (confirmDeleteDistribution) {
             loadDistributions();
         } catch (error) {
             console.error(error);
+        } finally {
+            confirmDeleteDistribution.disabled = false;
+            confirmDeleteDistribution.textContent = originalText;
         }
     });
 }

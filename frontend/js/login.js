@@ -38,13 +38,21 @@ loginForm.addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
-        const loginError =
-            document.getElementById("loginError");
-
         if (!response.ok) {
 
-            loginError.textContent =
-                "Invalid username or password";
+            let errorMsg = "Invalid username or password";
+            if (data.detail) {
+                if (data.detail.error) {
+                    errorMsg = data.detail.error;
+                    if (data.detail.attempts_remaining !== undefined) {
+                        errorMsg += ` (${data.detail.attempts_remaining} attempts remaining)`;
+                    }
+                } else if (typeof data.detail === "string") {
+                    errorMsg = data.detail;
+                }
+            }
+            
+            loginError.textContent = errorMsg;
 
             loginError.classList.add("show");
 

@@ -8,6 +8,9 @@ import jwt
 import os
 from datetime import datetime, timedelta, timezone
 from backend.security import get_current_user, get_current_admin
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 router = APIRouter()
 
@@ -132,7 +135,7 @@ def register_user(data: RegisterRequest):
                 "first_name":   data.first_name,
                 "last_name":    data.last_name,
                 "email":        data.email,
-                "password":     data.password,
+                "password":     pwd_context.hash(data.password),
                 "role":         db_role,
                 "phone_number": data.phone_number,
                 "dob":          data.dob
@@ -193,7 +196,7 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
                 "first_name": first_name,
                 "last_name":  last_name,
                 "email":      data.email,
-                "password":   data.password,
+                "password":   pwd_context.hash(data.password),
                 "role":       db_role
             }
         )
@@ -243,7 +246,12 @@ def login_user(data: LoginRequest):
     if result.locked_until and result.locked_until > now:
         raise HTTPException(status_code=403, detail={"error": "Account locked due to too many failed attempts.", "attempts_remaining": 0, "locked_until": result.locked_until.isoformat()})
 
-    if result.password != data.password:
+    try:
+        is_valid = pwd_context.verify(data.password, result.password)
+    except Exception:
+        is_valid = (result.password == data.password)
+
+    if not is_valid:
         failed_attempts = (result.failed_login_attempts or 0) + 1
         with engine.begin() as conn:
             if failed_attempts >= 3:

@@ -160,6 +160,25 @@ body {
   font-size: 14px;
 }
 
+.resource-depleted {
+  background: #f3f4f6;
+}
+
+.resource-depleted td {
+  color: #6b7280;
+}
+
+.resource-depleted strong {
+  color: #6b7280;
+}
+
+.disabled-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #d1d5db;
+}
+
 /* ===========================
    STAT CARDS
 =========================== */
@@ -1034,12 +1053,33 @@ tbody tr:hover {
   text-align: center;
 }
 
-.required-asterisk { color: red; } .text-success { color: #15803d; font-weight: 600; } .text-warning { color: #b45309; font-weight: 600; } .text-danger { color: #dc2626; font-weight: 600; }
+.required-asterisk {
+  color: red;
+}
+
+.text-success {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.text-warning {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: #dc2626;
+  font-weight: 600;
+}
 
 
 /* Global Button UI Feedback */
-button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-btn:active {
-    transform: scale(0.96) !important;
-    opacity: 0.9 !important;
-    transition: transform 0.1s ease, opacity 0.1s ease !important;
+button:active,
+.btn:active,
+input[type="submit"]:active,
+a.btn:active,
+.confirm-btn:active {
+  transform: scale(0.96) !important;
+  opacity: 0.9 !important;
+  transition: transform 0.1s ease, opacity 0.1s ease !important;
 }

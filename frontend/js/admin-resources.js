@@ -7,8 +7,11 @@ const resourceModal = document.getElementById("resourceModal");
 const modalTitle = document.getElementById("modalTitle");
 const locationSelect = document.getElementById("resourceLocation");
 const customLocation = document.getElementById("customLocation");
+const unitSelect = document.getElementById("resourceUnit");
+const customUnit = document.getElementById("customUnit");
 
 let editingResourceId = null;
+let currentStock = 0;
 
 /* ==================================
    LOAD RESOURCES
@@ -45,11 +48,36 @@ function renderTable(resources) {
     resources.forEach(resource => {
 
         const qty = parseInt(resource.quantity_available) || 0;
-        const badge = qty <= 0 ? "rq-badge-inactive" : qty <= 50 ? "rq-badge-medium" : "rq-badge-active";
-        const statusTxt = qty <= 0 ? "Depleted" : qty <= 50 ? "Low Stock" : "Available";
+        const maxStock = parseInt(resource.max_stock) || 100;
+
+        const stockPercentage =
+            maxStock > 0
+                ? (qty / maxStock) * 100
+                : 0;
+
+        const isDepleted = qty <= 0;
+
+        const badge =
+            isDepleted
+                ? "rq-badge-inactive"
+                : stockPercentage <= 30
+                    ? "rq-badge-medium"
+                    : "rq-badge-active";
+
+        const statusTxt =
+            isDepleted
+                ? "Depleted"
+                : stockPercentage <= 30
+                    ? "Low Stock"
+                    : "Available";
+
+        const rowClass =
+            isDepleted
+                ? "resource-depleted"
+                : "";
 
         resourceTableBody.innerHTML += `
-            <tr data-id="${resource.resource_id}">
+            <tr class="${rowClass}" data-id="${resource.resource_id}">
                 <td><strong>#${resource.resource_id}</strong></td>
                 <td>${resource.resource_name}</td>
                 <td>${resource.category || "General"}</td>
@@ -63,14 +91,35 @@ function renderTable(resources) {
                             '${(resource.resource_name || "").replace(/'/g, "\\'")}',
                             '${resource.category || "General"}',
                             ${qty},
+                            ${resource.max_stock || 100},
                             '${resource.unit || "units"}',
-                            '${(resource.location || "").replace(/'/g, "\\'")}')">
+                            '${(resource.location || "").replace(/'/g, "\\'")}'
+                        )">
                         <i class="fa-solid fa-pen"></i>
                     </button>
+
                     <button class="action-btn delete-btn"
                         onclick="deleteResource(${resource.resource_id})">
                         <i class="fa-solid fa-trash"></i>
                     </button>
+
+                    ${isDepleted
+                ? `
+                                <button
+                                    class="action-btn disabled-btn"
+                                    disabled
+                                    title="Resource is depleted">
+                                    <i class="fa-solid fa-truck"></i>
+                                </button>
+                            `
+                : `
+                                <button
+                                    class="action-btn distribute-btn"
+                                    onclick="openDistributeModal(${resource.resource_id})">
+                                    <i class="fa-solid fa-truck"></i>
+                                </button>
+                            `
+            }
                 </td>
             </tr>
         `;
@@ -81,26 +130,93 @@ function renderTable(resources) {
    UPDATE STATS
 ================================== */
 function updateStats(resources) {
-    const total = resources.length;
-    const avail = resources.filter(r => parseInt(r.quantity_available) > 50).length;
-    const low = resources.filter(r => parseInt(r.quantity_available) > 0 && parseInt(r.quantity_available) <= 50).length;
-    const depleted = resources.filter(r => parseInt(r.quantity_available) <= 0).length;
 
-    document.getElementById("totalResources").textContent = total;
-    document.getElementById("availableResources").textContent = avail;
-    document.getElementById("lowStockResources").textContent = low;
-    document.getElementById("depletedResources").textContent = depleted;
+    const total = resources.length;
+
+    const available = resources.filter(resource => {
+
+        const qty =
+            parseInt(resource.quantity_available) || 0;
+
+        const maxStock =
+            parseInt(resource.max_stock) || 100;
+
+        const stockPercentage =
+            maxStock > 0
+                ? (qty / maxStock) * 100
+                : 0;
+
+        return qty > 0 && stockPercentage > 30;
+
+    }).length;
+
+    const lowStock = resources.filter(resource => {
+
+        const qty =
+            parseInt(resource.quantity_available) || 0;
+
+        const maxStock =
+            parseInt(resource.max_stock) || 100;
+
+        const stockPercentage =
+            maxStock > 0
+                ? (qty / maxStock) * 100
+                : 0;
+
+        return qty > 0 && stockPercentage <= 30;
+
+    }).length;
+
+    const depleted = resources.filter(resource =>
+        (parseInt(resource.quantity_available) || 0) <= 0
+    ).length;
+
+    document.getElementById("totalResources").textContent =
+        total;
+
+    document.getElementById("availableResources").textContent =
+        available;
+
+    document.getElementById("lowStockResources").textContent =
+        lowStock;
+
+    document.getElementById("depletedResources").textContent =
+        depleted;
 }
 
 /* ==================================
    OPEN ADD MODAL
 ================================== */
-document.getElementById("addResourceBtn").addEventListener("click", () => {
+document.getElementById(
+    "addResourceBtn"
+).addEventListener("click", () => {
+
     editingResourceId = null;
-    modalTitle.textContent = "Add Resource";
+    currentStock = 0;
+
+    modalTitle.textContent =
+        "Add Resource";
+
     resourceForm.reset();
-    customLocation.style.display = "none";
-    resourceModal.classList.add("show");
+
+    document.getElementById("currentStock").value = 0;
+    document.getElementById("addStock").value = 0;
+    document.getElementById("resourceMaxStock").value = 100;
+
+    customLocation.style.display =
+        "none";
+
+    if (customUnit) {
+        customUnit.style.display =
+            "none";
+
+        customUnit.value = "";
+    }
+
+    resourceModal.classList.add(
+        "show"
+    );
+
 });
 
 /* ==================================
@@ -124,14 +240,42 @@ resourceForm.addEventListener("submit", async (e) => {
 
     const resource_name = document.getElementById("resourceName").value.trim();
     const category = document.getElementById("resourceCategory").value;
-    const quantity_available = parseInt(document.getElementById("resourceQty").value);
-    const unit = document.getElementById("resourceUnit")?.value.trim() || "units";
+    const max_stock = parseInt(document.getElementById("resourceMaxStock").value);
+
+    let quantity_available = 0;
+
+    const addStock =
+        parseInt(
+            document.getElementById("addStock").value
+        ) || 0;
+
+    if (editingResourceId === null) {
+
+        quantity_available = addStock;
+
+    } else {
+
+        quantity_available =
+            currentStock + addStock;
+
+    }
+
+    let unit =
+        unitSelect.value;
+
+    if (unit === "other") {
+
+        unit =
+            customUnit.value.trim();
+
+    }
+
     let location = locationSelect.value === "other"
         ? customLocation.value.trim()
         : locationSelect.value;
 
-    if (!resource_name || isNaN(quantity_available)) {
-        alert("Please fill in Resource Name and Quantity.");
+    if (!resource_name || isNaN(quantity_available) || isNaN(max_stock)) {
+        alert("Please fill in all required fields.");
         return;
     }
 
@@ -146,7 +290,13 @@ resourceForm.addEventListener("submit", async (e) => {
     try {
         if (editingResourceId === null) {
             // CREATE
-            const url = `${API_URL}/create?resource_name=${encodeURIComponent(resource_name)}&category=${encodeURIComponent(category)}&quantity_available=${quantity_available}&unit=${encodeURIComponent(unit)}&location=${encodeURIComponent(location)}`;
+            const url =
+                `${API_URL}/create?resource_name=${encodeURIComponent(resource_name)}
+                &category=${encodeURIComponent(category)}
+                &quantity_available=${quantity_available}
+                &max_stock=${max_stock}
+                &unit=${encodeURIComponent(unit)}
+                &location=${encodeURIComponent(location)}`;
             const res = await fetch(url, {
                 method: "POST", headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -155,16 +305,24 @@ resourceForm.addEventListener("submit", async (e) => {
             });
             if (!res.ok) { const err = await res.json(); alert(err.detail || "Failed to add resource."); return; }
 
-        } else {
-            // UPDATE
-            const url = `${API_URL}/${editingResourceId}?resource_name=${encodeURIComponent(resource_name)}&category=${encodeURIComponent(category)}&quantity_available=${quantity_available}&unit=${encodeURIComponent(unit)}&location=${encodeURIComponent(location)}`;
-            const res = await fetch(`${API_URL}/${editingResourceId}`, {
-                method: "PUT", headers: {
+       } else {
+
+            const url =
+                `${API_URL}/${editingResourceId}?resource_name=${encodeURIComponent(resource_name)}&category=${encodeURIComponent(category)}&quantity_available=${quantity_available}&max_stock=${max_stock}&unit=${encodeURIComponent(unit)}&location=${encodeURIComponent(location)}`;
+
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
-            if (!res.ok) { const err = await res.json(); alert(err.detail || "Failed to update resource."); return; }
+
+            if (!res.ok) {
+                const err = await res.json();
+                alert(err.detail || "Failed to update resource.");
+                return;
+            }
         }
 
         resourceModal.classList.remove("show");
@@ -184,14 +342,61 @@ resourceForm.addEventListener("submit", async (e) => {
 /* ==================================
    EDIT RESOURCE
 ================================== */
-window.editResource = function (id, name, category, quantity, unit, location) {
+window.editResource = function (
+    id,
+    name,
+    category,
+    quantity,
+    max_stock,
+    unit,
+    location
+) {
     editingResourceId = id;
-    modalTitle.textContent = "Edit Resource";
+    currentStock = quantity;
 
+    modalTitle.textContent = "Edit Resource";
     document.getElementById("resourceName").value = name;
     document.getElementById("resourceCategory").value = category;
-    document.getElementById("resourceQty").value = quantity;
-    if (document.getElementById("resourceUnit")) document.getElementById("resourceUnit").value = unit;
+    document.getElementById("currentStock").value = quantity;
+    document.getElementById("addStock").value = 0;
+    document.getElementById("resourceMaxStock").value = max_stock;
+
+    const presetUnits = [
+        "pcs",
+        "box",
+        "pack",
+        "gallon",
+        "liter",
+        "sack",
+        "kit"
+    ];
+
+    if (
+        presetUnits.includes(
+            unit.toLowerCase()
+        )
+    ) {
+
+        unitSelect.value =
+            unit.toLowerCase();
+
+        customUnit.style.display =
+            "none";
+
+        customUnit.value = "";
+
+    } else {
+
+        unitSelect.value =
+            "other";
+
+        customUnit.style.display =
+            "block";
+
+        customUnit.value =
+            unit;
+
+    }
 
     const presets = ["QC Warehouse", "Pasig Hub", "Marikina Depot"];
     if (presets.includes(location)) {
@@ -220,6 +425,30 @@ window.deleteResource = async function (id) {
         await doDeleteResource(id);
     }
 };
+
+/* ==================================
+   UNIT DROPDOWN
+================================== */
+if (unitSelect) {
+
+    unitSelect.addEventListener("change", () => {
+
+        const isOther =
+            unitSelect.value === "other";
+
+        customUnit.style.display =
+            isOther ? "block" : "none";
+
+        customUnit.required =
+            isOther;
+
+        if (!isOther) {
+            customUnit.value = "";
+        }
+
+    });
+
+}
 
 async function doDeleteResource(id) {
     try {

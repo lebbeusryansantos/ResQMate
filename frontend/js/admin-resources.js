@@ -1,5 +1,5 @@
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
-var API_URL = `${API_BASE_URL}/resources/`;
+var API_URL = `${API_BASE_URL}/resources`;
 
 const resourceTableBody = document.querySelector("#resourcesTable tbody");
 const resourceForm = document.getElementById("resourceForm");
@@ -158,7 +158,7 @@ resourceForm.addEventListener("submit", async (e) => {
         } else {
             // UPDATE
             const url = `${API_URL}/${editingResourceId}?resource_name=${encodeURIComponent(resource_name)}&category=${encodeURIComponent(category)}&quantity_available=${quantity_available}&unit=${encodeURIComponent(unit)}&location=${encodeURIComponent(location)}`;
-            const res = await fetch(url, {
+            const res = await fetch(`${API_URL}/${editingResourceId}`, {
                 method: "PUT", headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'

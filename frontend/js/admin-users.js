@@ -266,6 +266,8 @@ document.getElementById(
         modal.classList.remove(
             "active"
         );
+        
+        alert("User successfully " + (editingUserId ? "updated" : "created") + "!");
 
         loadUsers();
 

@@ -202,8 +202,8 @@ async function loadRecentRequests() {
         }
 
         requests.slice(0, 5).forEach(r => {
-            const status = (r.status || "pending").toUpperCase();
-            const priority = (r.priority_level || "medium").toUpperCase();
+            const status = (r.status || "pending").toLowerCase();
+            const priority = (r.priority_level || "medium").toLowerCase();
 
             tbody.innerHTML += `
                 <tr>

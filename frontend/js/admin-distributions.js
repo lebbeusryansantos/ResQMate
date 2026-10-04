@@ -69,9 +69,9 @@ function renderTable(data) {
 
         const statusClass = {
             assigned: "approved",
-            processing: "warning",
-            completed: "success",
-            rejected: "danger"
+            processing: "pending",
+            completed: "completed",
+            rejected: "rejected"
         }[status] || "approved";
 
         distributionTableBody.innerHTML += `

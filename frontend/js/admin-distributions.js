@@ -33,7 +33,6 @@ async function loadDistributions() {
         const distributions = await response.json();
         allDistributions = distributions;
         renderTable(distributions);
-        updateStats(distributions);
     } catch (error) {
         console.error("Failed to load distributions", error);
     }
@@ -77,34 +76,31 @@ function renderTable(data) {
 }
 
 /* ===========================
-   UPDATE STATS
-=========================== */
-function updateStats(data) {
-    document.getElementById("totalDistributions").textContent = data.length;
-    const totalQty = data.reduce((sum, d) => sum + Number(d.quantity_given), 0);
-    document.getElementById("totalQuantity").textContent = totalQty;
-    document.getElementById("resourceCount").textContent = new Set(data.map(d => d.resource_id)).size;
-    document.getElementById("staffCount").textContent = new Set(data.map(d => d.staff_id)).size;
-}
-
-/* ===========================
    OPEN CREATE MODAL
 =========================== */
 if (addDistributionBtn) {
-    addDistributionBtn.addEventListener("click", () => {
+    addDistributionBtn.addEventListener("click", async () => {
+
+        await loadRequests();
+
         editingDistributionId = null;
-        document.getElementById("distributionModalTitle").textContent = "Create Distribution";
+
+        document.getElementById(
+            "distributionModalTitle"
+        ).textContent = "Create Distribution";
+
         document.getElementById("requestId").value = "";
         document.getElementById("quantity").value = "";
         document.getElementById("quantity").removeAttribute("max");
         document.getElementById("resource").value = "";
         document.getElementById("staff").value = "";
+
         distributionModal.classList.add("show");
     });
 }
 
 /* ===========================
-   SAVE WITH VALIDATION
+   REQUESTS LOADER
 =========================== */
 if (saveDistribution) {
     saveDistribution.addEventListener("click", async () => {
@@ -178,10 +174,36 @@ if (saveDistribution) {
 /* ===========================
    EDIT
 =========================== */
-window.editDistribution = function (id, requestId, resourceId, staffId, quantity) {
+window.editDistribution = async function (
+    id,
+    requestId,
+    resourceId,
+    staffId,
+    quantity
+) {
     editingDistributionId = id;
-    document.getElementById("distributionModalTitle").textContent = "Edit Distribution";
-    document.getElementById("requestId").value = requestId;
+
+    document.getElementById(
+        "distributionModalTitle"
+    ).textContent = "Edit Distribution";
+
+    await loadRequests();
+
+    const requestSelect =
+        document.getElementById("requestId");
+
+    if (
+        !Array.from(requestSelect.options)
+            .some(opt => opt.value == requestId)
+    ) {
+        requestSelect.innerHTML += `
+            <option value="${requestId}">
+                #${requestId}
+            </option>
+        `;
+    }
+
+    requestSelect.value = requestId;
     document.getElementById("resource").value = resourceId;
 
     // Set max attribute based on resource
@@ -193,6 +215,8 @@ window.editDistribution = function (id, requestId, resourceId, staffId, quantity
 
     qtyInput.value = quantity;
     document.getElementById("staff").value = staffId;
+    document.getElementById("quantity").value = quantity;
+
     distributionModal.classList.add("show");
 };
 
@@ -323,5 +347,6 @@ async function loadStaff() {
 =========================== */
 loadRequests();
 loadResources();
+loadRequests();
 loadStaff();
 loadDistributions();

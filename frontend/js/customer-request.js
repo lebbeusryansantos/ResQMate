@@ -1,4 +1,8 @@
-var API_URL = "http://127.0.0.1:8000";
+var API_URL =
+    window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://resqmate-backend.onrender.com";
 
 const requestForm = document.getElementById("requestForm");
 const assistanceTypeInput = document.getElementById("assistanceType");
@@ -199,6 +203,12 @@ if (requestForm) {
         }
 
         const assistanceType = assistanceTypeInput.value.trim();
+        console.log("Region:", regionInput.value);
+        console.log("Province:", provinceInput.value);
+        console.log("City:", cityInput.value);
+        console.log("Barangay:", barangayInput.value);
+        console.log("Priority:", priorityInput.value);
+        console.log("Details:", detailsInput.value);
 
         // --- CAPTURE TEXT NAMES PROPERLY FOR SUBMISSION ---
         const regionSelectedOption = regionInput ? regionInput.options[regionInput.selectedIndex] : null;
@@ -220,13 +230,23 @@ if (requestForm) {
             : "";
 
         // Smart fallback for Metro Manila / NCR
-        if (regionText.includes("NCR") || regionText.includes("National Capital Region") || regionText.includes("Metro Manila") || !provinceText || provinceText === "Select Province") {
+        if (
+            regionText.includes("NCR") ||
+            regionText.includes("National Capital Region") ||
+            regionText.includes("Metro Manila")
+        ) {
             provinceText = "Metro Manila";
         }
         // ----------------------------------------------
 
         const details = detailsInput.value.trim();
         const priority = priorityInput.value;
+
+        console.log("assistanceType =", assistanceType);
+        console.log("barangayText =", barangayText);
+        console.log("cityText =", cityText);
+        console.log("details =", details);
+        console.log("priority =", priority);
 
         if (!assistanceType || !barangayText || !cityText || !details || !priority) {
             if (requestError) {
@@ -251,6 +271,8 @@ if (requestForm) {
             );
 
             const token = userData.token;
+
+            console.log("Submitting to:", `${API_URL}/requests/create`);
             const response = await fetch(
                 `${API_URL}/requests/create`,
                 {

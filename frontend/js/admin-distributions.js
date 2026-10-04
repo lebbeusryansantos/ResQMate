@@ -17,6 +17,7 @@ const distributionTableBody = document.querySelector("#distributionTable tbody")
 let editingDistributionId = null;
 let deletingDistributionId = null;
 let allDistributions = [];
+let resourcesData = []; // Store resources to check max quantity
 
 /* ===========================
    LOAD DISTRIBUTIONS
@@ -41,7 +42,6 @@ async function loadDistributions() {
    RENDER TABLE
 =========================== */
 function renderTable(data) {
-
     distributionTableBody.innerHTML = "";
 
     if (data.length === 0) {
@@ -51,10 +51,6 @@ function renderTable(data) {
     }
 
     data.forEach(d => {
-        const date = d.distribution_date
-            ? new Date(d.distribution_date).toLocaleDateString("en-PH")
-            : "—";
-
         distributionTableBody.innerHTML += `
             <tr>
                 <td><strong>#${d.distribution_id}</strong></td>
@@ -95,6 +91,7 @@ if (addDistributionBtn) {
 
         document.getElementById("requestId").value = "";
         document.getElementById("quantity").value = "";
+        document.getElementById("quantity").removeAttribute("max");
         document.getElementById("resource").value = "";
         document.getElementById("staff").value = "";
 
@@ -105,70 +102,31 @@ if (addDistributionBtn) {
 /* ===========================
    REQUESTS LOADER
 =========================== */
-
-async function loadRequests() {
-    try {
-        const [requestsRes, distributionsRes] = await Promise.all([
-            fetch(`${API_BASE}/requests/`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }),
-            fetch(`${API_BASE}/distributions/`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
-        ]);
-
-        const requests = await requestsRes.json();
-        const distributions = await distributionsRes.json();
-
-        const assignedRequestIds = distributions.map(
-            d => Number(d.request_id)
-        );
-
-        const requestSelect =
-            document.getElementById("requestId");
-
-        requestSelect.innerHTML =
-            '<option value="">Select Request</option>';
-
-        requests
-            .filter(r =>
-                !assignedRequestIds.includes(
-                    Number(r.request_id)
-                )
-            )
-            .forEach(r => {
-                requestSelect.innerHTML += `
-                    <option value="${r.request_id}">
-                        #${r.request_id} - ${r.full_name || "Unknown"}
-                    </option>
-                `;
-            });
-
-    } catch (error) {
-        console.error(
-            "Failed to load requests",
-            error
-        );
-    }
-}
-
-/* ===========================
-   SAVE
-=========================== */
 if (saveDistribution) {
     saveDistribution.addEventListener("click", async () => {
-
         const requestId = document.getElementById("requestId").value.trim();
         const resourceId = document.getElementById("resource").value;
         const staffId = document.getElementById("staff").value;
-        const quantity = document.getElementById("quantity").value;
+        const quantityInput = document.getElementById("quantity");
+        const quantity = Number(quantityInput.value);
 
-        if (!requestId || !resourceId || !staffId || !quantity) {
+        if (!requestId || !resourceId || !staffId || !quantityInput.value) {
             alert("Please complete all fields.");
+            return;
+        }
+
+        // Validate max quantity limit based on selected resource
+        const resourceSelect = document.getElementById("resource");
+        const selectedOption = resourceSelect.options[resourceSelect.selectedIndex];
+        const maxQty = Number(selectedOption.getAttribute("data-max")) || Infinity;
+
+        if (quantity > maxQty) {
+            alert(`Quantity given cannot exceed the available stock limit of ${maxQty}.`);
+            return;
+        }
+
+        if (quantity <= 0) {
+            alert("Quantity must be greater than zero.");
             return;
         }
 
@@ -247,6 +205,15 @@ window.editDistribution = async function (
 
     requestSelect.value = requestId;
     document.getElementById("resource").value = resourceId;
+
+    // Set max attribute based on resource
+    const resourceSelect = document.getElementById("resource");
+    const selectedOption = resourceSelect.options[resourceSelect.selectedIndex];
+    const maxQty = selectedOption ? selectedOption.getAttribute("data-max") : null;
+    const qtyInput = document.getElementById("quantity");
+    if (maxQty) qtyInput.max = maxQty;
+
+    qtyInput.value = quantity;
     document.getElementById("staff").value = staffId;
     document.getElementById("quantity").value = quantity;
 
@@ -307,30 +274,57 @@ document.getElementById("distributionSearch")?.addEventListener("keyup", () => {
     renderTable(filtered);
 });
 
-document.getElementById("statusFilter")?.addEventListener("change", () => {
-    const status = document.getElementById("statusFilter").value;
-    renderTable(status === "all" ? allDistributions : allDistributions);
-    // All distributions currently show as "Assigned" — filter is for future status extension
-});
-
 /* ===========================
-   POPULATE RESOURCES + STAFF DROPDOWNS
+   POPULATE DROPDOWNS (REQUESTS, RESOURCES, STAFF)
 =========================== */
-async function loadResources() {
+async function loadRequests() {
     try {
-        const resources = await (await fetch(`${API_BASE}/resources/`, {
+        const response = await fetch(`${API_BASE}/requests/`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             }
-        })).json();
+        });
+        const requests = await response.json();
+        const requestSel = document.getElementById("requestId");
+        requestSel.innerHTML = '<option value="">Select Request ID</option>';
+        requests.forEach(req => {
+            requestSel.innerHTML += `<option value="${req.request_id}">#${req.request_id} - ${req.assistance_type || "Request"} (${req.city || ""})</option>`;
+        });
+    } catch (e) {
+        console.error("Failed to load requests", e);
+    }
+}
+
+async function loadResources() {
+    try {
+        const response = await fetch(`${API_BASE}/resources/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        resourcesData = await response.json();
         const resourceSel = document.getElementById("resource");
         resourceSel.innerHTML = '<option value="">Select Resource</option>';
-        resources.forEach(r => {
-            resourceSel.innerHTML += `<option value="${r.resource_id}">${r.resource_name} (${r.quantity_available} ${r.unit})</option>`;
+        resourcesData.forEach(r => {
+            resourceSel.innerHTML += `<option value="${r.resource_id}" data-max="${r.quantity_available}">${r.resource_name} (${r.quantity_available} ${r.unit})</option>`;
         });
     } catch (e) { console.error("Failed to load resources", e); }
 }
+
+// Handle dynamic max quantity constraint when resource selection changes
+document.getElementById("resource")?.addEventListener("change", function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const maxQty = selectedOption.getAttribute("data-max");
+    const quantityInput = document.getElementById("quantity");
+
+    if (maxQty) {
+        quantityInput.max = maxQty;
+    } else {
+        quantityInput.removeAttribute("max");
+    }
+});
 
 async function loadStaff() {
     try {
@@ -351,6 +345,7 @@ async function loadStaff() {
 /* ===========================
    INITIAL LOAD
 =========================== */
+loadRequests();
 loadResources();
 loadRequests();
 loadStaff();

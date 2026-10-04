@@ -239,12 +239,12 @@ def login_user(data: LoginRequest):
         ).fetchone()
 
     if not result:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail={"error": "Invalid email or password"})
 
     # Check for lockout
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     if result.locked_until and result.locked_until > now:
-        raise HTTPException(status_code=403, detail="Account locked due to too many failed attempts. Try again later.")
+        raise HTTPException(status_code=403, detail={"error": "Account locked due to too many failed attempts.", "attempts_remaining": 0, "locked_until": result.locked_until.isoformat()})
 
     try:
         is_valid = pwd_context.verify(data.password, result.password)
@@ -260,14 +260,14 @@ def login_user(data: LoginRequest):
                     text("UPDATE users SET failed_login_attempts = :attempts, locked_until = :lock_time WHERE user_id = :uid"),
                     {"attempts": failed_attempts, "lock_time": lockout_time, "uid": result.user_id}
                 )
-                raise HTTPException(status_code=403, detail="Account locked due to too many failed attempts. Try again in 3 minutes.")
+                raise HTTPException(status_code=403, detail={"error": "Too many failed attempts. Account locked for 3 minutes.", "attempts_remaining": 0, "locked_until": lockout_time.isoformat()})
             else:
                 conn.execute(
                     text("UPDATE users SET failed_login_attempts = :attempts WHERE user_id = :uid"),
                     {"attempts": failed_attempts, "uid": result.user_id}
                 )
         attempts_remaining = 3 - failed_attempts
-        raise HTTPException(status_code=401, detail=f"Invalid password. {attempts_remaining} attempts remaining.")
+        raise HTTPException(status_code=401, detail={"error": "Invalid email or password", "attempts_remaining": attempts_remaining})
 
     # Generate JWT session token
     exp_time = now + timedelta(hours=24)

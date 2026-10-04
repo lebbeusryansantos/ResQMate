@@ -1,3 +1,4 @@
+<!-- Main structure and layout for resources -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +18,8 @@
     <div id="sidebar-container"></div>
     <div id="logout-modal-wrapper"></div>
     <div id="profile-modal-wrapper"></div>
-    <main class="main-content">
+    <!-- Main Content Section -->
+<main class="main-content">
 
       <div class="topbar">
         <h2>Resources</h2>
@@ -66,7 +68,8 @@
         </div>
 
         <div class="table-responsive">
-          <table id="resourcesTable">
+          <!-- Data Table Section -->
+<table id="resourcesTable">
             <thead>
               <tr>
                 <th>ID</th>
@@ -88,9 +91,12 @@
   </div>
 
   <!-- ADD/EDIT RESOURCE MODAL -->
-  <div class="modal" id="resourceModal">
-    <div class="modal-content">
-      <div class="modal-header">
+  <!-- Modal UI Component -->
+<div class="modal" id="resourceModal">
+    <!-- Modal UI Component -->
+<div class="modal-content">
+      <!-- Modal UI Component -->
+<div class="modal-header">
         <h3 id="modalTitle">Add Resource</h3>
         <button id="closeModal" aria-label="Close Modal"><i class="fa-solid fa-xmark"></i></button>
       </div>
@@ -161,7 +167,8 @@
             style="display:none; margin-top:8px;">
         </div>
 
-        <div class="modal-footer">
+        <!-- Modal UI Component -->
+<div class="modal-footer">
           <button type="button" class="btn-secondary" id="cancelModal">
             Cancel
           </button>
@@ -176,12 +183,15 @@
   </div>
 
   <!-- DELETE CONFIRMATION MODAL -->
-  <div class="modal" id="deleteModal">
-    <div class="modal-content small">
+  <!-- Modal UI Component -->
+<div class="modal" id="deleteModal">
+    <!-- Modal UI Component -->
+<div class="modal-content small">
       <div class="delete-icon"><i class="fa-solid fa-trash"></i></div>
       <h3>Delete Resource?</h3>
       <p>This action cannot be undone.</p>
-      <div class="modal-footer">
+      <!-- Modal UI Component -->
+<div class="modal-footer">
         <button type="button" class="btn-secondary" id="cancelDelete">Cancel</button>
         <button type="button" class="btn-danger" id="confirmDelete">Delete</button>
       </div>

@@ -1,3 +1,4 @@
+// Core logic and operations for admin-distributions
 var API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -41,6 +42,7 @@ async function loadDistributions() {
 /* ===========================
    RENDER TABLE
 =========================== */
+// Handles renderTable logic and operations
 function renderTable(data) {
     distributionTableBody.innerHTML = "";
 

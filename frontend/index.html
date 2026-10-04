@@ -1,3 +1,4 @@
+<!-- Main structure and layout for index -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,55 +18,7 @@
 
 <body id="top">
 
-    <!-- Navbar -->
-    <header class="navbar">
-
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='index.html'">
-            <img src="assets/logo.png" alt="ResQMate">
-            <h2>ResQMate</h2>
-        </div>
-
-        <div class="nav-buttons">
-            <button class="login-btn">Login</button>
-            <button class="signup-btn">Sign Up</button>
-        </div>
-
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-text">
-                <h1>
-                    Your Partner<br>
-                    in Times of Crisis
-                </h1>
-                <p>
-                    Request assistance, coordinate relief operations,
-                    and track disaster response in one platform.
-                </p>
-                <div class="hero-buttons">
-                    <button class="primary-btn" id="requestAssistanceBtn"
-                        onclick="document.getElementById('loginModal').classList.add('show'); if(typeof window.checkLockoutState==='function') window.checkLockoutState();">
-                        Request Assistance
-                    </button>
-                    <button class="secondary-btn" id="learnMoreBtn">
-                        Learn More
-                    </button>
-                </div>
-            </div>
-            
-            <div class="hero-image">
-                <img src="assets/hero_illustration.jpg" alt="Disaster Relief Dashboard Mockup">
-            </div>
-        </div>
-    </section>
-    <!-- Features Section -->
-    <section class="features" id="featuresSection">
-
-        <h2>How It Works</h2>
-
-        <!-- Fix: changed features-grid to feature-grid -->
+    
         <div class="feature-grid">
 
             <div class="feature-card">

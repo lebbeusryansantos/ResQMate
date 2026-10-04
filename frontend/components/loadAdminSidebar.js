@@ -1,3 +1,4 @@
+// Core logic and operations for loadAdminSidebar
 fetch("../components/admin-sidebar.html")
     .then(response => {
         if (!response.ok) {
@@ -50,6 +51,7 @@ fetch("../components/admin-sidebar.html")
         console.error("Error loading admin sidebar:", error);
     });
 
+// Handles setActiveSidebarLink logic and operations
 function setActiveSidebarLink() {
     const currentPage = window.location.pathname
         .split("/")
@@ -76,6 +78,7 @@ function setActiveSidebarLink() {
     });
 }
 
+// Handles toggleSidebar logic and operations
 function toggleSidebar() {
     const sidebar = document.querySelector(".sidebar");
     const dashboardContainer = document.querySelector(".dashboard-container");
@@ -88,6 +91,7 @@ function toggleSidebar() {
     }
 }
 
+// Handles loadUserProfile logic and operations
 function loadUserProfile() {
     const user = JSON.parse(localStorage.getItem("user"));
 

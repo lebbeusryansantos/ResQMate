@@ -1,3 +1,4 @@
+<!-- Main structure and layout for requests -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +23,8 @@
     <div id="logout-modal-wrapper"></div>
         <div id="profile-modal-wrapper"></div>
 
-    <main class="main-content">
+    <!-- Main Content Section -->
+<main class="main-content">
 
       <!-- Topbar -->
       <div class="rq-topbar">
@@ -84,7 +86,8 @@
       <!-- Requests Table -->
       <div class="rq-card">
         <div class="table-responsive">
-          <table class="table align-middle">
+          <!-- Data Table Section -->
+<table class="table align-middle">
             <thead>
               <tr>
                 <th>ID</th>
@@ -116,28 +119,36 @@
   </div>
 
   <!-- View Request Modal -->
-  <div class="custom-modal-overlay" id="requestModal">
-    <div class="custom-modal">
-      <div class="custom-modal-header">
+  <!-- Modal UI Component -->
+<div class="custom-modal-overlay" id="requestModal">
+    <!-- Modal UI Component -->
+<div class="custom-modal">
+      <!-- Modal UI Component -->
+<div class="custom-modal-header">
         <h3>Request Details</h3>
         <button id="closeRequestModal" aria-label="Close request modal"><i class="fas fa-times"></i></button>
       </div>
-      <div class="custom-modal-body" id="customRequestDetailBody"></div>
+      <!-- Modal UI Component -->
+<div class="custom-modal-body" id="customRequestDetailBody"></div>
     </div>
   </div>
 
   <!-- Delivery Documentation Modal -->
-  <div class="custom-modal-overlay" id="documentationModal">
-    <div class="custom-modal">
+  <!-- Modal UI Component -->
+<div class="custom-modal-overlay" id="documentationModal">
+    <!-- Modal UI Component -->
+<div class="custom-modal">
 
-      <div class="custom-modal-header">
+      <!-- Modal UI Component -->
+<div class="custom-modal-header">
         <h3>Delivery Documentation</h3>
         <button id="closeDocumentationModal">
           <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <div class="custom-modal-body">
+      <!-- Modal UI Component -->
+<div class="custom-modal-body">
 
         <input type="hidden" id="documentationRequestId">
 

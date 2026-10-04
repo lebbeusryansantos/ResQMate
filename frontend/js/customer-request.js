@@ -1,3 +1,4 @@
+// Core logic and operations for customer-request
 var API_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -113,6 +114,7 @@ if (priorityInput) {
     priorityInput.addEventListener("change", checkFormValidity);
 }
 
+// Handles checkFormValidity logic and operations
 function checkFormValidity() {
     if (requestForm && submitButton) {
         if (requestForm.checkValidity()) {

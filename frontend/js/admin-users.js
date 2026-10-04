@@ -1,3 +1,4 @@
+// Core logic and operations for admin-users
 var API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -12,6 +13,7 @@ const modal = document.getElementById("userModal");
 let editingUserId = null;
 let allUsers = [];
 
+// Handles getAuthHeaders logic and operations
 function getAuthHeaders() {
     const user = JSON.parse(
         localStorage.getItem("user") || "{}"
@@ -49,6 +51,7 @@ async function loadUsers() {
 /* ===========================
    RENDER USERS
 =========================== */
+// Handles renderUsers logic and operations
 function renderUsers(users) {
 
     usersTableBody.innerHTML = "";
@@ -397,6 +400,7 @@ document.getElementById(
     applyFilters
 );
 
+// Handles applyFilters logic and operations
 function applyFilters() {
 
     const search =

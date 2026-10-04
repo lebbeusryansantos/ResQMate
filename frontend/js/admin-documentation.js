@@ -1,3 +1,4 @@
+// Core logic and operations for admin-documentation
 var API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -170,6 +171,7 @@ async function loadDocumentations() {
     }
 }
 
+// Handles viewRemarks logic and operations
 function viewRemarks(remarks) {
 
     document.getElementById(

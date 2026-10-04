@@ -1,3 +1,4 @@
+// Core logic and operations for login
 const API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"
@@ -9,6 +10,7 @@ const loginForm = document.getElementById("loginForm");
 
 let lockoutInterval = null;
 
+// Manages the 3-attempt lockout logic
 window.checkLockoutState = function() {
     const lockoutExpirationStr = localStorage.getItem("lockoutExpiration");
     if (!lockoutExpirationStr) return;

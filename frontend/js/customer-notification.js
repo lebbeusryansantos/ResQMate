@@ -1,9 +1,11 @@
+// Core logic and operations for customer-notification
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 document.addEventListener(
     "DOMContentLoaded",
     loadNotifications
 );
 
+// Handles getAuthHeaders logic and operations
 function getAuthHeaders() {
     const userData = JSON.parse(
         localStorage.getItem("user") || "{}"
@@ -79,6 +81,7 @@ async function loadNotifications() {
 }
 
 
+// Handles displayNotifications logic and operations
 function displayNotifications(
     requests,
     userId
@@ -174,6 +177,7 @@ function displayNotifications(
     setupReadNotifications(userId);
 }
 
+// Handles createNotification logic and operations
 function createNotification(
     type,
     requestId,
@@ -302,6 +306,7 @@ function createNotification(
 }
 
 
+// Handles setupReadNotifications logic and operations
 function setupReadNotifications(userId) {
 
     const notifications =
@@ -344,6 +349,7 @@ function setupReadNotifications(userId) {
 }
 
 
+// Handles markNotificationAsRead logic and operations
 function markNotificationAsRead(
     userId,
     notificationId
@@ -379,6 +385,7 @@ function markNotificationAsRead(
 }
 
 
+// Handles getReadNotifications logic and operations
 function getReadNotifications(userId) {
 
     const storageKey =
@@ -392,6 +399,7 @@ function getReadNotifications(userId) {
 }
 
 
+// Handles markAllAsRead logic and operations
 function markAllAsRead(userId) {
 
     const notifications =
@@ -447,6 +455,7 @@ function markAllAsRead(userId) {
 }
 
 
+// Handles capitalize logic and operations
 function capitalize(text) {
 
     return text.charAt(0).toUpperCase() +

@@ -106,7 +106,13 @@ async function loadRequests() {
             const status = (r.status || "").toLowerCase();
             const dist = distMap[r.request_id];
             if (!dist) return false;
-            if (status !== "processing" && status !== "completed") return false;
+            if (
+                status !== "processing" &&
+                status !== "awaiting_verification" &&
+                status !== "completed"
+            ) {
+                return false;
+            }
             if (staffId) return dist.staff_id === staffId;
             return true;
         });
@@ -325,17 +331,11 @@ async function submitDocumentation() {
                 localStorage.getItem("user")
             );
 
-        const formData =
-            new FormData();
+        const formData = new FormData();
 
         formData.append(
             "request_id",
             currentRequestId
-        );
-
-        formData.append(
-            "staff_id",
-            user.user_id
         );
 
         formData.append(
@@ -344,13 +344,13 @@ async function submitDocumentation() {
         );
 
         formData.append(
-            "file",
+            "proof_file",
             file
         );
 
         const response =
             await fetch(
-                `${API_URL}/delivery-documentations/upload`,
+                `${API_URL}/delivery-documentations/submit`,
                 {
                     method: "POST",
                     headers: {

@@ -305,7 +305,7 @@ if (requestForm) {
             }
 
             alert("Your assistance request has been submitted successfully.");
-            window.location.href = "dashboard.html";
+            window.location.href = "requests.html";
 
             requestForm.reset();
             assistanceTypeInput.value = "Food";

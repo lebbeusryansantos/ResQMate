@@ -164,7 +164,8 @@ function displayNotifications(
                 status,
                 date,
                 notificationId,
-                isRead
+                isRead,
+                request.rejection_reason
             );
 
         notificationList.innerHTML +=
@@ -180,7 +181,8 @@ function createNotification(
     status,
     date,
     notificationId,
-    isRead
+    isRead,
+    reason
 ) {
 
     let title = "";
@@ -238,6 +240,27 @@ function createNotification(
 
             message =
                 `Your ${type.toLowerCase()} assistance request #${requestId} has been cancelled.`;
+            
+            if (reason) {
+                message += `<br><span style="color: #ef4444; font-size: 0.9em; margin-top: 4px; display: inline-block;">Reason: ${reason}</span>`;
+            }
+
+            icon =
+                "fa-circle-xmark";
+
+            break;
+
+        case "rejected":
+
+            title =
+                "Request Rejected";
+
+            message =
+                `Your ${type.toLowerCase()} assistance request #${requestId} was rejected.`;
+
+            if (reason) {
+                message += `<br><span style="color: #ef4444; font-size: 0.9em; margin-top: 4px; display: inline-block;">Reason: ${reason}</span>`;
+            }
 
             icon =
                 "fa-circle-xmark";

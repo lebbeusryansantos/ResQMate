@@ -105,27 +105,54 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             let actionHTML = "";
 
+            const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
+            const isFollowedUp = followedUpRequests.includes(String(req.request_id));
+
             if (status === "pending") {
-                actionHTML = `
-                    <button 
-                        class="follow-up-button"
-                        style="background-color: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;"
-                        data-request-id="${req.request_id}">
-                        Follow Up
-                    </button>
-                    <button 
-                        class="view-request-button"
-                        style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                        onclick="openCancelModal(${req.request_id})">
-                        Cancel
-                    </button>
-                    <button 
-                        class="view-request-button"
-                        style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                        onclick="viewRequest(${req.request_id})">
-                        View
-                    </button>
-                `;
+                if (isFollowedUp) {
+                    actionHTML = `
+                        <button 
+                            class="follow-up-button"
+                            disabled
+                            style="background-color: #9ca3af; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: not-allowed;"
+                            data-request-id="${req.request_id}">
+                            Followed Up
+                        </button>
+                        <button 
+                            class="view-request-button"
+                            style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
+                            onclick="openCancelModal(${req.request_id})">
+                            Cancel
+                        </button>
+                        <button 
+                            class="view-request-button"
+                            style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
+                            onclick="viewRequest(${req.request_id})">
+                            View
+                        </button>
+                    `;
+                } else {
+                    actionHTML = `
+                        <button 
+                            class="follow-up-button"
+                            style="background-color: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;"
+                            data-request-id="${req.request_id}">
+                            Follow Up
+                        </button>
+                        <button 
+                            class="view-request-button"
+                            style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
+                            onclick="openCancelModal(${req.request_id})">
+                            Cancel
+                        </button>
+                        <button 
+                            class="view-request-button"
+                            style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
+                            onclick="viewRequest(${req.request_id})">
+                            View
+                        </button>
+                    `;
+                }
             } else {
                 actionHTML = `
                     <button 
@@ -167,11 +194,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         document.querySelectorAll(".follow-up-button").forEach(button => {
             button.addEventListener("click", () => {
+                // If it's already disabled, do nothing
+                if (button.disabled) return;
+
                 const requestId = button.dataset.requestId;
 
                 alert(
                     `Follow-up request sent for Request #${requestId}.`
                 );
+
+                // Save to localStorage so it survives refresh
+                const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
+                if (!followedUpRequests.includes(String(requestId))) {
+                    followedUpRequests.push(String(requestId));
+                    localStorage.setItem("followedUpRequests", JSON.stringify(followedUpRequests));
+                }
 
                 // Disable the button after clicking
                 button.disabled = true;

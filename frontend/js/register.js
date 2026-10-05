@@ -12,37 +12,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const phoneInput = document.getElementById("registerPhone");
     if (phoneInput) {
         phoneInput.addEventListener('input', async function (e) {
+            // 1. Strip all non-numeric characters immediately
             this.value = this.value.replace(/\D/g, '');
-            if (this.value.length > 0 && !this.value.startsWith('0')) {
-                if (this.value.length === 11) {
-                    this.setCustomValidity('Maximum of 11 characters reached, but number must start with 09.');
-                } else {
-                    this.setCustomValidity('Phone number must start with 09.');
-                }
-            } else if (this.value.length > 1 && !this.value.startsWith('09')) {
-                if (this.value.length === 11) {
-                    this.setCustomValidity('Maximum of 11 characters reached, but number must start with 09.');
-                } else {
-                    this.setCustomValidity('Phone number must start with 09.');
-                }
+
+            // 2. Force a hard cap of 11 digits so it never breaks the layout
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+
+            // 3. Strict prefix and length validation
+            if (this.value.length > 0 && this.value[0] !== '0') {
+                this.setCustomValidity('Phone number must start with 09.');
+            } else if (this.value.length > 1 && this.value[1] !== '9') {
+                this.setCustomValidity('Phone number must start with 09.');
             } else if (this.value.length > 0 && this.value.length < 11) {
                 this.setCustomValidity('Phone number must be exactly 11 digits.');
             } else {
-                this.setCustomValidity('');
+                this.setCustomValidity(''); // Clear errors if perfectly valid so far
             }
-            
-            if (this.value.length === 11) {
+
+            // 4. ONLY check the database if it is exactly 11 digits AND starts with 09
+            if (this.value.length === 11 && this.value.startsWith('09')) {
                 try {
                     const response = await fetch(`${API_BASE_URL}/users/check-phone?phone_number=${encodeURIComponent(this.value)}`);
-                    const data = await response.json();
-                    if (data.exists) {
-                        this.setCustomValidity('Phone number already registered.');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.exists) {
+                            this.setCustomValidity('Phone number already registered.');
+                        }
                     }
                 } catch (err) {
                     console.error("Error checking phone", err);
                 }
             }
-            
+
+            // 5. Update the UI error message
             validateSingleInput(this);
         });
     }

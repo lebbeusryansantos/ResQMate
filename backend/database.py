@@ -5,9 +5,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is not set")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./resqmate.db")
 
 connect_args = {}
 if "ssl-mode" in DATABASE_URL:

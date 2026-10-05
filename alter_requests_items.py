@@ -5,9 +5,7 @@ from sqlalchemy import create_engine, text
 # Load environment variables
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL is not set in the environment.")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./resqmate.db")
 
 engine = create_engine(DATABASE_URL)
 

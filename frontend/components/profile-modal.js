@@ -30,6 +30,9 @@ function initProfileModal() {
     const closeBtn =
         document.getElementById("closeProfileModal");
 
+    const overlayBg =
+        document.getElementById("profileModalOverlay");
+
     if (!profileBtn || !profileModal) return;
 
     profileBtn.addEventListener("click", () => {
@@ -39,17 +42,28 @@ function initProfileModal() {
 
         if (user) {
 
-            const firstLetter =
-                user.full_name
-                    ? user.full_name.trim().charAt(0).toUpperCase()
-                    : "?";
+            // Derive first/last name
+            let firstName = user.first_name || "";
+            let lastName  = user.last_name  || "";
+
+            // Fallback: split full_name if individual fields are absent
+            if (!firstName && !lastName && user.full_name) {
+                const parts = user.full_name.trim().split(/\s+/);
+                firstName = parts[0] || "";
+                lastName  = parts.slice(1).join(" ") || "";
+            }
+
+            const fullName = (firstName + " " + lastName).trim() || user.full_name || "";
+            const firstLetter = fullName.charAt(0).toUpperCase() || "?";
 
             document.getElementById("modalAvatar").textContent =
                 firstLetter;
 
+            const firstNameEl = document.getElementById("profileFirstName");
+            const lastNameEl  = document.getElementById("profileLastName");
 
-            document.getElementById("profileFullName").value =
-                user.full_name || "";
+            if (firstNameEl) firstNameEl.value = firstName;
+            if (lastNameEl)  lastNameEl.value  = lastName;
 
             document.getElementById("profileEmail").value =
                 user.email || "";
@@ -62,7 +76,7 @@ function initProfileModal() {
                         : "Community User";
 
             document.getElementById("modalName").textContent =
-                user.full_name || "";
+                fullName;
 
             document.getElementById("modalRole").textContent =
                 user.role === "admin"
@@ -70,16 +84,23 @@ function initProfileModal() {
                     : user.role === "staff"
                         ? "Staff"
                         : "Community User";
+
             document.getElementById("profilePassword").value = "";
         }
 
         profileModal.classList.add("show");
     });
 
+    function closeModal() {
+        profileModal.classList.remove("show");
+    }
+
     if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-            profileModal.classList.remove("show");
-        });
+        closeBtn.addEventListener("click", closeModal);
+    }
+
+    // Click outside (on overlay background) to close
+    if (overlayBg) {
+        overlayBg.addEventListener("click", closeModal);
     }
 }
-

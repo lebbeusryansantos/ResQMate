@@ -1,3 +1,7 @@
+/* ===========================
+   ADMIN DELIVERY DOCUMENTATION
+=========================== */
+
 .rq-card {
     background: white;
     border-radius: 18px;
@@ -5,17 +9,52 @@
     box-shadow: 0 4px 12px rgba(127, 29, 29, .06);
 }
 
+/* ===========================
+   TABLE
+=========================== */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 20px;
+}
+
 .table th {
     text-align: center;
     background: #fef2f2;
     text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    color: #7f1d1d;
+    padding: 14px;
+    border-bottom: 1px solid #fecaca;
+    white-space: nowrap;
 }
 
 .table td {
     text-align: center;
     vertical-align: middle;
-    text-transform: uppercase;
+    padding: 14px;
+    border-bottom: 1px solid #fee2e2;
+    font-size: 13.5px;
+    color: #374151;
 }
+
+.table tbody tr:hover {
+    background: #fff8f8;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
 
 .btn-proof {
     background: #2563eb;
@@ -43,6 +82,7 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .btn-approve:hover {
@@ -58,12 +98,12 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .btn-reject:hover {
     opacity: 0.9;
 }
-
 
 .btn-view-remarks {
     background: #3b82f6;
@@ -74,11 +114,16 @@
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .btn-view-remarks:hover {
     opacity: 0.9;
 }
+
+/* ===========================
+   MODAL
+=========================== */
 
 .modal-overlay {
     position: fixed;
@@ -88,18 +133,22 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    padding: 16px;
+    overflow-y: auto;
 }
 
-.modal-overlay.show {
+.modal-overlay.active {
     display: flex;
 }
 
 .modal-content {
     width: 500px;
-    max-width: 90%;
+    max-width: calc(100% - 32px);
     background: white;
     border-radius: 12px;
     overflow: hidden;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
 }
 
 .modal-header {
@@ -108,10 +157,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, #dc2626, #991b1b);
 }
 
 .modal-header h3 {
     margin: 0;
+    color: white;
+    font-weight: 700;
 }
 
 .modal-header button {
@@ -119,10 +171,41 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
+    color: white;
+    opacity: 0.85;
+}
+
+.modal-header button:hover {
+    opacity: 1;
 }
 
 .modal-body {
     padding: 20px;
     line-height: 1.6;
     white-space: pre-wrap;
+    color: #374151;
 }
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width: 768px) {
+    .rq-card {
+        padding: 18px;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .btn-proof,
+    .btn-approve,
+    .btn-reject,
+    .btn-view-remarks {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}

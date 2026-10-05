@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="../style/customer-sidebar.css">
   <link rel="stylesheet" href="../style/logout-modal.css">
+  <link rel="stylesheet" href="../style/profile-modal.css">
   <link rel="stylesheet" href="../style/staff-requests.css">
 </head>
 
@@ -62,20 +63,20 @@
 
       <!-- Filters -->
       <div class="rq-card mb-4">
-        <div class="row g-3">
-          <div class="col-md-5">
-            <input type="text" id="searchBar" class="form-control" placeholder="Search by ID, name, or type...">
-          </div>
-          <div class="col-md-3">
-            <select id="statusFilter" class="form-select" aria-label="Filter requests by status">
+        <div class="toolbar-row">
+          <h5 class="section-title">Assigned Requests</h5>
+          <div class="toolbar-actions">
+            <div class="search-box">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" id="searchBar" placeholder="Search by ID, name, or type...">
+            </div>
+            <select id="statusFilter" class="rq-filter-select" aria-label="Filter requests by status">
               <option value="all">All Statuses</option>
               <option value="processing">Processing</option>
               <option value="completed">Completed</option>
             </select>
-          </div>
-          <div class="col-md-2">
-            <button class="btn btn-primary w-100" id="refreshBtn">
-              <i class="fas fa-rotate-right me-1"></i> Refresh
+            <button class="btn-refresh" id="refreshBtn">
+              <i class="fas fa-rotate-right"></i> Refresh
             </button>
           </div>
         </div>

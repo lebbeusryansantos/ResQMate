@@ -57,6 +57,23 @@ body {
     overflow: hidden;
 }
 
+/* Content title (page header) */
+.content-title {
+    margin-bottom: 24px;
+}
+
+.content-title h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7f1d1d;
+    margin-bottom: 4px;
+}
+
+.content-title p {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
 .requests-table {
     width: 100%;
     border-collapse: collapse;
@@ -124,12 +141,14 @@ body {
     color: #15803d;
 }
 
-.status-badge.processing {
-    background-color: #dbeafe;
-    color: #1d4ed8;
+.status-badge.processing,
+.status-badge.awaiting_verification {
+    background-color: #e0e7ff;
+    color: #4338ca;
 }
 
-.status-badge.rejected {
+.status-badge.rejected,
+.status-badge.cancelled {
     background-color: #fee2e2;
     color: #b91c1c;
 }

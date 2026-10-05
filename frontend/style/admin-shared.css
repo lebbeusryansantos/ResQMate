@@ -275,6 +275,7 @@ body {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .section-title {
@@ -288,15 +289,20 @@ body {
 .toolbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .search-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 280px;
+  width: 280px;
+  flex: 1 1 200px;
+  min-width: 160px;
+  max-width: 340px;
   height: 48px;
   padding: 0 16px;
   border: 1px solid #d1d5db;
@@ -316,12 +322,16 @@ body {
 =========================== */
 
 .rq-input {
-  width: 180px;
+  width: 160px;
+  flex: 0 1 160px;
   height: 48px;
   padding: 0 14px;
   border: 1px solid #d1d5db;
   border-radius: 12px;
   background: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13.5px;
+  color: #374151;
 }
 
 .rq-input:focus {
@@ -667,6 +677,8 @@ tbody tr:hover {
   z-index: 999;
   align-items: center;
   justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
 }
 
 .modal-overlay.active {
@@ -680,6 +692,8 @@ tbody tr:hover {
   width: 100%;
   max-width: 480px;
   box-shadow: 0 8px 40px rgba(127, 29, 29, 0.12);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 
 .modal-box h4 {
@@ -770,13 +784,17 @@ tbody tr:hover {
 
 .modal-content {
   width: 500px;
+  max-width: calc(100% - 32px);
   background: white;
   border-radius: 16px;
   padding: 24px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 
 .modal-content.small {
   width: 400px;
+  max-width: calc(100% - 32px);
 }
 
 .modal-header {
@@ -1042,12 +1060,30 @@ tbody tr:hover {
   }
 
   .toolbar-row {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  .search-box input {
-    min-width: 120px;
+  .toolbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .search-box {
+    flex: 1 1 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .rq-input {
+    flex: 1 1 120px;
+    width: auto;
+  }
+
+  .btn-primary {
+    white-space: nowrap;
   }
 }
 
@@ -1068,6 +1104,24 @@ tbody tr:hover {
 
   .stat-card .stat-number {
     font-size: 24px;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .toolbar-actions {
+    gap: 8px;
+  }
+
+  .rq-input {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 110px;
+  }
+
+  .modal-box {
+    padding: 20px;
+    border-radius: 14px;
   }
 }
 

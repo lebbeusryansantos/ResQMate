@@ -120,27 +120,90 @@ body {
    FILTERS
 =========================== */
 
-.form-control,
-.form-select {
+.toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.section-title {
+    color: #7f1d1d;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 180px;
+    max-width: 320px;
     height: 48px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
+    padding: 0 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #fff;
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: #dc2626;
-    box-shadow: 0 0 0 .2rem rgba(220, 38, 38, .15);
-}
-
-.btn-primary {
-    background: #dc2626;
+.search-box input {
     border: none;
-    border-radius: 10px;
-    font-weight: 600;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #374151;
 }
 
-.btn-primary:hover {
+.rq-filter-select {
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13.5px;
+    color: #374151;
+    flex: 0 1 160px;
+    min-width: 130px;
+}
+
+.rq-filter-select:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.15);
+    outline: none;
+}
+
+.btn-refresh {
+    height: 48px;
+    padding: 0 18px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.btn-refresh:hover {
     background: #991b1b;
 }
 

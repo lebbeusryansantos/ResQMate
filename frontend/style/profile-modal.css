@@ -336,3 +336,33 @@ a.btn:active,
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
+
+/* ===========================
+   MODAL WRAPPER & OVERLAY
+=========================== */
+
+/* Profile modal backdrop */
+.modal.show {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* Overlay bg layer (click-outside-to-close) */
+.modal-overlay-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 0;
+    cursor: default;
+}
+
+.modal-content {
+    position: relative;
+    z-index: 1;
+}

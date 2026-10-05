@@ -268,7 +268,8 @@ STATUS BADGES
   color: #dc2626;
 }
 
-.rq-badge-high {
+.rq-badge-high,
+.rq-badge-critical {
   background: #fee2e2;
   color: #dc2626;
 }
@@ -279,8 +280,8 @@ STATUS BADGES
 }
 
 .rq-badge-low {
-  background: #dcfce7;
-  color: #15803d;
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 /* ===========================

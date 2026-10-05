@@ -126,7 +126,7 @@ function renderRequestsTable(data = requestsData) {
                 <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
                 <td><span class="rq-badge rq-badge-${status}">${request.status}</span></td>
                 <td>${request.assigned_staff || "Not Assigned"}</td>
-                <td style="white-space:nowrap;">${actionBtns}</td>
+                <td style="display: flex; gap: 5px; flex-wrap: wrap;">${actionBtns}</td>
             </tr>
         `;
     });

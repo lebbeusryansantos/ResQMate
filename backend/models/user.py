@@ -25,6 +25,8 @@ class User(Base):
         server_default=func.now()
     )
     phone_number = Column(String(20))
+    emergency_contact_name = Column(String(100), nullable=True)
+    emergency_contact_number = Column(String(20), nullable=True)
     dob = Column(DateTime)
     session_token = Column(String(255), nullable=True)
     failed_login_attempts = Column(Integer, default=0)

@@ -94,13 +94,7 @@ function renderUsers(users) {
                 <td>
                     <button
                         class="rq-btn-edit"
-                        onclick="editUser(
-                            ${user.user_id},
-                            '${user.full_name.replace(/'/g, "\\'")}',
-                            '${user.email}',
-                            '${user.phone_number || ""}',
-                            '${user.role}'
-                        )">
+                        onclick="editUser(${user.user_id})">
                         Edit
                     </button>
 
@@ -128,26 +122,15 @@ document.getElementById(
         "userModalTitle"
     ).textContent = "Add New User";
 
-    document.getElementById(
-        "userFirstName"
-    ).value = "";
-
-    document.getElementById(
-        "userLastName"
-    ).value = "";
-
-    document.getElementById(
-        "userEmail"
-    ).value = "";
-
-    document.getElementById(
-        "userPhone"
-    ).value = "";
-
-    document.getElementById(
-        "userPassword"
-    ).value = "";
-
+    document.getElementById("userFirstName").value = "";
+    document.getElementById("userLastName").value = "";
+    document.getElementById("userEmail").value = "";
+    document.getElementById("userPhone").value = "";
+    document.getElementById("userEmergencyContactName").value = "";
+    document.getElementById("userEmergencyContactNumber").value = "";
+    document.getElementById("userDob").value = "";
+    document.getElementById("userCalculatedAge").textContent = "Age: --";
+    document.getElementById("userPassword").value = "";
     document.getElementById("userRole").value = "community_user";
     modal.classList.add("active");
 });
@@ -165,6 +148,35 @@ if (userPhoneInput) {
     });
 }
 
+const adminEmergencyPhoneInput = document.getElementById("userEmergencyContactNumber");
+if (adminEmergencyPhoneInput) {
+    adminEmergencyPhoneInput.addEventListener("input", function (e) {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+    });
+}
+
+const adminUserDob = document.getElementById("userDob");
+const adminCalculatedAge = document.getElementById("userCalculatedAge");
+if (adminUserDob) {
+    adminUserDob.addEventListener("change", () => {
+        if (adminUserDob.value && adminCalculatedAge) {
+            const birthDate = new Date(adminUserDob.value);
+            const todayDate = new Date();
+            let age = todayDate.getFullYear() - birthDate.getFullYear();
+            const m = todayDate.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && todayDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            adminCalculatedAge.textContent = `Age: ${age}`;
+        } else if (adminCalculatedAge) {
+            adminCalculatedAge.textContent = "Age: --";
+        }
+    });
+}
+
 /* ===========================
    SAVE USER
 =========================== */
@@ -172,35 +184,15 @@ document.getElementById(
     "saveUserBtn"
 ).addEventListener("click", async () => {
 
-    const firstName =
-        document.getElementById(
-            "userFirstName"
-        ).value.trim();
-
-    const lastName =
-        document.getElementById(
-            "userLastName"
-        ).value.trim();
-
-    const email =
-        document.getElementById(
-            "userEmail"
-        ).value.trim();
-
-    const phone =
-        document.getElementById(
-            "userPhone"
-        ).value.trim();
-
-    const password =
-        document.getElementById(
-            "userPassword"
-        ).value.trim();
-
-    const role =
-        document.getElementById(
-            "userRole"
-        ).value;
+    const firstName = document.getElementById("userFirstName").value.trim();
+    const lastName = document.getElementById("userLastName").value.trim();
+    const email = document.getElementById("userEmail").value.trim();
+    const phone = document.getElementById("userPhone").value.trim();
+    const emergencyContactName = document.getElementById("userEmergencyContactName").value.trim();
+    const emergencyContactNumber = document.getElementById("userEmergencyContactNumber").value.trim();
+    const dob = document.getElementById("userDob").value;
+    const password = document.getElementById("userPassword").value.trim();
+    const role = document.getElementById("userRole").value;
 
     if (!firstName || !lastName || !email || !phone) {
         alert(
@@ -212,6 +204,10 @@ document.getElementById(
     const phoneRegex = /^09\d{9}$/;
     if (!phoneRegex.test(phone)) {
         alert("Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.");
+        return;
+    }
+    if (emergencyContactNumber && !phoneRegex.test(emergencyContactNumber)) {
+        alert("Emergency contact number must be exactly 11 digits, start with 09, and contain no letters or spaces.");
         return;
     }
 
@@ -240,9 +236,9 @@ document.getElementById(
                         last_name: lastName,
                         email,
                         phone_number: phone,
-                        password:
-                            password ||
-                            "ResQMate2024!",
+                        emergency_contact_name: emergencyContactName,
+                        emergency_contact_number: emergencyContactNumber,
+                        password: password || "ResQMate2024!",
                         role
                     })
                 }
@@ -274,6 +270,8 @@ document.getElementById(
                         last_name: lastNameValue,
                         email,
                         phone_number: phone,
+                        emergency_contact_name: emergencyContactName,
+                        emergency_contact_number: emergencyContactNumber,
                         role,
                         password
                     })
@@ -319,47 +317,42 @@ document.getElementById(
 /* ===========================
    EDIT USER
 =========================== */
-window.editUser = function (
-    id,
-    fullName,
-    email,
-    phone,
-    role
-) {
-
+window.editUser = function(id) {
     editingUserId = id;
+    
+    const user = allUsers.find(u => u.user_id === id);
+    if (!user) return;
 
-    document.getElementById(
-        "userModalTitle"
-    ).textContent = "Edit User";
+    document.getElementById("userModalTitle").textContent = "Edit User";
 
-    const parts = fullName.split(" ");
+    const parts = user.full_name.split(" ");
     const firstName = parts[0];
     const lastName = parts.slice(1).join(" ");
 
-    document.getElementById(
-        "userFirstName"
-    ).value = firstName;
+    document.getElementById("userFirstName").value = firstName || "";
+    document.getElementById("userLastName").value = lastName || "";
+    document.getElementById("userEmail").value = user.email || "";
+    document.getElementById("userPhone").value = user.phone_number || "";
+    document.getElementById("userEmergencyContactName").value = user.emergency_contact_name || "";
+    document.getElementById("userEmergencyContactNumber").value = user.emergency_contact_number || "";
+    document.getElementById("userRole").value = user.role || "community_user";
+    
+    if (user.dob) {
+        document.getElementById("userDob").value = user.dob.split('T')[0];
+        const birthDate = new Date(user.dob);
+        const todayDate = new Date();
+        let age = todayDate.getFullYear() - birthDate.getFullYear();
+        const m = todayDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && todayDate.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById("userCalculatedAge").textContent = `Age: ${age}`;
+    } else {
+        document.getElementById("userDob").value = "";
+        document.getElementById("userCalculatedAge").textContent = "Age: --";
+    }
 
-    document.getElementById(
-        "userLastName"
-    ).value = lastName;
-
-    document.getElementById(
-        "userEmail"
-    ).value = email;
-
-    document.getElementById(
-        "userPhone"
-    ).value = phone;
-
-    document.getElementById(
-        "userRole"
-    ).value = role;
-
-    document.getElementById(
-        "userPassword"
-    ).value = "";
+    document.getElementById("userPassword").value = "";
 
     modal.classList.add(
         "active"

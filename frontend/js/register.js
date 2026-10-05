@@ -4,9 +4,24 @@ const registerForm =
 
 document.addEventListener("DOMContentLoaded", () => {
     const dobInput = document.getElementById("registerDob");
+    const calculatedAge = document.getElementById("calculatedAge");
     if (dobInput) {
         const today = new Date().toISOString().split('T')[0];
         dobInput.max = today;
+        dobInput.addEventListener('change', () => {
+            if (dobInput.value && calculatedAge) {
+                const birthDate = new Date(dobInput.value);
+                const todayDate = new Date();
+                let age = todayDate.getFullYear() - birthDate.getFullYear();
+                const m = todayDate.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && todayDate.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                calculatedAge.textContent = `Age: ${age}`;
+            } else if (calculatedAge) {
+                calculatedAge.textContent = 'Age: --';
+            }
+        });
     }
 
     const phoneInput = document.getElementById("registerPhone");
@@ -49,6 +64,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // 5. Update the UI error message
+            validateSingleInput(this);
+        });
+    }
+
+    const emergencyPhoneInput = document.getElementById("emergencyContactNumber");
+    if (emergencyPhoneInput) {
+        emergencyPhoneInput.addEventListener('input', function (e) {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+            if (this.value.length === 11 && !this.value.startsWith('09')) {
+                this.setCustomValidity('<span style="color: #f59e0b">Maximum of 11 characters reached.</span><br>Phone number must start with 09.');
+            } else if (this.value.length > 0 && this.value[0] !== '0') {
+                this.setCustomValidity('Phone number must start with 09.');
+            } else if (this.value.length > 1 && this.value[1] !== '9') {
+                this.setCustomValidity('Phone number must start with 09.');
+            } else if (this.value.length > 0 && this.value.length < 11) {
+                this.setCustomValidity('Phone number must be exactly 11 digits.');
+            } else {
+                this.setCustomValidity('');
+            }
             validateSingleInput(this);
         });
     }
@@ -255,6 +292,12 @@ registerForm.addEventListener(
         const phone_number =
             document.getElementById("registerPhone").value;
 
+        const emergency_contact_name =
+            document.getElementById("emergencyContactName") ? document.getElementById("emergencyContactName").value : "";
+
+        const emergency_contact_number =
+            document.getElementById("emergencyContactNumber") ? document.getElementById("emergencyContactNumber").value : "";
+
         const dob =
             document.getElementById("registerDob").value;
 
@@ -289,6 +332,8 @@ registerForm.addEventListener(
                         last_name,
                         email,
                         phone_number,
+                        emergency_contact_name,
+                        emergency_contact_number,
                         dob,
                         password
                     })

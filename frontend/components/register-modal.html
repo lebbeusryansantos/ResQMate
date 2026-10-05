@@ -56,10 +56,24 @@
                 </div>
 
                 <label for="registerDob">Date of Birth <span class="required-asterisk">*</span></label>
-                <input type="date" id="registerDob" required>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <input type="date" id="registerDob" required style="margin-bottom: 0; flex: 1;">
+                    <span id="calculatedAge" style="font-weight: 500; color: #4b5563; min-width: 70px;">Age: --</span>
+                </div>
 
                 <label for="registerPhone">Phone Number <span class="required-asterisk">*</span></label>
                 <input type="tel" id="registerPhone" placeholder="09123456789" required maxlength="11" minlength="11" pattern="[0-9]{11}">
+
+                <div class="name-group">
+                    <div class="name-field">
+                        <label for="emergencyContactName">Emergency Contact Name <span class="required-asterisk">*</span></label>
+                        <input type="text" id="emergencyContactName" placeholder="Maria Dela Cruz" required maxlength="50" pattern="^[^0-9]*$" oninput="this.value = this.value.replace(/[0-9]/g, '')">
+                    </div>
+                    <div class="name-field">
+                        <label for="emergencyContactNumber">Emergency Contact Number <span class="required-asterisk">*</span></label>
+                        <input type="tel" id="emergencyContactNumber" placeholder="09123456789" required maxlength="11" minlength="11" pattern="[0-9]{11}">
+                    </div>
+                </div>
 
                 <label for="registerEmail">Email Address <span class="required-asterisk">*</span></label>
                 <input type="email" id="registerEmail" placeholder="you@example.com" required>

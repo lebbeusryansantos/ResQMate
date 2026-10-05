@@ -60,6 +60,8 @@ class RegisterRequest(BaseModel):
     email:        str
     password:     str
     phone_number: str = ""
+    emergency_contact_name: str = ""
+    emergency_contact_number: str = ""
     dob:          str = "2000-01-01"
     role:         str = "community_user"   # fixed: must match DB enum
 
@@ -74,6 +76,8 @@ class UpdateUserRequest(BaseModel):
     last_name: str
     email: str
     phone_number: str = ""
+    emergency_contact_name: str = ""
+    emergency_contact_number: str = ""
     role: str
     password: Optional[str] = None
 
@@ -83,6 +87,8 @@ class CreateUserRequest(BaseModel):
     last_name: str
     email:     str
     phone_number: str = ""
+    emergency_contact_name: str = ""
+    emergency_contact_number: str = ""
     password:  str = "ResQMate2024!"   # temp default
     role:      str = "community_user"
 
@@ -103,6 +109,9 @@ def get_users(admin: dict = Depends(get_current_admin)):
                     CONCAT_WS(' ', first_name, last_name) AS full_name,
                     email,
                     phone_number,
+                    emergency_contact_name,
+                    emergency_contact_number,
+                    dob,
                     role
                 FROM users
             """)
@@ -115,6 +124,9 @@ def get_users(admin: dict = Depends(get_current_admin)):
                 "full_name": row.full_name,
                 "email":     row.email,
                 "phone_number": row.phone_number,
+                "emergency_contact_name": row.emergency_contact_name,
+                "emergency_contact_number": row.emergency_contact_number,
+                "dob": row.dob.isoformat() if row.dob else None,
                 "role":      row.role
             })
 
@@ -144,6 +156,10 @@ def register_user(data: RegisterRequest):
         if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
             raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
+    if data.emergency_contact_number:
+        if not data.emergency_contact_number.isdigit() or len(data.emergency_contact_number) != 11 or not data.emergency_contact_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Emergency contact number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
+
     with engine.begin() as conn:
 
         existing = conn.execute(
@@ -166,9 +182,9 @@ def register_user(data: RegisterRequest):
         result = conn.execute(
             text("""
                 INSERT INTO users
-                    (first_name, last_name, email, password, role, phone_number, dob)
+                    (first_name, last_name, email, password, role, phone_number, emergency_contact_name, emergency_contact_number, dob)
                 VALUES
-                    (:first_name, :last_name, :email, :password, :role, :phone_number, :dob)
+                    (:first_name, :last_name, :email, :password, :role, :phone_number, :emergency_contact_name, :emergency_contact_number, :dob)
             """),
             {
                 "first_name":   data.first_name,
@@ -177,6 +193,8 @@ def register_user(data: RegisterRequest):
                 "password":     pwd_context.hash(data.password),
                 "role":         db_role,
                 "phone_number": data.phone_number,
+                "emergency_contact_name": data.emergency_contact_name,
+                "emergency_contact_number": data.emergency_contact_number,
                 "dob":          data.dob
             }
         )
@@ -214,6 +232,10 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
         if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
             raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
+    if data.emergency_contact_number:
+        if not data.emergency_contact_number.isdigit() or len(data.emergency_contact_number) != 11 or not data.emergency_contact_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Emergency contact number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
+
     with engine.begin() as conn:
 
         existing = conn.execute(
@@ -236,9 +258,9 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
         result = conn.execute(
             text("""
                 INSERT INTO users
-                    (first_name, last_name, email, password, role, phone_number, dob)
+                    (first_name, last_name, email, password, role, phone_number, emergency_contact_name, emergency_contact_number, dob)
                 VALUES
-                    (:first_name, :last_name, :email, :password, :role, :phone_number, '2000-01-01')
+                    (:first_name, :last_name, :email, :password, :role, :phone_number, :emergency_contact_name, :emergency_contact_number, '2000-01-01')
             """),
             {
                 "first_name": data.first_name,
@@ -246,7 +268,9 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
                 "email":      data.email,
                 "password":   pwd_context.hash(data.password),
                 "role":       db_role,
-                "phone_number": data.phone_number
+                "phone_number": data.phone_number,
+                "emergency_contact_name": data.emergency_contact_name,
+                "emergency_contact_number": data.emergency_contact_number
             }
         )
 
@@ -421,6 +445,10 @@ def update_user(
         if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
             raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
+    if data.emergency_contact_number:
+        if not data.emergency_contact_number.isdigit() or len(data.emergency_contact_number) != 11 or not data.emergency_contact_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Emergency contact number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
+
     with engine.begin() as conn:
 
         existing = conn.execute(
@@ -451,6 +479,8 @@ def update_user(
                         email = :email,
                         role = :role,
                         phone_number = :phone_number,
+                        emergency_contact_name = :emergency_contact_name,
+                        emergency_contact_number = :emergency_contact_number,
                         password = :password
                     WHERE user_id = :user_id
                 """),
@@ -461,6 +491,8 @@ def update_user(
                     "email": data.email,
                     "role": db_role,
                     "phone_number": data.phone_number,
+                    "emergency_contact_name": data.emergency_contact_name,
+                    "emergency_contact_number": data.emergency_contact_number,
                     "password": pwd_context.hash(data.password)
                 }
             )
@@ -475,6 +507,8 @@ def update_user(
                         last_name = :last_name,
                         email = :email,
                         phone_number = :phone_number,
+                        emergency_contact_name = :emergency_contact_name,
+                        emergency_contact_number = :emergency_contact_number,
                         role = :role
                     WHERE user_id = :user_id
                 """),
@@ -484,6 +518,8 @@ def update_user(
                     "last_name": data.last_name,
                     "email": data.email,
                     "phone_number": data.phone_number,
+                    "emergency_contact_name": data.emergency_contact_name,
+                    "emergency_contact_number": data.emergency_contact_number,
                     "role": db_role
                 }
             )

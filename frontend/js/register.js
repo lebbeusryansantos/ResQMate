@@ -14,9 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
         phoneInput.addEventListener('input', async function (e) {
             this.value = this.value.replace(/\D/g, '');
             if (this.value.length > 0 && !this.value.startsWith('0')) {
-                this.setCustomValidity('Phone number must start with 09.');
+                if (this.value.length === 11) {
+                    this.setCustomValidity('Maximum of 11 characters reached, but number must start with 09.');
+                } else {
+                    this.setCustomValidity('Phone number must start with 09.');
+                }
             } else if (this.value.length > 1 && !this.value.startsWith('09')) {
-                this.setCustomValidity('Phone number must start with 09.');
+                if (this.value.length === 11) {
+                    this.setCustomValidity('Maximum of 11 characters reached, but number must start with 09.');
+                } else {
+                    this.setCustomValidity('Phone number must start with 09.');
+                }
             } else if (this.value.length > 0 && this.value.length < 11) {
                 this.setCustomValidity('Phone number must be exactly 11 digits.');
             } else {

@@ -19,6 +19,7 @@ class CreateRequestData(BaseModel):
     priority: str
     calamity_type: str
     specific_address: str
+    requested_items_summary: Optional[str] = None
 
 
 @router.get("/")
@@ -72,6 +73,7 @@ def get_requests(user: dict = Depends(require_role(["admin", "staff"]))):
                 "admin_feedback": getattr(row, 'admin_feedback', None),
                 "user_feedback": getattr(row, 'user_feedback', None),
                 "feedback_rating": getattr(row, 'feedback_rating', None),
+                "requested_items_summary": getattr(row, 'requested_items_summary', None),
                 "assigned_staff": row.assigned_staff,
                 "calamity_type": row.calamity_type,
                 "specific_address": row.specific_address,
@@ -135,6 +137,7 @@ def get_request(request_id: int, user: dict = Depends(get_current_user)):
             "rejection_reason": row.rejection_reason,
             "calamity_type": row.calamity_type,
             "specific_address": row.specific_address,
+            "requested_items_summary": getattr(row, 'requested_items_summary', None),
             "date_requested": str(row.date_requested)
         }
 
@@ -317,7 +320,8 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                     priority_level,
                     status,
                     calamity_type,
-                    specific_address
+                    specific_address,
+                    requested_items_summary
                 )
                 VALUES
                 (
@@ -328,7 +332,8 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                     :priority_level,
                     'pending',
                     :calamity_type,
-                    :specific_address
+                    :specific_address,
+                    :requested_items_summary
                 )
             """),
             {
@@ -338,7 +343,8 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                 "request_details": request_details,
                 "priority_level": database_priority,
                 "calamity_type": data.calamity_type.strip(),
-                "specific_address": data.specific_address.strip()
+                "specific_address": data.specific_address.strip(),
+                "requested_items_summary": data.requested_items_summary
             }
         )
 
@@ -585,6 +591,7 @@ def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
                 "admin_feedback": getattr(row, 'admin_feedback', None),
                 "user_feedback": getattr(row, 'user_feedback', None),
                 "feedback_rating": getattr(row, 'feedback_rating', None),
+                "requested_items_summary": getattr(row, 'requested_items_summary', None),
                 "date_requested": str(row.date_requested)
             })
 

@@ -34,5 +34,6 @@ class AssistanceRequest(Base):
     admin_feedback = Column(Text, nullable=True)
     user_feedback = Column(Text, nullable=True)
     feedback_rating = Column(Integer, nullable=True)
+    requested_items_summary = Column(Text, nullable=True)
 
     date_requested = Column(DateTime, server_default=func.now())

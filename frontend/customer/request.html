@@ -41,11 +41,21 @@
 
                         <div class="assistance-types">
 
-                            <button type="button" class="assistance-option active" data-type="Food">
+                            <button type="button" class="assistance-option" data-type="Food">
                                 <div class="option-icon">
                                     <i class="fa-solid fa-utensils"></i>
                                 </div>
                                 <div class="option-name">Food</div>
+                                <div class="cart-inputs" style="display: none; margin-top: 10px; width: 90%;">
+                                    <input type="number" class="cart-qty rq-input" min="1" value="1" style="width: 100%; margin-bottom: 5px; padding: 4px; text-align: center; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                    <select class="cart-unit rq-input" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                        <option value="Boxes">Boxes</option>
+                                        <option value="Cans">Cans</option>
+                                        <option value="Bundles">Bundles</option>
+                                        <option value="Packs">Packs</option>
+                                        <option value="Pieces">Pieces</option>
+                                    </select>
+                                </div>
                             </button>
 
                             <button type="button" class="assistance-option" data-type="Water">
@@ -53,6 +63,14 @@
                                     <i class="fa-solid fa-droplet"></i>
                                 </div>
                                 <div class="option-name">Water</div>
+                                <div class="cart-inputs" style="display: none; margin-top: 10px; width: 90%;">
+                                    <input type="number" class="cart-qty rq-input" min="1" value="1" style="width: 100%; margin-bottom: 5px; padding: 4px; text-align: center; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                    <select class="cart-unit rq-input" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                        <option value="Bottles">Bottles</option>
+                                        <option value="Gallons">Gallons</option>
+                                        <option value="Boxes">Boxes</option>
+                                    </select>
+                                </div>
                             </button>
 
                             <button type="button" class="assistance-option" data-type="Shelter">
@@ -60,6 +78,14 @@
                                     <i class="fa-solid fa-house"></i>
                                 </div>
                                 <div class="option-name">Shelter</div>
+                                <div class="cart-inputs" style="display: none; margin-top: 10px; width: 90%;">
+                                    <input type="number" class="cart-qty rq-input" min="1" value="1" style="width: 100%; margin-bottom: 5px; padding: 4px; text-align: center; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                    <select class="cart-unit rq-input" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                        <option value="Tents">Tents</option>
+                                        <option value="Sets">Sets</option>
+                                        <option value="Pieces">Pieces</option>
+                                    </select>
+                                </div>
                             </button>
 
                             <button type="button" class="assistance-option" data-type="Medicine">
@@ -67,6 +93,15 @@
                                     <i class="fa-solid fa-pills"></i>
                                 </div>
                                 <div class="option-name">Medicine</div>
+                                <div class="cart-inputs" style="display: none; margin-top: 10px; width: 90%;">
+                                    <input type="number" class="cart-qty rq-input" min="1" value="1" style="width: 100%; margin-bottom: 5px; padding: 4px; text-align: center; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                    <select class="cart-unit rq-input" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                        <option value="Packs">Packs</option>
+                                        <option value="Boxes">Boxes</option>
+                                        <option value="Bottles">Bottles</option>
+                                        <option value="Pieces">Pieces</option>
+                                    </select>
+                                </div>
                             </button>
 
                             <button type="button" class="assistance-option" data-type="General">
@@ -74,11 +109,19 @@
                                     <i class="fa-solid fa-hand-holding-heart"></i>
                                 </div>
                                 <div class="option-name">General</div>
+                                <div class="cart-inputs" style="display: none; margin-top: 10px; width: 90%;">
+                                    <input type="number" class="cart-qty rq-input" min="1" value="1" style="width: 100%; margin-bottom: 5px; padding: 4px; text-align: center; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                    <select class="cart-unit rq-input" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" onclick="event.stopPropagation();">
+                                        <option value="Boxes">Boxes</option>
+                                        <option value="Bundles">Bundles</option>
+                                        <option value="Sets">Sets</option>
+                                    </select>
+                                </div>
                             </button>
 
                         </div>
 
-                        <input type="hidden" id="assistanceType" name="assistance_type" value="Food">
+                        <input type="hidden" id="assistanceType" name="assistance_type" value="Multiple">
 
                     </div>
 

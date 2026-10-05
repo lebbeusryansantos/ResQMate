@@ -132,12 +132,19 @@ if (confirmationCheckbox) {
 
 assistanceOptions.forEach(option => {
     option.addEventListener("click", function () {
-        assistanceOptions.forEach(item => {
-            item.classList.remove("active");
-        });
-
-        this.classList.add("active");
-        assistanceTypeInput.value = this.getAttribute("data-type");
+        this.classList.toggle("active");
+        
+        const inputsDiv = this.querySelector('.cart-inputs');
+        if (inputsDiv) {
+            if (this.classList.contains("active")) {
+                inputsDiv.style.display = "block";
+            } else {
+                inputsDiv.style.display = "none";
+            }
+        }
+        
+        // Let assistanceType be "Multiple" always if anything is selected, or keep it generic
+        assistanceTypeInput.value = "Other"; // Use Other as a fallback category, since we now rely on requested_items_summary
     });
 });
 
@@ -155,14 +162,15 @@ if (cancelButton) {
         }
         requestForm.reset();
 
-        assistanceTypeInput.value = "Food";
+        assistanceTypeInput.value = "Other";
 
         assistanceOptions.forEach(option => {
             option.classList.remove("active");
-
-            if (option.getAttribute("data-type") === "Food") {
-                option.classList.add("active");
-            }
+            const inputsDiv = option.querySelector('.cart-inputs');
+            if (inputsDiv) inputsDiv.style.display = "none";
+            
+            const qtyInput = option.querySelector('.cart-qty');
+            if (qtyInput) qtyInput.value = "1";
         });
 
         if (characterCount) {
@@ -251,6 +259,22 @@ if (requestForm) {
         const calamityType = calamityTypeInput ? calamityTypeInput.value.trim() : "";
         const specificAddress = specificAddressInput ? specificAddressInput.value.trim() : "";
 
+        // Build requested_items_summary
+        let requestedItemsArr = [];
+        assistanceOptions.forEach(option => {
+            if (option.classList.contains("active")) {
+                const typeName = option.getAttribute("data-type");
+                const qtyInput = option.querySelector('.cart-qty');
+                const unitSelect = option.querySelector('.cart-unit');
+                
+                let qty = qtyInput ? qtyInput.value : "1";
+                let unit = unitSelect ? unitSelect.value : "";
+                
+                requestedItemsArr.push(`${typeName}: ${qty} ${unit}`.trim());
+            }
+        });
+        const requestedItemsSummary = requestedItemsArr.join(" | ");
+
         console.log("assistanceType =", assistanceType);
         console.log("barangayText =", barangayText);
         console.log("cityText =", cityText);
@@ -300,7 +324,8 @@ if (requestForm) {
                         request_details: details,
                         priority: priority,
                         calamity_type: calamityType,
-                        specific_address: specificAddress
+                        specific_address: specificAddress,
+                        requested_items_summary: requestedItemsSummary || "None specified"
                     })
                 }
             );

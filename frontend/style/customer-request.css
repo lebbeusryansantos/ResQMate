@@ -106,7 +106,8 @@ body {
 }
 
 .assistance-option {
-    height: 110px;
+    min-height: 110px;
+    padding: 10px;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     background-color: #ffffff;

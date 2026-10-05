@@ -192,7 +192,7 @@ function renderTable(requests) {
                 <td><span class="rq-badge rq-badge-${status}">${r.status.replace(/_/g, ' ').toUpperCase()}</span></td>
                 <td>${date}</td>
                 <td>
-                    <button class="rq-btn-view me-1" onclick="viewRequest(${r.request_id}, '${r.full_name || ""}', '${r.category_name || ""}', '${r.location_name || ""}', '${r.priority_level || ""}', '${r.status || ""}', '${r.date_requested || ""}')">View</button>
+                    <button class="rq-btn-view me-1" onclick="viewRequest(${r.request_id}, '${r.full_name || ""}', '${r.category_name || ""}', '${r.location_name || ""}', '${r.priority_level || ""}', '${r.status || ""}', '${r.date_requested || ""}', '${r.requested_items_summary || ""}')">View</button>
                     ${actionBtn}
                 </td>
             </tr>`;
@@ -206,10 +206,11 @@ function renderTable(requests) {
    VIEW REQUEST — uses data already loaded, no extra fetch needed
    (avoids the raw ID problem from single-request endpoint)
    ============================================================ */
-function viewRequest(id, name, type, location, priority, status, date) {
+function viewRequest(id, name, type, location, priority, status, date, requestedItems) {
 
     const statusClass = (status || "").toLowerCase();
     const formatted = date ? new Date(date).toLocaleDateString("en-PH") : "—";
+    const itemsSummary = requestedItems || "None specified";
 
     document.getElementById("customRequestDetailBody").innerHTML = `
         <table class="request-details-table">
@@ -221,6 +222,7 @@ function viewRequest(id, name, type, location, priority, status, date) {
             <tr><th>Status</th>
                 <td><span class="rq-badge rq-badge-${statusClass}">${status || "—"}</span></td>
             </tr>
+            <tr><th>Specific Supplies</th><td>${itemsSummary}</td></tr>
             <tr><th>Date Submitted</th><td>${formatted}</td></tr>
         </table>`;
 

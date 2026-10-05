@@ -344,6 +344,12 @@ window.viewRequest = function (requestId) {
     const adminFeedbackTextarea = document.getElementById("adminFeedback");
 
     document.getElementById("modalStatus").textContent = request.status || "—";
+    
+    const modalRequestedItems = document.getElementById("modalRequestedItems");
+    if (modalRequestedItems) {
+        modalRequestedItems.textContent = request.requested_items_summary || "None specified";
+    }
+
     document.getElementById("modalDescription").textContent = request.request_details || "—";
 
     const rejectionRow = document.getElementById("rejectionReasonRow");

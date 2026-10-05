@@ -149,15 +149,15 @@ function renderTable(requests) {
     if (requests.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="9" class="text-center py-4 text-muted">
+                <td colspan="9" style="text-align: center; padding: 20px; color: #6b7280;">
                     No requests assigned to you right now.
                 </td>
             </tr>`;
-        document.getElementById("emptyState").classList.remove("d-none");
+        document.getElementById("emptyState").style.display = "block";
         return;
     }
 
-    document.getElementById("emptyState").classList.add("d-none");
+    document.getElementById("emptyState").style.display = "none";
 
     requests.forEach(r => {
         const status = (r.status || "processing").toLowerCase();

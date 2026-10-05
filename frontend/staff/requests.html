@@ -75,7 +75,7 @@
       <!-- Requests Table -->
       <div class="table-card">
         <div class="table-responsive">
-          <table class="table align-middle">
+          <table>
             <thead>
               <tr>
                 <th>ID</th>
@@ -91,15 +91,15 @@
             </thead>
             <tbody id="requestsTableBody">
               <tr>
-                <td colspan="9" class="text-center py-4">Loading requests...</td>
+                <td colspan="9" style="text-align: center; padding: 20px; color: #6b7280;">Loading requests...</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div id="emptyState" class="text-center py-5 d-none">
-          <i class="bi bi-inbox fs-1 text-muted"></i>
-          <p class="text-muted mt-3">No data yet</p>
+        <div id="emptyState" style="text-align: center; padding: 40px 0; display: none;">
+          <i class="fas fa-inbox" style="font-size: 2rem; color: #9ca3af;"></i>
+          <p style="color: #6b7280; margin-top: 15px;">No data yet</p>
         </div>
       </div>
 
@@ -108,51 +108,54 @@
   </div>
 
   <!-- View Request Modal -->
-  <div class="custom-modal-overlay" id="requestModal">
-    <div class="custom-modal">
-      <div class="custom-modal-header">
-        <h3>Request Details</h3>
+  <div class="modal" id="requestModal">
+    <div class="modal-content request-modal-card">
+      <div class="request-modal-header">
+        <div>
+          <h4>Request Details</h4>
+          <p>Review the request info</p>
+        </div>
         <button id="closeRequestModal" aria-label="Close request modal"><i class="fas fa-times"></i></button>
       </div>
-      <div class="custom-modal-body" id="customRequestDetailBody"></div>
+      <div class="request-details" id="customRequestDetailBody"></div>
     </div>
   </div>
 
   <!-- Delivery Documentation Modal -->
-  <div class="custom-modal-overlay" id="documentationModal">
-    <div class="custom-modal">
+  <div class="modal" id="documentationModal">
+    <div class="modal-content request-modal-card rejection-card">
 
-      <div class="custom-modal-header">
-        <h3>Delivery Documentation</h3>
+      <div class="request-modal-header">
+        <div>
+          <h4>Delivery Documentation</h4>
+          <p>Provide remarks and proof</p>
+        </div>
         <button id="closeDocumentationModal" aria-label="Close Documentation Modal" title="Close Documentation Modal">
           <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <div class="custom-modal-body">
+      <div class="request-details rejection-details">
 
         <input type="hidden" id="documentationRequestId" title="Request ID">
 
-        <div class="mb-3">
-          <label for="deliveryRemarks" class="form-label">Delivery Remarks</label>
-          <textarea id="deliveryRemarks" class="form-control" rows="4"
+        <div class="form-group rejection-group">
+          <label for="deliveryRemarks" class="rejection-label">Delivery Remarks</label>
+          <textarea id="deliveryRemarks" class="rq-input rejection-input" rows="4"
             placeholder="Describe delivery details..."></textarea>
         </div>
 
-        <div class="mb-3">
-          <label for="deliveryFile" class="form-label">
-            Upload Delivery Proof
-          </label>
-
-          <input type="file" id="deliveryFile" class="form-control" accept="image/*">
+        <div class="form-group rejection-group">
+          <label for="deliveryFile" class="rejection-label">Upload Delivery Proof</label>
+          <input type="file" id="deliveryFile" class="rq-input rejection-input" accept="image/*">
         </div>
 
-        <div class="d-flex justify-content-end gap-2">
-          <button class="btn btn-secondary" id="cancelDocumentation">
+        <div class="rejection-actions">
+          <button class="btn-secondary rejection-cancel-btn" id="cancelDocumentation">
             Cancel
           </button>
 
-          <button class="btn btn-success" id="submitDocumentation">
+          <button class="rq-btn-approve rejection-submit-btn" style="background-color: #10b981;" id="submitDocumentation">
             Submit Documentation
           </button>
         </div>

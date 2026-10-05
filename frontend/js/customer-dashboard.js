@@ -71,6 +71,14 @@ function loadStats(requests) {
                 "pending"
         ).length;
 
+    const processing =
+        requests.filter(
+            r =>
+                r.status &&
+                r.status.toLowerCase() ===
+                "processing"
+        ).length;
+
     const approved =
         requests.filter(
             r =>
@@ -90,6 +98,10 @@ function loadStats(requests) {
     document.getElementById(
         "pendingCount"
     ).textContent = pending;
+
+    document.getElementById(
+        "processingCount"
+    ).textContent = processing;
 
     document.getElementById(
         "approvedCount"

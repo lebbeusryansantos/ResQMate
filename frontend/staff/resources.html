@@ -8,7 +8,7 @@
 
   <link rel="stylesheet" href="../style/customer-sidebar.css">
   <link rel="stylesheet" href="../style/logout-modal.css">
-  <link rel="stylesheet" href="../style/staff-resources.css">
+  <link rel="stylesheet" href="../style/admin-shared.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -33,22 +33,22 @@
 
         <div class="stat-card">
           <h3>Total Resources</h3>
-          <div id="totalResources">0</div>
+          <div id="totalResources" class="stat-number">0</div>
         </div>
 
         <div class="stat-card">
           <h3>Available</h3>
-          <div id="availableResources">0</div>
+          <div id="availableResources" class="stat-number">0</div>
         </div>
 
         <div class="stat-card">
           <h3>Low Stock</h3>
-          <div id="lowStockResources">0</div>
+          <div id="lowStockResources" class="stat-number">0</div>
         </div>
 
         <div class="stat-card">
           <h3>Depleted</h3>
-          <div id="depletedResources">0</div>
+          <div id="depletedResources" class="stat-number">0</div>
         </div>
 
       </div>
@@ -67,20 +67,20 @@
 
         </div>
 
-        <div class="rq-filter-row">
-
-          <input type="text" id="searchBar" class="rq-input" placeholder="Search resources...">
-
-          <select id="statusFilter" class="rq-input" aria-label="Filter resources by category">
-
-            <option value="all">All Categories</option>
-            <option value="food">Food</option>
-            <option value="water">Water</option>
-            <option value="shelter">Shelter</option>
-            <option value="medicine">Medicine</option>
-
-          </select>
-
+        <div class="toolbar-row">
+          <div class="toolbar-actions" style="justify-content: flex-start; width: 100%;">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchBar" placeholder="Search resources...">
+            </div>
+            <select id="statusFilter" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd;" aria-label="Filter resources by category">
+              <option value="all">All Categories</option>
+              <option value="food">Food</option>
+              <option value="water">Water</option>
+              <option value="shelter">Shelter</option>
+              <option value="medicine">Medicine</option>
+            </select>
+          </div>
         </div>
 
         <table>

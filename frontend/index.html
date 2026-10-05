@@ -13,6 +13,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script>
+        // Global Auth Check for landing page
+        (function() {
+            const token = localStorage.getItem("token");
+            const userStr = localStorage.getItem("user");
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user.role === "admin") {
+                        window.location.replace("admin/dashboard.html");
+                    } else if (user.role === "staff") {
+                        window.location.replace("staff/dashboard.html");
+                    } else if (user.role === "customer") {
+                        window.location.replace("customer/dashboard.html");
+                    }
+                } catch (e) {
+                    console.error("Error parsing user data for redirect", e);
+                }
+            }
+        })();
+    </script>
 </head>
 
 <body id="top">

@@ -774,8 +774,10 @@ tbody tr:hover {
   background: rgba(0, 0, 0, .5);
   display: none;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 9999;
+  padding: 32px 16px;
+  overflow-y: auto;
 }
 
 .modal.show {
@@ -784,17 +786,16 @@ tbody tr:hover {
 
 .modal-content {
   width: 500px;
-  max-width: calc(100% - 32px);
+  max-width: 100%;
   background: white;
   border-radius: 16px;
   padding: 24px;
-  max-height: calc(100vh - 32px);
-  overflow-y: auto;
+  margin: auto; /* Centers it if it's shorter than screen, keeps it top-aligned if taller */
 }
 
 .modal-content.small {
   width: 400px;
-  max-width: calc(100% - 32px);
+  max-width: 100%;
 }
 
 .modal-header {

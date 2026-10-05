@@ -109,13 +109,23 @@ function renderRequestsTable(data = requestsData) {
                 </button>`;
         }
 
-        // Admin action: Delete is available for all requests
-        actionBtns += `
-            <button class="rq-btn-reject" title="Permanently Delete"
-                style="background-color: #dc3545; color: white;"
-                onclick="deleteRequest(${request.request_id})">
-                <i class="fa-solid fa-trash"></i> Delete
-            </button>`;
+        // Admin action: Delete is only allowed for rejected or completed requests
+        if (status === "rejected" || status === "completed") {
+            actionBtns += `
+                <button class="rq-btn-reject" title="Permanently Delete"
+                    style="background-color: #dc3545; color: white;"
+                    onclick="deleteRequest(${request.request_id})">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>`;
+        } else {
+            // Disabled delete button for pending/processing
+            actionBtns += `
+                <button class="rq-btn-reject disabled-btn" title="Reject request first to delete"
+                    style="background-color: #fca5a5; color: white; cursor: not-allowed;"
+                    disabled>
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>`;
+        }
 
         tbody.innerHTML += `
             <tr data-status="${status}">

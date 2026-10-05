@@ -65,6 +65,11 @@
                         Assistance Requests
                     </h5>
 
+                    <div class="tabs-container" style="display: flex; gap: 10px; margin-left: 20px;">
+                        <button class="rq-badge rq-badge-processing tab-btn active" data-tab="active" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500;">Active Requests</button>
+                        <button class="rq-badge rq-badge-pending tab-btn" data-tab="completed" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500; background: #f3f4f6; color: #4b5563;">Completed</button>
+                    </div>
+
                     <div class="toolbar-actions">
 
                         <div class="search-box">
@@ -95,6 +100,22 @@
                         <select id="provinceFilter" class="rq-input" aria-label="Filter by Province">
                             <option value="all">All Provinces</option>
                             <option value="Metro Manila">Metro Manila</option>
+                        </select>
+
+                        <select id="calamityFilter" class="rq-input" aria-label="Filter by Calamity">
+                            <option value="all">All Calamities</option>
+                            <option value="Typhoon">Typhoon</option>
+                            <option value="Earthquake">Earthquake</option>
+                            <option value="Flood">Flood</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Others">Others</option>
+                        </select>
+
+                        <select id="timeFilter" class="rq-input" aria-label="Filter by Time">
+                            <option value="all">All Time</option>
+                            <option value="past_week">Past Week</option>
+                            <option value="past_month">Past Month</option>
+                            <option value="past_year">Past Year</option>
                         </select>
 
                         <select id="statusFilter" class="rq-input" aria-label="Filter selection" title="Filter selection">
@@ -149,6 +170,12 @@
 
                     </table>
 
+                </div>
+
+                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-top: 1px solid #e5e7eb;">
+                    <button id="prevPageBtn" class="rq-btn-reject disabled-btn" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;" disabled>Previous</button>
+                    <span id="pageIndicator" style="font-size: 0.9rem; color: #4b5563; font-weight: 500;">Page 1</span>
+                    <button id="nextPageBtn" class="rq-btn-approve" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Next</button>
                 </div>
 
             </div>
@@ -220,6 +247,10 @@
                     </div>
                 </div>
 
+            </div>
+
+            <div class="modal-actions" id="modalActionContainer" style="display: flex; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb; justify-content: flex-end;">
+                <!-- Buttons injected by JS -->
             </div>
 
         </div>

@@ -7,10 +7,15 @@ var API_URL = API_BASE_URL;
 
 let requestsData = [];
 let usersData = [];
+let filteredRequestsData = [];
+let currentTab = 'active';
+let currentPage = 1;
+const itemsPerPage = 20;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRequests();
     setupFilters();
+    setupTabsAndPagination();
 
     // Close view modal
     document.getElementById("closeViewModal")?.addEventListener("click", () => {
@@ -44,7 +49,7 @@ async function loadRequests() {
         if (!Array.isArray(requestsData)) requestsData = [];
 
         renderStatistics();
-        renderRequestsTable();
+        filterRequests();
 
     } catch (error) {
         console.error("Load Requests Error:", error);
@@ -80,58 +85,20 @@ function renderRequestsTable(data = requestsData) {
     }
 
     data.forEach(request => {
-
         const status = (request.status || "pending").toLowerCase();
         const priority = (request.priority_level || "medium").toLowerCase();
 
-        // Action buttons based on current status
         let actionBtns = `
             <button class="rq-btn-view" title="View Details"
                 onclick="viewRequest(${request.request_id})">
-                <i class="fa-solid fa-eye"></i>
+                <i class="fa-solid fa-eye"></i> View Details
             </button>`;
-
-        if (status === "pending") {
-            actionBtns += `
-                <button class="rq-btn-approve" title="Move to Processing"
-                    onclick="updateStatus(${request.request_id}, 'processing')">
-                    <i class="fa-solid fa-check"></i> Process
-                </button>
-                <button class="rq-btn-reject" title="Reject Request"
-                    onclick="rejectRequest(${request.request_id})">
-                    <i class="fa-solid fa-xmark"></i> Reject
-                </button>`;
-        } else if (status === "processing") {
-            actionBtns += `
-                <button class="rq-btn-approve" title="Mark Completed"
-                    onclick="updateStatus(${request.request_id}, 'completed')">
-                    <i class="fa-solid fa-flag-checkered"></i> Complete
-                </button>`;
-        }
-
-        // Admin action: Delete is only allowed for rejected or completed requests
-        if (status === "rejected" || status === "completed") {
-            actionBtns += `
-                <button class="rq-btn-reject" title="Permanently Delete"
-                    style="background-color: #dc3545; color: white;"
-                    onclick="deleteRequest(${request.request_id})">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>`;
-        } else {
-            // Disabled delete button for pending/processing
-            actionBtns += `
-                <button class="rq-btn-reject disabled-btn" title="Reject request first to delete"
-                    style="background-color: #fca5a5; color: white; cursor: not-allowed;"
-                    disabled>
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>`;
-        }
 
         tbody.innerHTML += `
             <tr data-status="${status}">
                 <td><strong>#${request.request_id}</strong></td>
                 <td>${request.full_name || "—"}</td>
-                <td>${request.category_name || "—"}</td>
+                <td>${request.calamity_type || request.category_name || "—"}</td>
                 <td>${request.location_name || "—"}</td>
                 <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
                 <td><span class="rq-badge rq-badge-${status}">${request.status.replace(/_/g, ' ').toUpperCase()}</span></td>
@@ -377,6 +344,38 @@ window.viewRequest = function (requestId) {
     } else {
         rejectionRow.style.display = "none";
     }
+    
+    // Inject actions into modal
+    const actionContainer = document.getElementById("modalActionContainer");
+    if (actionContainer) {
+        actionContainer.innerHTML = "";
+        const status = (request.status || "pending").toLowerCase();
+        
+        if (status === "pending") {
+            actionContainer.innerHTML += `
+                <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'processing'); document.getElementById('closeViewModal').click();">
+                    <i class="fa-solid fa-check"></i> Process
+                </button>
+                <button class="rq-btn-reject" onclick="rejectRequest(${request.request_id}); document.getElementById('closeViewModal').click();">
+                    <i class="fa-solid fa-xmark"></i> Reject
+                </button>
+            `;
+        } else if (status === "processing") {
+            actionContainer.innerHTML += `
+                <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'completed'); document.getElementById('closeViewModal').click();">
+                    <i class="fa-solid fa-flag-checkered"></i> Complete
+                </button>
+            `;
+        }
+        
+        if (status === "rejected" || status === "completed") {
+            actionContainer.innerHTML += `
+                <button class="rq-btn-reject" style="background-color: #dc3545; color: white;" onclick="deleteRequest(${request.request_id}); document.getElementById('closeViewModal').click();">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            `;
+        }
+    }
 
     document.getElementById("viewRequestModal").classList.add("show");
 };
@@ -385,10 +384,40 @@ window.viewRequest = function (requestId) {
    FILTERS
 =========================== */
 function setupFilters() {
-    document.getElementById("requestSearch")?.addEventListener("input", filterRequests);
-    document.getElementById("statusFilter")?.addEventListener("change", filterRequests);
-    document.getElementById("provinceFilter")?.addEventListener("change", filterRequests);
-    document.getElementById("cityFilter")?.addEventListener("change", filterRequests);
+    document.getElementById("requestSearch")?.addEventListener("input", () => { currentPage = 1; filterRequests(); });
+    document.getElementById("statusFilter")?.addEventListener("change", () => { currentPage = 1; filterRequests(); });
+    document.getElementById("provinceFilter")?.addEventListener("change", () => { currentPage = 1; filterRequests(); });
+    document.getElementById("cityFilter")?.addEventListener("change", () => { currentPage = 1; filterRequests(); });
+    document.getElementById("calamityFilter")?.addEventListener("change", () => { currentPage = 1; filterRequests(); });
+    document.getElementById("timeFilter")?.addEventListener("change", () => { currentPage = 1; filterRequests(); });
+}
+
+function setupTabsAndPagination() {
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    tabBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            tabBtns.forEach(b => b.classList.remove("active"));
+            e.target.classList.add("active");
+            currentTab = e.target.getAttribute("data-tab");
+            currentPage = 1;
+            filterRequests();
+        });
+    });
+
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    });
+
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        const totalPages = Math.ceil(filteredRequestsData.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+        }
+    });
 }
 
 function filterRequests() {
@@ -396,18 +425,86 @@ function filterRequests() {
     const status = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
     const province = (document.getElementById("provinceFilter")?.value || "all").toLowerCase();
     const city = (document.getElementById("cityFilter")?.value || "all").toLowerCase();
+    const calamity = (document.getElementById("calamityFilter")?.value || "all").toLowerCase();
+    const timeFilter = (document.getElementById("timeFilter")?.value || "all");
 
-    const filtered = requestsData.filter(r => {
-        const text = `${r.full_name} ${r.request_id} ${r.category_name}`.toLowerCase();
+    const now = new Date();
+
+    filteredRequestsData = requestsData.filter(r => {
+        // Tab filtering
+        const isCompleted = (r.status || "").toLowerCase() === "completed";
+        if (currentTab === 'completed' && !isCompleted) return false;
+        if (currentTab === 'active' && isCompleted) return false;
+
+        const text = `${r.full_name} ${r.request_id} ${r.category_name} ${r.calamity_type || ''}`.toLowerCase();
         const loc = (r.location_name || "").toLowerCase();
         const mSearch = text.includes(search);
         const mStatus = status === "all" || (r.status || "").toLowerCase() === status;
         const mProv = province === "all" || loc.includes(province);
         const mCity = city === "all" || loc.includes(city);
-        return mSearch && mStatus && mProv && mCity;
+        
+        const rCalamity = (r.calamity_type || r.category_name || "").toLowerCase();
+        const mCalamity = calamity === "all" || rCalamity.includes(calamity);
+
+        let mTime = true;
+        if (timeFilter !== "all" && r.date_requested) {
+            const reqDate = new Date(r.date_requested);
+            const diffTime = Math.abs(now - reqDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (timeFilter === "past_week" && diffDays > 7) mTime = false;
+            if (timeFilter === "past_month" && diffDays > 30) mTime = false;
+            if (timeFilter === "past_year" && diffDays > 365) mTime = false;
+        }
+
+        return mSearch && mStatus && mProv && mCity && mCalamity && mTime;
     });
 
-    renderRequestsTable(filtered);
+    updatePagination();
+}
+
+function updatePagination() {
+    const totalPages = Math.ceil(filteredRequestsData.length / itemsPerPage) || 1;
+    
+    // Safety check
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = filteredRequestsData.slice(startIdx, endIdx);
+
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        if (prevBtn.disabled) {
+            prevBtn.classList.add("disabled-btn");
+            prevBtn.style.cursor = "not-allowed";
+        } else {
+            prevBtn.classList.remove("disabled-btn");
+            prevBtn.style.cursor = "pointer";
+        }
+    }
+
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        if (nextBtn.disabled) {
+            nextBtn.classList.add("disabled-btn");
+            nextBtn.style.cursor = "not-allowed";
+        } else {
+            nextBtn.classList.remove("disabled-btn");
+            nextBtn.style.cursor = "pointer";
+        }
+    }
+
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages} (${filteredRequestsData.length} items)`;
+    }
+
+    renderRequestsTable(slicedData);
 }
 
 /* ===========================

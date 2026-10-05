@@ -198,7 +198,7 @@ function createNotification(
                 "Request Approved";
 
             message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} has been approved.`;
+                `Your assistance request number ${requestId} has been approved.`;
 
             icon =
                 "fa-circle-check";
@@ -212,7 +212,7 @@ function createNotification(
                 "Request Completed";
 
             message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} has been completed.`;
+                `Your assistance request number ${requestId} has been completed.`;
 
             icon =
                 "fa-circle-check";
@@ -226,7 +226,7 @@ function createNotification(
                 "Request Cancelled";
 
             message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} has been cancelled.`;
+                `Your assistance request number ${requestId} has been cancelled.`;
             
             if (reason) {
                 message += `<br><span style="color: #ef4444; font-size: 0.9em; margin-top: 4px; display: inline-block;">Reason: ${reason}</span>`;
@@ -243,7 +243,7 @@ function createNotification(
                 "Request Rejected";
 
             message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} was rejected.`;
+                `Your assistance request number ${requestId} was rejected.`;
 
             if (reason) {
                 message += `<br><span style="color: #ef4444; font-size: 0.9em; margin-top: 4px; display: inline-block;">Reason: ${reason}</span>`;
@@ -263,7 +263,7 @@ function createNotification(
                 "Request Received";
 
             message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} is currently pending.`;
+                `Your assistance request number ${requestId} is currently pending.`;
 
             icon =
                 "fa-clock";

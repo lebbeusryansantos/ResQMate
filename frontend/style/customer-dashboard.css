@@ -168,12 +168,10 @@ body {
 
 .stat-card {
     border-radius: 16px;
-    padding: 20px;
+    padding: 24px;
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 150px;
     box-shadow: 0 4px 6px -1px rgba(127, 29, 29, 0.08);
 }
 

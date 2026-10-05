@@ -211,7 +211,7 @@ async function loadRecentRequests() {
                     <td>${r.full_name || "—"}</td>
                     <td>${r.category_name || "—"}</td>
                     <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
-                    <td><span class="rq-badge rq-badge-${status}">${r.status}</span></td>
+                    <td><span class="rq-badge rq-badge-${status}">${r.status.replace(/_/g, ' ').toUpperCase()}</span></td>
                 </tr>`;
         });
 

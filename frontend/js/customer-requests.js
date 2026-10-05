@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             let status = req.status ? req.status.toLowerCase() : "pending";
             if (status === "processing") status = "approved";
 
-            const statusFormatted = status.charAt(0).toUpperCase() + status.slice(1);
+            const statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
             const dateFormatted = req.date_requested
                 ? new Date(req.date_requested).toLocaleDateString("en-US", {

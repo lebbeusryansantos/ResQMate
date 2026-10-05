@@ -123,7 +123,7 @@ async function loadRecentRequests() {
                     <td>#${String(r.request_id).padStart(4, "0")}</td>
                     <td>${r.full_name || "—"}</td>
                     <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
-                    <td><span class="rq-badge rq-badge-${status}">${r.status.toUpperCase()}</span></td>
+                    <td><span class="rq-badge rq-badge-${status}">${r.status.replace(/_/g, ' ').toUpperCase()}</span></td>
                 </tr>`;
         });
 

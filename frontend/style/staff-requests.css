@@ -206,6 +206,7 @@ body {
   color: #15803d;
 }
 
+.rq-badge-awaiting_verification,
 .rq-badge-processing {
   background: #e0e7ff;
   color: #4338ca;

@@ -147,7 +147,7 @@ function loadRecentRequests(requests) {
             let status = request.status ? request.status.toLowerCase() : "pending";
             if (status === "processing") status = "approved";
 
-            const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+            const statusText = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
             const date =
                 request.date_requested

@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // 3. Strict prefix and length validation
-            if (this.value.length > 0 && this.value[0] !== '0') {
+            if (this.value.length === 11 && !this.value.startsWith('09')) {
+                this.setCustomValidity('<span style="color: #f59e0b">Maximum of 11 characters reached.</span><br>Phone number must start with 09.');
+            } else if (this.value.length > 0 && this.value[0] !== '0') {
                 this.setCustomValidity('Phone number must start with 09.');
             } else if (this.value.length > 1 && this.value[1] !== '9') {
                 this.setCustomValidity('Phone number must start with 09.');
@@ -182,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 input.classList.remove("input-error");
                 errorEl.style.color = "#f59e0b"; // amber for warning
             }
-            errorEl.textContent = errorMsg;
+            errorEl.innerHTML = errorMsg;
             errorEl.style.display = "block";
         } else {
             input.classList.remove("input-error");

@@ -380,7 +380,7 @@ function initializeModals() {
                     input.classList.remove("input-error");
                     errorEl.style.color = "#f59e0b"; // amber for warning
                 }
-                errorEl.textContent = errorMsg;
+                errorEl.innerHTML = errorMsg;
                 errorEl.style.display = "block";
             } else {
                 input.classList.remove("input-error");

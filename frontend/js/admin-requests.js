@@ -112,7 +112,7 @@ function renderRequestsTable(data = requestsData) {
         // Admin action: Delete is available for all requests
         actionBtns += `
             <button class="rq-btn-reject" title="Permanently Delete"
-                style="background-color: #dc3545;"
+                style="background-color: #dc3545; color: white;"
                 onclick="deleteRequest(${request.request_id})">
                 <i class="fa-solid fa-trash"></i> Delete
             </button>`;

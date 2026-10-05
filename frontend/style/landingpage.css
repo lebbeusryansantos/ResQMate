@@ -20,7 +20,7 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: radial-gradient(circle at top left, #ffffff, #fdf2f2 100%);
     color: var(--text);
     line-height: 1.6;

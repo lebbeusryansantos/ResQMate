@@ -6,7 +6,7 @@ STAFF REQUESTS PAGE
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -159,7 +159,7 @@ FILTERS
   min-height: 48px;
   padding: 0 15px;
   outline: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .rq-input:focus {
@@ -216,6 +216,7 @@ thead {
 th {
   color: #7f1d1d;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
 /* ===========================

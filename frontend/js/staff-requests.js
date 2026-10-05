@@ -189,7 +189,7 @@ function renderTable(requests) {
                 <td>${r.location_name || "—"}</td>
                 <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
                 <td>${resource}</td>
-                <td><span class="rq-badge rq-badge-${status}">${r.status}</span></td>
+                <td><span class="rq-badge rq-badge-${status}">${r.status.toUpperCase()}</span></td>
                 <td>${date}</td>
                 <td>
                     <button class="rq-btn-view me-1" onclick="viewRequest(${r.request_id}, '${r.full_name || ""}', '${r.category_name || ""}', '${r.location_name || ""}', '${r.priority_level || ""}', '${r.status || ""}', '${r.date_requested || ""}')">View</button>

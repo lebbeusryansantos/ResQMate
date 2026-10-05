@@ -73,6 +73,15 @@ loginForm.addEventListener("submit", async (e) => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
+    if (email.includes(" ")) {
+        const errEl = document.getElementById("loginError");
+        if (errEl) {
+            errEl.textContent = "Email address must not contain spaces.";
+            errEl.classList.add("show");
+        }
+        return;
+    }
+
     const submitBtn = loginForm.querySelector('button[type="submit"]');
     if (submitBtn) {
         submitBtn.disabled = true;

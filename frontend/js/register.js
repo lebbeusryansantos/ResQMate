@@ -100,10 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("registerEmail");
     if (emailInput) {
         emailInput.addEventListener("input", function () {
-            if (this.validity.customError) {
+            if (this.value.includes(" ")) {
+                this.setCustomValidity("Email address must not contain spaces.");
+            } else {
                 this.setCustomValidity("");
-                validateSingleInput(this);
             }
+            validateSingleInput(this);
         });
     }
 
@@ -194,6 +196,18 @@ registerForm.addEventListener(
 
         const email =
             document.getElementById("registerEmail").value;
+
+        if (email.includes(" ")) {
+            const emailInput = document.getElementById("registerEmail");
+            if (emailInput) {
+                emailInput.setCustomValidity("Email address must not contain spaces.");
+                emailInput.dispatchEvent(new Event("input"));
+                emailInput.focus();
+            } else {
+                alert("Email address must not contain spaces.");
+            }
+            return;
+        }
 
         const phone_number =
             document.getElementById("registerPhone").value;

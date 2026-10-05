@@ -115,6 +115,9 @@ def register_user(data: RegisterRequest):
     }
     db_role = role_map.get(data.role, "community_user")
 
+    if " " in data.email:
+        raise HTTPException(status_code=400, detail="Email address must not contain spaces.")
+
     with engine.begin() as conn:
 
         existing = conn.execute(
@@ -222,6 +225,12 @@ def login_user(data: LoginRequest):
 
     print("===== LOGIN ATTEMPT =====")
     print("Email:", data.email)
+
+    if " " in data.email:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "Email address must not contain spaces."}
+        )
 
     JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")
 

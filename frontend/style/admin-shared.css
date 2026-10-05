@@ -1172,6 +1172,40 @@ a.btn:active,
 .rejection-submit-btn { padding: 8px 16px; border-radius: 6px; border: none; background: #ef4444; color: white; cursor: pointer; }
 .text-danger-medium { color: #ef4444; font-weight: 500; }
 
+/* ===========================
+   BACK TO TOP BUTTON
+=========================== */
+#backToTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 999999;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+    transition: all 0.3s ease;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+#backToTopBtn.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#backToTopBtn:hover {
+    transform: scale(1.1) translateY(0);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
+}
+
 
 
 

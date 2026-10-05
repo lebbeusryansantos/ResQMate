@@ -1,285 +1,337 @@
 /* ===========================
    PROFILE MODAL
 =========================== */
-
+ 
 .modal-content {
     width: 380px;
-    max-width: 90%;
-
+    max-width: calc(100% - 32px);
+    /* Prevents touching screen edges on mobile */
+    margin: 16px auto;
+ 
     background: #fff;
     border-radius: 16px;
     overflow: hidden;
-
+ 
     box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
 }
-
+ 
 /* ===========================
    HEADER
 =========================== */
-
+ 
 .modal-header-red {
     background: linear-gradient(135deg,
             #ef4444,
             #dc2626);
-
+ 
     color: white;
-
-    padding: 20px 24px;
+ 
+    padding: 18px 20px;
 }
-
+ 
 .modal-header-red h4 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
 }
-
+ 
 /* ===========================
    BODY
 =========================== */
-
+ 
 .profile-modal-body {
     padding: 18px;
+    display: flex;
+    flex-direction: column;
     gap: 14px;
+    max-height: calc(85vh - 120px);
+    /* Keeps body scrollable if content overflows vertically */
+    overflow-y: auto;
 }
-
+ 
 /* ===========================
    AVATAR
 =========================== */
-
+ 
 .profile-avatar-large {
     width: 90px;
     height: 90px;
-
+    aspect-ratio: 1 / 1;
+    /* Forces equal proportions */
+    flex-shrink: 0;
+    /* Prevents flex containers from squishing it */
     margin: 0 auto;
-
+ 
     border-radius: 50%;
-
+ 
     background: linear-gradient(135deg,
             #ef4444,
             #dc2626);
-
+ 
     color: #ffffff;
-
+ 
     display: flex;
     align-items: center;
     justify-content: center;
-
+ 
     font-size: 2rem;
     font-weight: 700;
-
+ 
     box-shadow: 0 8px 20px rgba(220, 38, 38, .25);
 }
-
+ 
 /* ===========================
    USER INFO
 =========================== */
-
+ 
 .profile-user-info {
     text-align: center;
-    padding-top: 10px;
-    padding-bottom: 20px;
+    padding-top: 6px;
+    padding-bottom: 16px;
 }
-
+ 
 .profile-user-info h5 {
     margin: 0 0 4px;
-
+ 
     font-size: 1.2rem;
     font-weight: 600;
-
+ 
     color: #111827;
 }
-
+ 
 .profile-user-info p {
     margin: 0;
-
+ 
     color: #6b7280;
     font-size: 14px;
 }
-
+ 
 /* ===========================
    DETAILS
 =========================== */
-
+ 
 .profile-details {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
-
+ 
 .profile-modal-body .form-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
-
+ 
 .profile-modal-body .form-group label {
     font-size: 13px;
     font-weight: 600;
-
+ 
     color: #4b5563;
 }
-
+ 
 .profile-modal-body .form-group input {
     width: 100%;
     height: 48px;
-
+ 
     padding: 0 14px;
-
+ 
     border: 1px solid #d1d5db;
     border-radius: 12px;
-
+ 
     background: #ffffff;
-
+ 
     font-size: 14px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+ 
     color: #111827;
-
+ 
     transition: all .2s ease;
 }
-
+ 
 .profile-modal-body .form-group input:focus {
     outline: none;
-
+ 
     border-color: #ef4444;
-
+ 
     box-shadow: 0 0 0 3px rgba(239, 68, 68, .15);
 }
-
+ 
 .profile-modal-body .form-group input[readonly] {
     background: #f9fafb;
-
+ 
     color: #6b7280;
-
+ 
     cursor: not-allowed;
 }
-
+ 
 .profile-modal-body .form-group input::placeholder {
     color: #9ca3af;
 }
-
+ 
 /* ===========================
    ROLE BADGE
 =========================== */
-
+ 
 .profile-role-badge {
     display: inline-flex;
-
+ 
     align-items: center;
     justify-content: center;
-
+ 
     width: fit-content;
-
+ 
     padding: 6px 12px;
-
+ 
     border-radius: 999px;
-
+ 
     background: #fee2e2;
     color: #991b1b;
-
+ 
     font-size: 12px;
     font-weight: 600;
 }
-
+ 
 /* ===========================
    FOOTER
 =========================== */
-
+ 
 .profile-modal-footer {
     display: flex;
     gap: 12px;
-
+ 
     margin-top: 8px;
 }
-
+ 
 .profile-modal-footer .btn-primary,
 .profile-modal-footer .btn-secondary {
     flex: 1;
-
+ 
     display: flex;
     align-items: center;
     justify-content: center;
-
+ 
     text-align: center;
 }
-
+ 
 /* ===========================
    BUTTONS
 =========================== */
-
+ 
 .btn-primary {
     border: none;
-
+ 
     background: linear-gradient(135deg,
             #ef4444,
             #dc2626);
-
+ 
     color: white;
-
+ 
     padding: 12px 18px;
-
+ 
     border-radius: 10px;
-
+ 
     font-weight: 600;
     cursor: pointer;
-
+ 
     transition: .2s;
 }
-
+ 
 .btn-primary:hover {
     transform: translateY(-1px);
-
+ 
     box-shadow: 0 8px 16px rgba(220, 38, 38, .25);
 }
-
+ 
 .btn-secondary {
     border: none;
-
+ 
     background: #f3f4f6;
     color: #374151;
-
+ 
     padding: 12px 18px;
-
+ 
     border-radius: 10px;
-
+ 
     font-weight: 600;
     cursor: pointer;
-
+ 
     transition: .2s;
 }
-
+ 
 .btn-secondary:hover {
     background: #e5e7eb;
 }
-
+ 
 /* ===========================
-   RESPONSIVE
+   RESPONSIVE BREAKPOINTS
 =========================== */
-
+ 
 @media (max-width: 576px) {
-
     .modal-content {
-        width: 95%;
+        width: 100%;
+        margin: 12px;
+        border-radius: 14px;
     }
-
+ 
+    .modal-header-red {
+        padding: 16px;
+    }
+ 
+    .profile-modal-body {
+        padding: 14px;
+        gap: 12px;
+    }
+ 
     .profile-avatar-large {
         width: 75px;
         height: 75px;
-
+        aspect-ratio: 1 / 1;
+        flex-shrink: 0;
         font-size: 1.6rem;
     }
-
+ 
     .profile-user-info h5 {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
-
+ 
+    .profile-user-info p {
+        font-size: 13px;
+    }
+ 
+    .profile-modal-body .form-group input {
+        height: 44px;
+        /* Slightly more compact for small screens */
+        font-size: 16px;
+        /* Prevents auto-zoom on iOS Safari */
+    }
+ 
     .profile-modal-footer {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        /* Usually better UX to have secondary/cancel on bottom or primary on top depending on convention */
+        gap: 8px;
+    }
+ 
+    .profile-modal-footer .btn-primary,
+    .profile-modal-footer .btn-secondary {
+        width: 100%;
+        padding: 12px;
     }
 }
-
+ 
+/* Extra small devices (e.g., iPhone SE / Galaxy Fold outer screen) */
+@media (max-width: 380px) {
+    .modal-content {
+        max-width: calc(100% - 16px);
+        margin: 8px;
+    }
+}
+ 
 /* Global Button UI Feedback */
-button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-btn:active {
+button:active,
+.btn:active,
+input[type="submit"]:active,
+a.btn:active,
+.confirm-btn:active {
     transform: scale(0.96) !important;
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;

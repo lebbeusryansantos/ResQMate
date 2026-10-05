@@ -148,12 +148,22 @@ document.getElementById(
         "userPassword"
     ).value = "";
 
-    document.getElementById(
-        "userRole"
-    ).value = "community_user";
-
+    document.getElementById("userRole").value = "community_user";
     modal.classList.add("active");
 });
+
+/* ===========================
+   REAL-TIME PHONE VALIDATION
+=========================== */
+const userPhoneInput = document.getElementById("userPhone");
+if (userPhoneInput) {
+    userPhoneInput.addEventListener("input", function (e) {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+    });
+}
 
 /* ===========================
    SAVE USER

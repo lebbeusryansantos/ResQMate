@@ -147,7 +147,9 @@ function loadRecentRequests(requests) {
             let status = request.status ? request.status.toLowerCase() : "pending";
             if (status === "processing") status = "approved";
 
-            const statusText = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            let statusText = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            if (status === "cancelled") statusText = "Cancelled by User";
+            if (status === "rejected") statusText = "Rejected by Admin";
 
             const date =
                 request.date_requested

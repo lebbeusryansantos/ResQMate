@@ -90,7 +90,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             let status = req.status ? req.status.toLowerCase() : "pending";
             if (status === "processing") status = "approved";
 
-            const statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            let statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            if (status === "cancelled") statusFormatted = "Cancelled by User";
+            if (status === "rejected") statusFormatted = "Rejected by Admin";
 
             const dateFormatted = req.date_requested
                 ? new Date(req.date_requested).toLocaleDateString("en-US", {
@@ -283,8 +285,11 @@ async function viewRequest(requestId) {
                 "modalStatusBadge"
             );
 
-        statusBadge.textContent =
-            request.status || "Pending";
+        let displayStatus = request.status || "Pending";
+        if (displayStatus.toLowerCase() === "cancelled") displayStatus = "Cancelled by User";
+        if (displayStatus.toLowerCase() === "rejected") displayStatus = "Rejected by Admin";
+        
+        statusBadge.textContent = displayStatus;
 
         statusBadge.className =
             `status-badge-modal ${(request.status || "pending").toLowerCase()}`;

@@ -17,6 +17,7 @@ body {
 .dashboard-container {
     display: flex;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ===========================
@@ -26,13 +27,16 @@ body {
 .main-content {
     flex: 1;
     margin-left: 260px;
+    width: calc(100% - 260px);
     padding: 35px;
     min-height: 100vh;
     transition: .3s;
+    overflow-x: hidden;
 }
 
 .dashboard-container.sidebar-collapsed .main-content {
     margin-left: 80px;
+    width: calc(100% - 80px);
 }
 
 /* ===========================
@@ -246,6 +250,9 @@ body {
     border: none;
     padding: 8px 14px;
     border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .rq-btn-approve:hover {
@@ -258,6 +265,9 @@ body {
     border: none;
     padding: 8px 14px;
     border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .rq-btn-reject:hover {

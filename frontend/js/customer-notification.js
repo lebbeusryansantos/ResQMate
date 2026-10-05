@@ -130,7 +130,7 @@ function displayNotifications(
                 ? capitalize(
                     request.assistance_type
                 )
-                : "General";
+                : "Other";
 
         const requestId =
             request.request_id;

@@ -127,8 +127,7 @@ function loadRecentRequests(requests) {
         .slice(0, 5)
         .forEach(request => {
 
-            let type = "General";
-
+            let type = "Other";
             if (request.category_id == 1) {
                 type = "Food";
             }
@@ -142,7 +141,7 @@ function loadRecentRequests(requests) {
                 type = "Medicine";
             }
             else if (request.category_id == 5) {
-                type = "General";
+                type = "Other";
             }
 
             let status = request.status ? request.status.toLowerCase() : "pending";

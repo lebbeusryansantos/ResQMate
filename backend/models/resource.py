@@ -7,7 +7,7 @@ class Resource(Base):
 
     resource_id        = Column(Integer, primary_key=True, index=True)
     resource_name      = Column(String(100))
-    category           = Column(String(50))          # food / water / shelter / medicine / general
+    category           = Column(String(50))          # food / water / shelter / medicine / other
     quantity_available = Column(Integer)
     unit               = Column(String(50))
     location           = Column(String(150))         # warehouse/depot name

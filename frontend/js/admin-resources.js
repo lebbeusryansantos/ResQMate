@@ -80,7 +80,7 @@ function renderTable(resources) {
             <tr class="${rowClass}" data-id="${resource.resource_id}">
                 <td><strong>#${resource.resource_id}</strong></td>
                 <td>${resource.resource_name}</td>
-                <td>${resource.category || "General"}</td>
+                <td>${resource.category || "Other"}</td>
                 <td>${maxStock} ${resource.unit || ""}</td>
                 <td>${qty} ${resource.unit || ""}</td>
                 <td>${resource.location || "—"}</td>
@@ -90,7 +90,7 @@ function renderTable(resources) {
                         onclick="editResource(
                             ${resource.resource_id},
                             '${(resource.resource_name || "").replace(/'/g, "\\'")}',
-                            '${resource.category || "General"}',
+                            '${resource.category || "Other"}',
                             ${qty},
                             ${resource.max_stock || 100},
                             '${resource.unit || "units"}',

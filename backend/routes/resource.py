@@ -52,7 +52,7 @@ def get_resources(user: dict = Depends(get_current_user)):
 def create_resource(
     resource_name: str,
     admin: dict = Depends(get_current_admin),
-    category: str = "General",
+    category: str = "Other",
     quantity_available: int = 0,
     max_stock: int = 100,
     unit: str = "units",

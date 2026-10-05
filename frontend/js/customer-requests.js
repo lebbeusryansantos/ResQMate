@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         requests.forEach(req => {
             const row = document.createElement("tr");
 
-            const typeText = req.category_name || "General";
+            const typeText = req.category_name || "Other";
 
             let status = req.status ? req.status.toLowerCase() : "pending";
             if (status === "processing") status = "approved";
@@ -252,7 +252,7 @@ async function viewRequest(requestId) {
 
         document.getElementById(
             "modalCategory"
-        ).textContent = request.category_name || "General";
+        ).textContent = request.category_name || "Other";
 
         document.getElementById(
             "modalBarangay"

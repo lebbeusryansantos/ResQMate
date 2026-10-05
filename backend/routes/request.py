@@ -152,7 +152,7 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
         "Water": "Water",
         "Shelter": "Shelter",
         "Medicine": "Medicine",
-        "General": "General"
+        "Other": "Other"
     }
 
     priority_mapping = {

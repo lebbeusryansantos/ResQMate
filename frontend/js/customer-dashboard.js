@@ -145,19 +145,10 @@ function loadRecentRequests(requests) {
                 type = "General";
             }
 
-            const status =
-                request.status
-                    ? request.status.toLowerCase()
-                    : "pending";
+            let status = request.status ? request.status.toLowerCase() : "pending";
+            if (status === "processing") status = "approved";
 
-            const statusText =
-                request.status
-                    ? request.status
-                        .charAt(0)
-                        .toUpperCase() +
-                    request.status
-                        .slice(1)
-                    : "Pending";
+            const statusText = status.charAt(0).toUpperCase() + status.slice(1);
 
             const date =
                 request.date_requested

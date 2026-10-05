@@ -87,13 +87,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const typeText = req.category_name || "General";
 
-            const status = req.status
-                ? req.status.toLowerCase()
-                : "pending";
+            let status = req.status ? req.status.toLowerCase() : "pending";
+            if (status === "processing") status = "approved";
 
-            const statusFormatted = req.status
-                ? req.status.charAt(0).toUpperCase() + req.status.slice(1)
-                : "Pending";
+            const statusFormatted = status.charAt(0).toUpperCase() + status.slice(1);
 
             const dateFormatted = req.date_requested
                 ? new Date(req.date_requested).toLocaleDateString("en-US", {

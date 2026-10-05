@@ -191,6 +191,7 @@ function createNotification(
 
     switch (status) {
 
+        case "processing":
         case "approved":
 
             title =
@@ -201,20 +202,6 @@ function createNotification(
 
             icon =
                 "fa-circle-check";
-
-            break;
-
-
-        case "processing":
-
-            title =
-                "Request Processing";
-
-            message =
-                `Your ${type.toLowerCase()} assistance request #${requestId} is currently being processed.`;
-
-            icon =
-                "fa-spinner";
 
             break;
 

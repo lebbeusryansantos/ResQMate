@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 actionHTML = `
                     <button 
                         class="follow-up-button"
+                        style="background-color: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;"
                         data-request-id="${req.request_id}">
                         Follow Up
                     </button>
@@ -171,6 +172,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert(
                     `Follow-up request sent for Request #${requestId}.`
                 );
+
+                // Disable the button after clicking
+                button.disabled = true;
+                button.style.backgroundColor = '#9ca3af'; // gray out
+                button.style.cursor = 'not-allowed';
+                button.textContent = "Followed Up";
             });
         });
 

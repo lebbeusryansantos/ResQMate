@@ -70,6 +70,8 @@ def get_requests(user: dict = Depends(require_role(["admin", "staff"]))):
                 "status": row.status,
                 "rejection_reason": row.rejection_reason,
                 "admin_feedback": getattr(row, 'admin_feedback', None),
+                "user_feedback": getattr(row, 'user_feedback', None),
+                "feedback_rating": getattr(row, 'feedback_rating', None),
                 "assigned_staff": row.assigned_staff,
                 "calamity_type": row.calamity_type,
                 "specific_address": row.specific_address,
@@ -491,6 +493,45 @@ def accept_priority(request_id: int, user: dict = Depends(get_current_customer))
 
     return {"message": "Priority accepted and request is processing"}
 
+@router.put("/{request_id}/feedback")
+def submit_feedback(request_id: int, feedback_rating: int, user_feedback: str, user: dict = Depends(get_current_customer)):
+    if not (1 <= feedback_rating <= 5):
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
+        
+    with engine.begin() as conn:
+        req_result = conn.execute(
+            text("SELECT user_id, status, user_feedback FROM assistance_requests WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        ).fetchone()
+
+        if not req_result:
+            raise HTTPException(status_code=404, detail="Request Not Found")
+
+        if req_result.user_id != user["user_id"]:
+            raise HTTPException(status_code=403, detail="Forbidden: Not your request")
+
+        if req_result.status.lower() != "completed":
+            raise HTTPException(status_code=400, detail="Feedback can only be submitted for completed requests")
+            
+        if req_result.user_feedback is not None:
+            raise HTTPException(status_code=400, detail="Feedback has already been submitted for this request")
+
+        conn.execute(
+            text("""
+                UPDATE assistance_requests
+                SET user_feedback = :user_feedback,
+                    feedback_rating = :feedback_rating
+                WHERE request_id = :request_id
+            """),
+            {
+                "request_id": request_id,
+                "user_feedback": user_feedback,
+                "feedback_rating": feedback_rating
+            }
+        )
+
+    return {"message": "Feedback submitted successfully"}
+
 @router.get("/user/{user_id}")
 def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
     if user["role"] == "community_user" and user["user_id"] != user_id:
@@ -542,6 +583,8 @@ def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
                 "status": row.status,
                 "rejection_reason": row.rejection_reason,
                 "admin_feedback": getattr(row, 'admin_feedback', None),
+                "user_feedback": getattr(row, 'user_feedback', None),
+                "feedback_rating": getattr(row, 'feedback_rating', None),
                 "date_requested": str(row.date_requested)
             })
 

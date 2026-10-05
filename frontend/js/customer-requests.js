@@ -335,6 +335,37 @@ async function viewRequest(requestId) {
             }
         }
 
+        const userFeedbackSection = document.getElementById("userFeedbackSection");
+        const feedbackFormContainer = document.getElementById("feedbackFormContainer");
+        const feedbackDisplayContainer = document.getElementById("feedbackDisplayContainer");
+        const displayFeedbackRating = document.getElementById("displayFeedbackRating");
+        const displayFeedbackText = document.getElementById("displayFeedbackText");
+        const submitFeedbackBtn = document.getElementById("submitFeedbackBtn");
+
+        if (userFeedbackSection) {
+            if (request.status && request.status.toLowerCase() === "completed") {
+                userFeedbackSection.style.display = "block";
+                
+                if (request.feedback_rating || request.user_feedback) {
+                    feedbackFormContainer.style.display = "none";
+                    feedbackDisplayContainer.style.display = "block";
+                    
+                    displayFeedbackRating.textContent = request.feedback_rating ? `${request.feedback_rating} Stars` : "N/A";
+                    displayFeedbackText.textContent = request.user_feedback || "No comments provided.";
+                } else {
+                    feedbackDisplayContainer.style.display = "none";
+                    feedbackFormContainer.style.display = "block";
+                    
+                    document.getElementById("feedbackRating").value = "";
+                    document.getElementById("feedbackText").value = "";
+                    
+                    submitFeedbackBtn.onclick = () => submitFeedback(request.request_id);
+                }
+            } else {
+                userFeedbackSection.style.display = "none";
+            }
+        }
+
         document
             .getElementById(
                 "viewRequestModal"
@@ -502,5 +533,44 @@ window.acceptPriority = async function(requestId) {
     } catch (error) {
         console.error(error);
         alert("Failed to accept priority.");
+    }
+};
+
+window.submitFeedback = async function(requestId) {
+    const rating = document.getElementById("feedbackRating").value;
+    const feedback = document.getElementById("feedbackText").value;
+    
+    if (!rating) {
+        alert("Please select a rating.");
+        return;
+    }
+    
+    if (!confirm(`Submit feedback for Request #${requestId}?`)) return;
+
+    try {
+        const url = `${API_URL}/requests/${requestId}/feedback?feedback_rating=${rating}&user_feedback=${encodeURIComponent(feedback)}`;
+        const res = await fetch(url, {
+            method: "PUT",
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.detail || "Failed to submit feedback.");
+            return;
+        }
+
+        alert("Feedback submitted successfully.");
+        // Hide form and show display
+        document.getElementById("feedbackFormContainer").style.display = "none";
+        document.getElementById("feedbackDisplayContainer").style.display = "block";
+        document.getElementById("displayFeedbackRating").textContent = `${rating} Stars`;
+        document.getElementById("displayFeedbackText").textContent = feedback || "No comments provided.";
+        
+        loadRequests(); // reload table just in case
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to submit feedback.");
     }
 };

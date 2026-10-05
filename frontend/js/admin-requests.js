@@ -377,6 +377,23 @@ window.viewRequest = function (requestId) {
         }
     }
 
+    const userFeedbackRow = document.getElementById("userFeedbackRow");
+    if (status === "completed" && (request.user_feedback || request.feedback_rating)) {
+        if (userFeedbackRow) {
+            userFeedbackRow.classList.remove("d-none");
+            userFeedbackRow.style.display = "flex";
+            userFeedbackRow.style.flexDirection = "column";
+            userFeedbackRow.style.alignItems = "flex-start";
+            document.getElementById("modalFeedbackRating").textContent = request.feedback_rating ? `${request.feedback_rating} / 5` : "N/A";
+            document.getElementById("modalUserFeedback").textContent = request.user_feedback || "No comments provided.";
+        }
+    } else {
+        if (userFeedbackRow) {
+            userFeedbackRow.classList.add("d-none");
+            userFeedbackRow.style.display = "none";
+        }
+    }
+
     const renderActions = () => {
         if (!actionContainer) return;
         actionContainer.innerHTML = "";

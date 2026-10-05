@@ -161,6 +161,45 @@
                     </div>
                 </div>
 
+                <!-- USER FEEDBACK (For Completed Requests) -->
+                <div class="detail-group" id="userFeedbackSection" style="display:none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                    <span class="detail-label" style="font-weight: 600; color: #1e293b;">
+                        Post-Delivery Feedback
+                    </span>
+                    
+                    <!-- Form for submitting feedback -->
+                    <div id="feedbackFormContainer" style="display:none; margin-top: 10px;">
+                        <label for="feedbackRating" style="display:block; font-size: 0.85rem; color: #475569; margin-bottom: 5px;">Rating (1 to 5 Stars):</label>
+                        <select id="feedbackRating" class="form-select" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 10px;">
+                            <option value="" disabled selected>Select a rating...</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Terrible</option>
+                        </select>
+                        
+                        <label for="feedbackText" style="display:block; font-size: 0.85rem; color: #475569; margin-bottom: 5px;">Comments:</label>
+                        <textarea id="feedbackText" class="form-input" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: vertical; margin-bottom: 10px;"></textarea>
+                        
+                        <button id="submitFeedbackBtn" class="modal-btn" style="background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                            Submit Feedback
+                        </button>
+                    </div>
+
+                    <!-- Display for existing feedback -->
+                    <div id="feedbackDisplayContainer" style="display:none; margin-top: 10px; background-color: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="margin-bottom: 5px;">
+                            <strong style="color: #475569; font-size: 0.85rem;">Rating: </strong>
+                            <span id="displayFeedbackRating" style="font-weight: 600; color: #f59e0b;"></span>
+                        </div>
+                        <div>
+                            <strong style="color: #475569; font-size: 0.85rem;">Comments: </strong>
+                            <div id="displayFeedbackText" style="margin-top: 4px; font-size: 0.9rem; color: #334155; white-space: pre-wrap;"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="modal-footer" id="modalActionContainer" style="display:flex; justify-content: space-between; align-items: center;">

@@ -71,20 +71,11 @@ function loadStats(requests) {
                 "pending"
         ).length;
 
-    const processing =
-        requests.filter(
-            r =>
-                r.status &&
-                r.status.toLowerCase() ===
-                "processing"
-        ).length;
-
     const approved =
         requests.filter(
             r =>
                 r.status &&
-                r.status.toLowerCase() ===
-                "approved"
+                (r.status.toLowerCase() === "approved" || r.status.toLowerCase() === "processing")
         ).length;
 
     const completed =
@@ -95,21 +86,27 @@ function loadStats(requests) {
                 "completed"
         ).length;
 
-    document.getElementById(
-        "pendingCount"
-    ).textContent = pending;
+    const rejected =
+        requests.filter(
+            r =>
+                r.status &&
+                r.status.toLowerCase() ===
+                "rejected"
+        ).length;
 
-    document.getElementById(
-        "processingCount"
-    ).textContent = processing;
+    const cancelled =
+        requests.filter(
+            r =>
+                r.status &&
+                r.status.toLowerCase() ===
+                "cancelled"
+        ).length;
 
-    document.getElementById(
-        "approvedCount"
-    ).textContent = approved;
-
-    document.getElementById(
-        "completedCount"
-    ).textContent = completed;
+    document.getElementById("pendingCount").textContent = pending;
+    document.getElementById("approvedCount").textContent = approved;
+    document.getElementById("completedCount").textContent = completed;
+    document.getElementById("rejectedCount").textContent = rejected;
+    document.getElementById("cancelledCount").textContent = cancelled;
 }
 
 function loadRecentRequests(requests) {

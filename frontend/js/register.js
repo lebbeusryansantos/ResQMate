@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (phoneInput) {
         phoneInput.addEventListener('input', function (e) {
             this.value = this.value.replace(/\D/g, '');
-            if (this.value.length < 11) {
+            if (this.value.length > 0 && !this.value.startsWith('0')) {
+                this.setCustomValidity('Phone number must start with 09.');
+            } else if (this.value.length > 1 && !this.value.startsWith('09')) {
+                this.setCustomValidity('Phone number must start with 09.');
+            } else if (this.value.length > 0 && this.value.length < 11) {
                 this.setCustomValidity('Phone number must be exactly 11 digits.');
             } else {
                 this.setCustomValidity('');

@@ -118,6 +118,9 @@ def register_user(data: RegisterRequest):
     if " " in data.email:
         raise HTTPException(status_code=400, detail="Email address must not contain spaces.")
 
+    if data.phone_number and not data.phone_number.startswith("09"):
+        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
+
     with engine.begin() as conn:
 
         existing = conn.execute(

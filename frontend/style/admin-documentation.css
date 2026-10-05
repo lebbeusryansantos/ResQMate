@@ -20,10 +20,13 @@
 .btn-proof {
     background: #2563eb;
     color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .btn-proof:hover {
@@ -35,56 +38,32 @@
     background: #16a34a;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-approve:hover {
+    opacity: 0.9;
 }
 
 .btn-reject {
     background: #dc2626;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-}
-
-.status-pending_review {
-    color: #d97706;
-    font-weight: 600;
-}
-
-.status-approved {
-    color: #16a34a;
-    font-weight: 600;
-}
-
-.status-rejected {
-    color: #dc2626;
-    font-weight: 600;
-}
-
-.status-completed {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #dcfce7;
-    color: #15803d;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
+    cursor: pointer;
 }
 
-.status-rejected-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #fee2e2;
-    color: #b91c1c;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+.btn-reject:hover {
+    opacity: 0.9;
 }
+
 
 .btn-view-remarks {
     background: #3b82f6;

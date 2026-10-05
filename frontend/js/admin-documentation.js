@@ -89,8 +89,8 @@ async function loadDocumentations() {
                     </td>
 
                     <td>
-                        <span class="status-${doc.status}">
-                            ${doc.status}
+                        <span class="rq-badge rq-badge-${doc.status}">
+                            ${doc.status.replace(/_/g, ' ').toUpperCase()}
                         </span>
                     </td>
 
@@ -100,7 +100,7 @@ async function loadDocumentations() {
             ).toLocaleString()}
                     </td>
 
-                    <td>
+                    <td style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;">
 
                         ${doc.status === "pending_review"
 
@@ -127,9 +127,9 @@ async function loadDocumentations() {
                         ?
 
                         `
-                            <span class="status-completed">
-                                <i class="fas fa-check-circle"></i>
-                                Completed
+                            <span class="rq-badge rq-badge-approved">
+                                <i class="fas fa-check-circle me-1"></i>
+                                COMPLETED
                             </span>
                             `
 
@@ -140,9 +140,9 @@ async function loadDocumentations() {
                             ?
 
                             `
-                            <span class="status-rejected-badge">
-                                <i class="fas fa-times-circle"></i>
-                                Rejected
+                            <span class="rq-badge rq-badge-rejected">
+                                <i class="fas fa-times-circle me-1"></i>
+                                REJECTED
                             </span>
                             `
 

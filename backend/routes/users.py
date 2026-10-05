@@ -73,14 +73,16 @@ class UpdateUserRequest(BaseModel):
     first_name: str
     last_name: str
     email: str
+    phone_number: str = ""
     role: str
     password: Optional[str] = None
 
 
 class CreateUserRequest(BaseModel):
-    """Used by admin Add-User modal (full_name split here)."""
-    full_name: str
+    first_name: str
+    last_name: str
     email:     str
+    phone_number: str = ""
     password:  str = "ResQMate2024!"   # temp default
     role:      str = "community_user"
 
@@ -100,6 +102,7 @@ def get_users(admin: dict = Depends(get_current_admin)):
                     user_id,
                     CONCAT_WS(' ', first_name, last_name) AS full_name,
                     email,
+                    phone_number,
                     role
                 FROM users
             """)
@@ -111,6 +114,7 @@ def get_users(admin: dict = Depends(get_current_admin)):
                 "user_id":   row.user_id,
                 "full_name": row.full_name,
                 "email":     row.email,
+                "phone_number": row.phone_number,
                 "role":      row.role
             })
 
@@ -190,8 +194,8 @@ def register_user(data: RegisterRequest):
 
 
 # =========================
+# =========================
 # CREATE USER (admin panel)
-# Accepts full_name and splits it
 # =========================
 
 @router.post("/create")
@@ -205,9 +209,8 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
     }
     db_role = role_map.get(data.role, "community_user")
 
-    parts      = data.full_name.strip().split(" ", 1)
-    first_name = parts[0]
-    last_name  = parts[1] if len(parts) > 1 else ""
+    if data.phone_number and not data.phone_number.startswith("09"):
+        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
 
     with engine.begin() as conn:
 
@@ -219,19 +222,29 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
 
+        if data.phone_number:
+            existing_phone = conn.execute(
+                text("SELECT user_id FROM users WHERE phone_number = :phone_number AND phone_number != ''"),
+                {"phone_number": data.phone_number}
+            ).fetchone()
+
+            if existing_phone:
+                raise HTTPException(status_code=400, detail="Phone number already registered")
+
         result = conn.execute(
             text("""
                 INSERT INTO users
                     (first_name, last_name, email, password, role, phone_number, dob)
                 VALUES
-                    (:first_name, :last_name, :email, :password, :role, '', '2000-01-01')
+                    (:first_name, :last_name, :email, :password, :role, :phone_number, '2000-01-01')
             """),
             {
-                "first_name": first_name,
-                "last_name":  last_name,
+                "first_name": data.first_name,
+                "last_name":  data.last_name,
                 "email":      data.email,
                 "password":   pwd_context.hash(data.password),
-                "role":       db_role
+                "role":       db_role,
+                "phone_number": data.phone_number
             }
         )
 
@@ -240,8 +253,9 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
     return {
         "message":  "User created successfully",
         "user_id":  user_id,
-        "full_name": data.full_name,
+        "full_name": f"{data.first_name} {data.last_name}",
         "email":    data.email,
+        "phone_number": data.phone_number,
         "role":     db_role
     }
 
@@ -401,7 +415,27 @@ def update_user(
 
     db_role = role_map.get(data.role, "community_user")
 
+    if data.phone_number and not data.phone_number.startswith("09"):
+        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
+
     with engine.begin() as conn:
+
+        existing = conn.execute(
+            text("SELECT user_id FROM users WHERE email = :email AND user_id != :uid"),
+            {"email": data.email, "uid": user_id}
+        ).fetchone()
+
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+        if data.phone_number:
+            existing_phone = conn.execute(
+                text("SELECT user_id FROM users WHERE phone_number = :phone_number AND phone_number != '' AND user_id != :uid"),
+                {"phone_number": data.phone_number, "uid": user_id}
+            ).fetchone()
+
+            if existing_phone:
+                raise HTTPException(status_code=400, detail="Phone number already registered")
 
         if data.password:
 
@@ -413,6 +447,7 @@ def update_user(
                         last_name = :last_name,
                         email = :email,
                         role = :role,
+                        phone_number = :phone_number,
                         password = :password
                     WHERE user_id = :user_id
                 """),
@@ -422,6 +457,7 @@ def update_user(
                     "last_name": data.last_name,
                     "email": data.email,
                     "role": db_role,
+                    "phone_number": data.phone_number,
                     "password": pwd_context.hash(data.password)
                 }
             )
@@ -435,6 +471,7 @@ def update_user(
                         first_name = :first_name,
                         last_name = :last_name,
                         email = :email,
+                        phone_number = :phone_number,
                         role = :role
                     WHERE user_id = :user_id
                 """),
@@ -443,6 +480,7 @@ def update_user(
                     "first_name": data.first_name,
                     "last_name": data.last_name,
                     "email": data.email,
+                    "phone_number": data.phone_number,
                     "role": db_role
                 }
             )

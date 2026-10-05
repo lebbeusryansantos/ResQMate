@@ -85,6 +85,7 @@ function renderUsers(users) {
                 <td>${user.user_id}</td>
                 <td>${user.full_name}</td>
                 <td>${user.email}</td>
+                <td>${user.phone_number || "—"}</td>
                 <td>
                     <span class="rq-badge ${roleClass}">
                         ${roleText}
@@ -97,6 +98,7 @@ function renderUsers(users) {
                             ${user.user_id},
                             '${user.full_name.replace(/'/g, "\\'")}',
                             '${user.email}',
+                            '${user.phone_number || ""}',
                             '${user.role}'
                         )">
                         Edit
@@ -139,6 +141,10 @@ document.getElementById(
     ).value = "";
 
     document.getElementById(
+        "userPhone"
+    ).value = "";
+
+    document.getElementById(
         "userPassword"
     ).value = "";
 
@@ -171,6 +177,11 @@ document.getElementById(
             "userEmail"
         ).value.trim();
 
+    const phone =
+        document.getElementById(
+            "userPhone"
+        ).value.trim();
+
     const password =
         document.getElementById(
             "userPassword"
@@ -181,9 +192,9 @@ document.getElementById(
             "userRole"
         ).value;
 
-    if (!firstName || !lastName || !email) {
+    if (!firstName || !lastName || !email || !phone) {
         alert(
-            "Please fill in First Name, Last Name and Email."
+            "Please fill in First Name, Last Name, Email, and Phone Number."
         );
         return;
     }
@@ -212,6 +223,7 @@ document.getElementById(
                         first_name: firstName,
                         last_name: lastName,
                         email,
+                        phone_number: phone,
                         password:
                             password ||
                             "ResQMate2024!",
@@ -245,6 +257,7 @@ document.getElementById(
                         first_name: firstNameValue,
                         last_name: lastNameValue,
                         email,
+                        phone_number: phone,
                         role,
                         password
                     })
@@ -294,6 +307,7 @@ window.editUser = function (
     id,
     fullName,
     email,
+    phone,
     role
 ) {
 
@@ -318,6 +332,10 @@ window.editUser = function (
     document.getElementById(
         "userEmail"
     ).value = email;
+
+    document.getElementById(
+        "userPhone"
+    ).value = phone;
 
     document.getElementById(
         "userRole"

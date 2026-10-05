@@ -9,6 +9,8 @@ const locationSelect = document.getElementById("resourceLocation");
 const customLocation = document.getElementById("customLocation");
 const unitSelect = document.getElementById("resourceUnit");
 const customUnit = document.getElementById("customUnit");
+const categorySelect = document.getElementById("resourceCategory");
+const customCategory = document.getElementById("customCategory");
 
 let editingResourceId = null;
 let currentStock = 0;
@@ -214,6 +216,12 @@ document.getElementById(
         customUnit.value = "";
     }
 
+    if (customCategory) {
+        customCategory.style.display = "none";
+        customCategory.value = "";
+        categorySelect.value = "Food";
+    }
+
     resourceModal.classList.add(
         "show"
     );
@@ -232,6 +240,17 @@ if (locationSelect) {
     });
 }
 
+if (categorySelect) {
+    categorySelect.addEventListener("change", () => {
+        const isOther = categorySelect.value === "Other";
+        if (customCategory) {
+            customCategory.style.display = isOther ? "block" : "none";
+            customCategory.required = isOther;
+            if (!isOther) customCategory.value = "";
+        }
+    });
+}
+
 /* ==================================
    SAVE RESOURCE
 ================================== */
@@ -240,7 +259,10 @@ resourceForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const resource_name = document.getElementById("resourceName").value.trim();
-    const category = document.getElementById("resourceCategory").value;
+    let category = document.getElementById("resourceCategory").value;
+    if (category === "Other" && customCategory) {
+        category = customCategory.value.trim();
+    }
     const max_stock = parseInt(document.getElementById("resourceMaxStock").value);
 
     let quantity_available = 0;
@@ -357,7 +379,22 @@ window.editResource = function (
 
     modalTitle.textContent = "Edit Resource";
     document.getElementById("resourceName").value = name;
-    document.getElementById("resourceCategory").value = category;
+    
+    const presetCategories = ["Food", "Water", "Shelter", "Medicine"];
+    if (presetCategories.includes(category)) {
+        document.getElementById("resourceCategory").value = category;
+        if (customCategory) {
+            customCategory.style.display = "none";
+            customCategory.value = "";
+        }
+    } else {
+        document.getElementById("resourceCategory").value = "Other";
+        if (customCategory) {
+            customCategory.style.display = "block";
+            customCategory.value = category;
+        }
+    }
+
     document.getElementById("currentStock").value = quantity;
     document.getElementById("addStock").value = 0;
     document.getElementById("resourceMaxStock").value = max_stock;

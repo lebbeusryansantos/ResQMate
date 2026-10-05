@@ -29,4 +29,7 @@ class AssistanceRequest(Base):
     # Added: admin fills this when rejecting
     rejection_reason = Column(Text, nullable=True)
 
+    calamity_type = Column(String(255), nullable=True)
+    specific_address = Column(Text, nullable=True)
+
     date_requested = Column(DateTime, server_default=func.now())

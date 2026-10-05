@@ -12,6 +12,8 @@ const cityInput = document.getElementById("city");
 const barangayInput = document.getElementById("barangay");
 const detailsInput = document.getElementById("details");
 const priorityInput = document.getElementById("priority");
+const calamityTypeInput = document.getElementById("calamityType");
+const specificAddressInput = document.getElementById("specificAddress");
 const characterCount = document.getElementById("characterCount");
 const cancelButton = document.getElementById("cancelButton");
 const assistanceOptions = document.querySelectorAll(".assistance-option");
@@ -246,6 +248,8 @@ if (requestForm) {
 
         const details = detailsInput.value.trim();
         const priority = priorityInput.value;
+        const calamityType = calamityTypeInput ? calamityTypeInput.value.trim() : "";
+        const specificAddress = specificAddressInput ? specificAddressInput.value.trim() : "";
 
         console.log("assistanceType =", assistanceType);
         console.log("barangayText =", barangayText);
@@ -253,7 +257,7 @@ if (requestForm) {
         console.log("details =", details);
         console.log("priority =", priority);
 
-        if (!assistanceType || !barangayText || !cityText || !details || !priority) {
+        if (!assistanceType || !barangayText || !cityText || !details || !priority || !calamityType || !specificAddress) {
             if (requestError) {
                 requestError.textContent = "Please complete all required fields.";
                 requestError.style.display = "block";
@@ -294,7 +298,9 @@ if (requestForm) {
                         province: provinceText,
                         region: regionText,
                         request_details: details,
-                        priority: priority
+                        priority: priority,
+                        calamity_type: calamityType,
+                        specific_address: specificAddress
                     })
                 }
             );

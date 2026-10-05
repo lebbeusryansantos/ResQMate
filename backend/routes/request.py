@@ -17,6 +17,8 @@ class CreateRequestData(BaseModel):
     region: str
     request_details: str
     priority: str
+    calamity_type: str
+    specific_address: str
 
 
 @router.get("/")
@@ -68,6 +70,8 @@ def get_requests(user: dict = Depends(require_role(["admin", "staff"]))):
                 "status": row.status,
                 "rejection_reason": row.rejection_reason,
                 "assigned_staff": row.assigned_staff,
+                "calamity_type": row.calamity_type,
+                "specific_address": row.specific_address,
                 "date_requested": str(row.date_requested)
             })
 
@@ -126,6 +130,8 @@ def get_request(request_id: int, user: dict = Depends(get_current_user)):
             "priority_level": row.priority_level,
             "status": row.status,
             "rejection_reason": row.rejection_reason,
+            "calamity_type": row.calamity_type,
+            "specific_address": row.specific_address,
             "date_requested": str(row.date_requested)
         }
 
@@ -306,7 +312,9 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                     location_id,
                     request_details,
                     priority_level,
-                    status
+                    status,
+                    calamity_type,
+                    specific_address
                 )
                 VALUES
                 (
@@ -315,7 +323,9 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                     :location_id,
                     :request_details,
                     :priority_level,
-                    'pending'
+                    'pending',
+                    :calamity_type,
+                    :specific_address
                 )
             """),
             {
@@ -323,7 +333,9 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
                 "category_id": category_id,
                 "location_id": location_id,
                 "request_details": request_details,
-                "priority_level": database_priority
+                "priority_level": database_priority,
+                "calamity_type": data.calamity_type.strip(),
+                "specific_address": data.specific_address.strip()
             }
         )
 
@@ -531,12 +543,15 @@ def cancel_request(request_id: int, reason: str = None, user: dict = Depends(get
 def delete_request(request_id: int, admin: dict = Depends(get_current_admin)):
     with engine.begin() as conn:
         req_result = conn.execute(
-            text("SELECT request_id FROM assistance_requests WHERE request_id = :request_id"),
+            text("SELECT request_id, status FROM assistance_requests WHERE request_id = :request_id"),
             {"request_id": request_id}
         ).fetchone()
 
         if not req_result:
             raise HTTPException(status_code=404, detail="Request Not Found")
+
+        if req_result.status and req_result.status.lower() in ["pending", "processing", "under_review", "awaiting_verification"]:
+            raise HTTPException(status_code=403, detail="Forbidden: You must reject or complete the request before deleting it.")
 
         # Manual cleanup of related records to avoid FK constraints
         conn.execute(

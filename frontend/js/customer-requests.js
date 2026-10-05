@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const typeText = req.category_name || "Other";
 
             let status = req.status ? req.status.toLowerCase() : "pending";
-            if (status === "processing") status = "approved";
 
             let statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             if (status === "cancelled") statusFormatted = "Cancelled by User";

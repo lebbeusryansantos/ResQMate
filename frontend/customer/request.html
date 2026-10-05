@@ -105,8 +105,27 @@
                             <select id="barangay" title="Barangay" aria-label="Barangay" class="form-select" required>
                                 <option value="">Select Barangay</option>
                             </select>
+                            
+                            <textarea id="specificAddress" title="Specific Address / Landmark" class="form-textarea" style="margin-top: 15px;" placeholder="Specific Address / Landmark (e.g., 123 Main St, near Plaza)" required></textarea>
 
                         </div>
+
+                    </div>
+
+                    <div class="form-section">
+
+                        <label for="calamityType" class="form-label">
+                            Calamity Type <span>*</span>
+                        </label>
+
+                        <select id="calamityType" name="calamity_type" class="form-select" required>
+                            <option value="">Select Calamity Type</option>
+                            <option value="Typhoon">Typhoon</option>
+                            <option value="Earthquake">Earthquake</option>
+                            <option value="Flood">Flood</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Others">Others</option>
+                        </select>
 
                     </div>
 

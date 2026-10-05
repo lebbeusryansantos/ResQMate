@@ -71,11 +71,11 @@ function loadStats(requests) {
                 "pending"
         ).length;
 
-    const approved =
+    const processing =
         requests.filter(
             r =>
                 r.status &&
-                (r.status.toLowerCase() === "approved" || r.status.toLowerCase() === "processing")
+                r.status.toLowerCase() === "processing"
         ).length;
 
     const completed =
@@ -103,7 +103,7 @@ function loadStats(requests) {
         ).length;
 
     document.getElementById("pendingCount").textContent = pending;
-    document.getElementById("approvedCount").textContent = approved;
+    document.getElementById("processingCount").textContent = processing;
     document.getElementById("completedCount").textContent = completed;
     document.getElementById("rejectedCount").textContent = rejected;
     document.getElementById("cancelledCount").textContent = cancelled;
@@ -145,7 +145,6 @@ function loadRecentRequests(requests) {
             }
 
             let status = request.status ? request.status.toLowerCase() : "pending";
-            if (status === "processing") status = "approved";
 
             let statusText = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             if (status === "cancelled") statusText = "Cancelled by User";

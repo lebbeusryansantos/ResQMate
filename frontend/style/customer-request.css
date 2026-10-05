@@ -269,6 +269,36 @@ body {
 
 
 /* ===========================
+   CONFIRMATION CHECKBOX
+   =========================== */
+
+.confirmation-section {
+    margin-top: 24px;
+    padding: 12px 16px;
+    background-color: #fff1f2;
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+}
+
+.confirmation-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.confirmation-label input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: #ef4444;
+    cursor: pointer;
+}
+
+/* ===========================
    FORM BUTTONS
    =========================== */
 

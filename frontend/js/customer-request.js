@@ -16,6 +16,7 @@ const characterCount = document.getElementById("characterCount");
 const cancelButton = document.getElementById("cancelButton");
 const assistanceOptions = document.querySelectorAll(".assistance-option");
 const submitButton = document.querySelector(".submit-button");
+const confirmationCheckbox = document.getElementById("confirmationCheckbox");
 
 if (submitButton) {
     submitButton.disabled = true;
@@ -115,12 +116,16 @@ if (priorityInput) {
 
 function checkFormValidity() {
     if (requestForm && submitButton) {
-        if (requestForm.checkValidity()) {
+        if (requestForm.checkValidity() && confirmationCheckbox && confirmationCheckbox.checked) {
             submitButton.disabled = false;
         } else {
             submitButton.disabled = true;
         }
     }
+}
+
+if (confirmationCheckbox) {
+    confirmationCheckbox.addEventListener("change", checkFormValidity);
 }
 
 assistanceOptions.forEach(option => {

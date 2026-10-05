@@ -228,6 +228,12 @@
                 <div class="detail-row">
                     <label>Priority</label>
                     <span id="modalPriority"></span>
+                    <select id="modalPriorityEdit" class="rq-input" style="display: none;">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
                 </div>
 
                 <div class="detail-row">
@@ -238,6 +244,11 @@
                 <div class="detail-row d-none" id="rejectionReasonRow">
                     <label>Rejection Reason</label>
                     <span id="modalRejectionReason" class="text-danger-medium"></span>
+                </div>
+
+                <div class="detail-row d-none" id="adminFeedbackRow">
+                    <label>Admin Feedback / Reason</label>
+                    <textarea id="adminFeedback" class="rq-input" rows="3" placeholder="Explain why the priority was changed..."></textarea>
                 </div>
 
                 <div class="detail-row">

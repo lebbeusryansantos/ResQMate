@@ -489,6 +489,11 @@ tbody tr:hover {
   color: #b45309;
 }
 
+.rq-badge-awaiting_confirmation {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
 .rq-badge-under_review {
   background: #fef3c7;
   color: #92400e;

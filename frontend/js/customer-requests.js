@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             let statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             if (status === "cancelled") statusFormatted = "Cancelled by User";
             if (status === "rejected") statusFormatted = "Rejected by Admin";
+            if (status === "awaiting_confirmation") statusFormatted = "Requires Action";
 
             const dateFormatted = req.date_requested
                 ? new Date(req.date_requested).toLocaleDateString("en-US", {
@@ -287,6 +288,7 @@ async function viewRequest(requestId) {
         let displayStatus = request.status || "Pending";
         if (displayStatus.toLowerCase() === "cancelled") displayStatus = "Cancelled by User";
         if (displayStatus.toLowerCase() === "rejected") displayStatus = "Rejected by Admin";
+        if (displayStatus.toLowerCase() === "awaiting_confirmation") displayStatus = "Requires Action";
         
         statusBadge.textContent = displayStatus;
 
@@ -303,16 +305,34 @@ async function viewRequest(requestId) {
             request.status.toLowerCase() === "rejected" &&
             request.rejection_reason
         ) {
-            document.getElementById(
-                "modalRejectionReason"
-            ).textContent =
-                request.rejection_reason;
-
-            rejectionRow.style.display =
-                "block";
+            document.getElementById("modalRejectionReason").textContent = request.rejection_reason;
+            rejectionRow.style.display = "block";
         } else {
-            rejectionRow.style.display =
-                "none";
+            rejectionRow.style.display = "none";
+        }
+
+        const adminFeedbackRow = document.getElementById("adminFeedbackRow");
+        if (request.status && request.status.toLowerCase() === "awaiting_confirmation" && request.admin_feedback) {
+            document.getElementById("modalAdminFeedback").textContent = request.admin_feedback;
+            if (adminFeedbackRow) adminFeedbackRow.style.display = "block";
+        } else {
+            if (adminFeedbackRow) adminFeedbackRow.style.display = "none";
+        }
+
+        const actionContainer = document.getElementById("modalActionContainer");
+        const acceptActionContainer = document.getElementById("acceptActionContainer");
+        if (actionContainer && acceptActionContainer) {
+            if (request.status && request.status.toLowerCase() === "awaiting_confirmation") {
+                actionContainer.style.display = "flex";
+                acceptActionContainer.innerHTML = `
+                    <button class="modal-btn" style="background-color: #3b82f6; color: white;" onclick="acceptPriority(${request.request_id}); closeModal();">
+                        <i class="fa-solid fa-check"></i> Accept New Priority
+                    </button>
+                `;
+            } else {
+                actionContainer.style.display = "none";
+                acceptActionContainer.innerHTML = "";
+            }
         }
 
         document
@@ -459,3 +479,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+window.acceptPriority = async function(requestId) {
+    if (!confirm(`Are you sure you want to accept the new priority for Request #${requestId}?`)) return;
+
+    try {
+        const url = `${API_URL}/requests/${requestId}/accept_priority`;
+        const res = await fetch(url, {
+            method: "PUT",
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.detail || "Accept failed.");
+            return;
+        }
+
+        alert(`Priority accepted for Request #${requestId}.`);
+        window.location.reload();
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to accept priority.");
+    }
+};

@@ -112,24 +112,28 @@ function renderRequestsTable(data = requestsData) {
 /* ===========================
    UPDATE STATUS (process / complete)
 =========================== */
-window.updateStatus = async function (requestId, newStatus) {
+window.updateStatus = async function (requestId, newStatus, priority = null, feedback = null) {
+    let confirmMsg = `Are you sure you want to update Request #${requestId}?`;
+    if (newStatus === "processing") confirmMsg = `Are you sure you want to move Request #${requestId} to Processing?`;
+    if (newStatus === "completed") confirmMsg = `Are you sure you want to mark Request #${requestId} as Completed?`;
+    if (newStatus === "awaiting_confirmation") confirmMsg = `Are you sure you want to send Request #${requestId} for user confirmation?`;
 
-    const label = newStatus === "processing" ? "move to Processing" : "mark as Completed";
-    if (!confirm(`Are you sure you want to ${label} Request #${requestId}?`)) return;
+    if (!confirm(confirmMsg)) return;
 
     const user = JSON.parse(localStorage.getItem("user"));
     const updatedBy = user ? user.user_id : 1;
 
     try {
-        const res = await fetch(
-            `${API_URL}/requests/${requestId}/status?status=${newStatus}&updated_by=${updatedBy}`,
-            {
-                method: "PUT", headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
+        let url = `${API_URL}/requests/${requestId}/status?status=${newStatus}&updated_by=${updatedBy}`;
+        if (priority) url += `&priority_level=${encodeURIComponent(priority)}`;
+        if (feedback) url += `&admin_feedback=${encodeURIComponent(feedback)}`;
+
+        const res = await fetch(url, {
+            method: "PUT", headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
             }
-        );
+        });
 
         if (!res.ok) {
             const err = await res.json();
@@ -137,7 +141,7 @@ window.updateStatus = async function (requestId, newStatus) {
             return;
         }
 
-        showToast(`Request #${requestId} updated to "${newStatus}".`, true);
+        showToast(`Request #${requestId} updated successfully.`, true);
         loadRequests();
 
     } catch (error) {
@@ -334,6 +338,11 @@ window.viewRequest = function (requestId) {
     document.getElementById("modalCategory").textContent = request.category_name || "—";
     document.getElementById("modalLocation").textContent = request.location_name || "—";
     document.getElementById("modalPriority").textContent = request.priority_level || "—";
+    const prioritySpan = document.getElementById("modalPriority");
+    const prioritySelect = document.getElementById("modalPriorityEdit");
+    const adminFeedbackRow = document.getElementById("adminFeedbackRow");
+    const adminFeedbackTextarea = document.getElementById("adminFeedback");
+
     document.getElementById("modalStatus").textContent = request.status || "—";
     document.getElementById("modalDescription").textContent = request.request_details || "—";
 
@@ -345,21 +354,57 @@ window.viewRequest = function (requestId) {
         rejectionRow.style.display = "none";
     }
     
-    // Inject actions into modal
     const actionContainer = document.getElementById("modalActionContainer");
-    if (actionContainer) {
+    const status = (request.status || "pending").toLowerCase();
+    
+    if (status === "pending") {
+        prioritySpan.style.display = "none";
+        if (prioritySelect) {
+            prioritySelect.style.display = "block";
+            prioritySelect.value = (request.priority_level || "medium").toLowerCase();
+        }
+        if (adminFeedbackRow) {
+            adminFeedbackRow.classList.remove("d-none");
+            adminFeedbackRow.style.display = "flex";
+            adminFeedbackTextarea.value = "";
+        }
+    } else {
+        prioritySpan.style.display = "block";
+        if (prioritySelect) prioritySelect.style.display = "none";
+        if (adminFeedbackRow) {
+            adminFeedbackRow.style.display = "none";
+            adminFeedbackRow.classList.add("d-none");
+        }
+    }
+
+    const renderActions = () => {
+        if (!actionContainer) return;
         actionContainer.innerHTML = "";
-        const status = (request.status || "pending").toLowerCase();
         
         if (status === "pending") {
-            actionContainer.innerHTML += `
-                <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'processing'); document.getElementById('closeViewModal').click();">
-                    <i class="fa-solid fa-check"></i> Process
-                </button>
-                <button class="rq-btn-reject" onclick="rejectRequest(${request.request_id}); document.getElementById('closeViewModal').click();">
-                    <i class="fa-solid fa-xmark"></i> Reject
-                </button>
-            `;
+            const currentSelectedPriority = prioritySelect ? prioritySelect.value : request.priority_level;
+            const originalPriority = (request.priority_level || "medium").toLowerCase();
+            const isPriorityChanged = currentSelectedPriority !== originalPriority;
+
+            if (isPriorityChanged) {
+                actionContainer.innerHTML += `
+                    <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'awaiting_confirmation', document.getElementById('modalPriorityEdit').value, document.getElementById('adminFeedback').value); document.getElementById('closeViewModal').click();">
+                        <i class="fa-solid fa-paper-plane"></i> Send for User Confirmation
+                    </button>
+                    <button class="rq-btn-reject" onclick="rejectRequest(${request.request_id}); document.getElementById('closeViewModal').click();">
+                        <i class="fa-solid fa-xmark"></i> Reject
+                    </button>
+                `;
+            } else {
+                actionContainer.innerHTML += `
+                    <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'processing'); document.getElementById('closeViewModal').click();">
+                        <i class="fa-solid fa-check"></i> Process
+                    </button>
+                    <button class="rq-btn-reject" onclick="rejectRequest(${request.request_id}); document.getElementById('closeViewModal').click();">
+                        <i class="fa-solid fa-xmark"></i> Reject
+                    </button>
+                `;
+            }
         } else if (status === "processing") {
             actionContainer.innerHTML += `
                 <button class="rq-btn-approve" onclick="updateStatus(${request.request_id}, 'completed'); document.getElementById('closeViewModal').click();">
@@ -375,6 +420,14 @@ window.viewRequest = function (requestId) {
                 </button>
             `;
         }
+    };
+
+    renderActions();
+
+    if (prioritySelect) {
+        prioritySelect.onchange = () => {
+            renderActions();
+        };
     }
 
     document.getElementById("viewRequestModal").classList.add("show");

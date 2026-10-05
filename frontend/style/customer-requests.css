@@ -131,6 +131,11 @@ body {
     color: #d97706;
 }
 
+.status-badge.awaiting_confirmation {
+    background-color: #ffedd5;
+    color: #c2410c;
+}
+
 .status-badge.approved {
     background-color: #dcfce7;
     color: #15803d;

@@ -207,6 +207,11 @@
     color: #92400e;
 }
 
+.status-badge-modal.awaiting_confirmation {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
 .status-badge-modal.approved {
     background: #dcfce7;
     color: #166534;

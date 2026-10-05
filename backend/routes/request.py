@@ -69,6 +69,7 @@ def get_requests(user: dict = Depends(require_role(["admin", "staff"]))):
                 "priority_level": row.priority_level,
                 "status": row.status,
                 "rejection_reason": row.rejection_reason,
+                "admin_feedback": getattr(row, 'admin_feedback', None),
                 "assigned_staff": row.assigned_staff,
                 "calamity_type": row.calamity_type,
                 "specific_address": row.specific_address,
@@ -353,7 +354,7 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
 
 
 @router.put("/{request_id}/status")
-def update_request_status(request_id: int, status: str, updated_by: int, rejection_reason: str = None, admin: dict = Depends(get_current_admin)):
+def update_request_status(request_id: int, status: str, updated_by: int, rejection_reason: str = None, priority_level: str = None, admin_feedback: str = None, admin: dict = Depends(get_current_admin)):
     with engine.begin() as conn:
         user_result = conn.execute(
             text("""
@@ -375,19 +376,29 @@ def update_request_status(request_id: int, status: str, updated_by: int, rejecti
 
         user_id = user_result.user_id
 
-        conn.execute(
-            text("""
-                UPDATE assistance_requests
-                SET status = :status,
-                    rejection_reason = :rejection_reason
-                WHERE request_id = :request_id
-            """),
-            {
-                "status": status,
-                "rejection_reason": rejection_reason,
-                "request_id": request_id
-            }
-        )
+        update_clauses = ["status = :status", "rejection_reason = :rejection_reason"]
+        if priority_level:
+            update_clauses.append("priority_level = :priority_level")
+        if admin_feedback is not None:
+            update_clauses.append("admin_feedback = :admin_feedback")
+            
+        update_query = f"""
+            UPDATE assistance_requests
+            SET {', '.join(update_clauses)}
+            WHERE request_id = :request_id
+        """
+        
+        params = {
+            "status": status,
+            "rejection_reason": rejection_reason,
+            "request_id": request_id
+        }
+        if priority_level:
+            params["priority_level"] = priority_level
+        if admin_feedback is not None:
+            params["admin_feedback"] = admin_feedback
+
+        conn.execute(text(update_query), params)
 
         conn.execute(
             text("""
@@ -441,6 +452,45 @@ def update_request_status(request_id: int, status: str, updated_by: int, rejecti
     }
 
 
+@router.put("/{request_id}/accept_priority")
+def accept_priority(request_id: int, user: dict = Depends(get_current_customer)):
+    with engine.begin() as conn:
+        req_result = conn.execute(
+            text("SELECT user_id, status FROM assistance_requests WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        ).fetchone()
+
+        if not req_result:
+            raise HTTPException(status_code=404, detail="Request Not Found")
+
+        if req_result.user_id != user["user_id"]:
+            raise HTTPException(status_code=403, detail="Forbidden: Not your request")
+
+        if req_result.status.lower() != "awaiting_confirmation":
+            raise HTTPException(status_code=400, detail="Request is not awaiting confirmation")
+
+        conn.execute(
+            text("""
+                UPDATE assistance_requests
+                SET status = 'processing'
+                WHERE request_id = :request_id
+            """),
+            {"request_id": request_id}
+        )
+
+        conn.execute(
+            text("""
+                INSERT INTO request_status_history (request_id, updated_by, status, remarks)
+                VALUES (:request_id, :updated_by, 'processing', 'Priority change accepted by user')
+            """),
+            {
+                "request_id": request_id,
+                "updated_by": user["user_id"]
+            }
+        )
+
+    return {"message": "Priority accepted and request is processing"}
+
 @router.get("/user/{user_id}")
 def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
     if user["role"] == "community_user" and user["user_id"] != user_id:
@@ -491,6 +541,7 @@ def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
                 "priority_level": row.priority_level,
                 "status": row.status,
                 "rejection_reason": row.rejection_reason,
+                "admin_feedback": getattr(row, 'admin_feedback', None),
                 "date_requested": str(row.date_requested)
             })
 

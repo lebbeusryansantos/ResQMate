@@ -31,5 +31,6 @@ class AssistanceRequest(Base):
 
     calamity_type = Column(String(255), nullable=True)
     specific_address = Column(Text, nullable=True)
+    admin_feedback = Column(Text, nullable=True)
 
     date_requested = Column(DateTime, server_default=func.now())

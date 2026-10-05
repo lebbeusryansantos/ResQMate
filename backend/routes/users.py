@@ -33,6 +33,24 @@ def check_email(email: str):
 
 
 # =========================
+# CHECK PHONE
+# =========================
+
+@router.get("/check-phone")
+def check_phone(phone_number: str):
+    with engine.connect() as conn:
+        existing = conn.execute(
+            text("SELECT user_id FROM users WHERE phone_number = :phone_number AND phone_number != ''"),
+            {"phone_number": phone_number}
+        ).fetchone()
+        
+    if existing:
+        return {"exists": True}
+    return {"exists": False}
+
+
+
+# =========================
 # REQUEST MODELS
 # =========================
 
@@ -130,6 +148,15 @@ def register_user(data: RegisterRequest):
 
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
+
+        if data.phone_number:
+            existing_phone = conn.execute(
+                text("SELECT user_id FROM users WHERE phone_number = :phone_number AND phone_number != ''"),
+                {"phone_number": data.phone_number}
+            ).fetchone()
+
+            if existing_phone:
+                raise HTTPException(status_code=400, detail="Phone number already registered")
 
         result = conn.execute(
             text("""

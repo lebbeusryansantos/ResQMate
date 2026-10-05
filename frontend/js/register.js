@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const phoneInput = document.getElementById("registerPhone");
     if (phoneInput) {
-        phoneInput.addEventListener('input', function (e) {
+        phoneInput.addEventListener('input', async function (e) {
             this.value = this.value.replace(/\D/g, '');
             if (this.value.length > 0 && !this.value.startsWith('0')) {
                 this.setCustomValidity('Phone number must start with 09.');
@@ -22,6 +22,20 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 this.setCustomValidity('');
             }
+            
+            if (this.value.length === 11) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/users/check-phone?phone_number=${encodeURIComponent(this.value)}`);
+                    const data = await response.json();
+                    if (data.exists) {
+                        this.setCustomValidity('Phone number already registered.');
+                    }
+                } catch (err) {
+                    console.error("Error checking phone", err);
+                }
+            }
+            
+            validateSingleInput(this);
         });
     }
 
@@ -266,6 +280,15 @@ registerForm.addEventListener(
                         emailInput.setCustomValidity("Email already registered.");
                         emailInput.dispatchEvent(new Event("input"));
                         emailInput.focus();
+                    } else {
+                        alert(data.detail);
+                    }
+                } else if (data.detail === "Phone number already registered") {
+                    const pInput = document.getElementById("registerPhone");
+                    if (pInput) {
+                        pInput.setCustomValidity("Phone number already registered.");
+                        pInput.dispatchEvent(new Event("input"));
+                        pInput.focus();
                     } else {
                         alert(data.detail);
                     }

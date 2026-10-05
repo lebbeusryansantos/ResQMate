@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (response.ok) {
                         const data = await response.json();
                         if (data.exists) {
-                            this.setCustomValidity('Phone number already registered.');
+                            this.setCustomValidity('<span style="color: #f59e0b">Maximum of 11 characters reached.</span><br>Phone number already registered.');
                         }
                     }
                 } catch (err) {

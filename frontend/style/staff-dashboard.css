@@ -28,6 +28,7 @@ MAIN CONTENT
   flex: 1;
   margin-left: 260px;
   width: calc(100% - 260px);
+  min-width: 0;
   padding: 35px;
   transition: all .3s ease;
   overflow-x: hidden;

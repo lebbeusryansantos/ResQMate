@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function validateSingleInput(input) {
         let errorMsg = "";
+        let isMaxCharWarning = false;
 
         if (!input.validity.valid) {
             if (input.validity.valueMissing) {
@@ -143,6 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 errorMsg = input.validationMessage || "Invalid input.";
             }
+        } else if (input.maxLength > 0 && input.value.length >= input.maxLength) {
+            errorMsg = `Maximum of ${input.maxLength} characters reached.`;
+            isMaxCharWarning = true;
         }
 
         let parentToAppendTo = input;
@@ -159,11 +163,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (errorMsg) {
-            input.classList.add("input-error");
+            if (!isMaxCharWarning) {
+                input.classList.add("input-error");
+                errorEl.style.color = "";
+            } else {
+                input.classList.remove("input-error");
+                errorEl.style.color = "#f59e0b"; // amber for warning
+            }
             errorEl.textContent = errorMsg;
             errorEl.style.display = "block";
         } else {
             input.classList.remove("input-error");
+            errorEl.style.color = "";
             errorEl.style.display = "none";
         }
     }

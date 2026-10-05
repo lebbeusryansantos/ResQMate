@@ -341,10 +341,7 @@ function initializeModals() {
             let errorMsg = "";
             let isMaxCharWarning = false;
 
-            if (input.maxLength > 0 && input.value.length >= input.maxLength) {
-                errorMsg = `Maximum of ${input.maxLength} characters reached.`;
-                isMaxCharWarning = true;
-            } else if (!input.validity.valid) {
+            if (!input.validity.valid) {
                 if (input.validity.valueMissing) {
                     errorMsg = "please fill up this part";
                 } else if (input.validity.customError) {
@@ -357,6 +354,9 @@ function initializeModals() {
                 } else {
                     errorMsg = input.validationMessage || "Invalid input.";
                 }
+            } else if (input.maxLength > 0 && input.value.length >= input.maxLength) {
+                errorMsg = `Maximum of ${input.maxLength} characters reached.`;
+                isMaxCharWarning = true;
             }
 
             let parentToAppendTo = input;

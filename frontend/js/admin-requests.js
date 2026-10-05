@@ -109,6 +109,14 @@ function renderRequestsTable(data = requestsData) {
                 </button>`;
         }
 
+        // Admin action: Delete is available for all requests
+        actionBtns += `
+            <button class="rq-btn-reject" title="Permanently Delete"
+                style="background-color: #dc3545;"
+                onclick="deleteRequest(${request.request_id})">
+                <i class="fa-solid fa-trash"></i> Delete
+            </button>`;
+
         tbody.innerHTML += `
             <tr data-status="${status}">
                 <td><strong>#${request.request_id}</strong></td>
@@ -245,6 +253,92 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
                 console.error(error);
                 showToast("Failed to reject. Is the backend running?", false);
+            }
+        });
+    }
+});
+
+/* ===========================
+   DELETE REQUEST
+=========================== */
+let currentDeleteRequestId = null;
+
+window.deleteRequest = function (requestId) {
+    currentDeleteRequestId = requestId;
+    const modal = document.getElementById("deleteModal");
+    if(modal) {
+        modal.classList.add("show");
+        const form = document.getElementById("deleteForm");
+        if (form) form.reset();
+        const otherContainer = document.getElementById("otherDeleteReasonContainer");
+        if (otherContainer) otherContainer.style.display = "none";
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteSelect = document.getElementById("deleteReasonSelect");
+    const otherContainer = document.getElementById("otherDeleteReasonContainer");
+    const otherInput = document.getElementById("otherDeleteReason");
+    const deleteForm = document.getElementById("deleteForm");
+    const closeBtn = document.getElementById("closeDeleteModal");
+    const cancelBtn = document.getElementById("cancelDeleteBtn");
+    const deleteModal = document.getElementById("deleteModal");
+
+    if(deleteSelect) {
+        deleteSelect.addEventListener("change", (e) => {
+            if (e.target.value === "Others") {
+                otherContainer.style.display = "block";
+                otherInput.required = true;
+            } else {
+                otherContainer.style.display = "none";
+                otherInput.required = false;
+                otherInput.value = "";
+            }
+        });
+    }
+
+    const hideDeleteModal = () => {
+        if(deleteModal) deleteModal.classList.remove("show");
+    };
+
+    if(closeBtn) closeBtn.addEventListener("click", hideDeleteModal);
+    if(cancelBtn) cancelBtn.addEventListener("click", hideDeleteModal);
+
+    if(deleteForm) {
+        deleteForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentDeleteRequestId) return;
+            
+            let reason = deleteSelect.value;
+            if (reason === "Others") {
+                reason = otherInput.value.trim();
+            }
+
+            try {
+                // The reason can be logged by the backend if desired, but for now we just pass it or not
+                const url = `${API_URL}/requests/${currentDeleteRequestId}`;
+
+                const res = await fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || "Delete failed.");
+                    return;
+                }
+
+                showToast(`Request #${currentDeleteRequestId} deleted permanently.`, true);
+                hideDeleteModal();
+                loadRequests();
+
+            } catch (error) {
+                console.error(error);
+                showToast("Failed to delete. Is the backend running?", false);
             }
         });
     }

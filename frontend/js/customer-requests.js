@@ -114,6 +114,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </button>
                     <button 
                         class="view-request-button"
+                        style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
+                        onclick="openCancelModal(${req.request_id})">
+                        Cancel
+                    </button>
+                    <button 
+                        class="view-request-button"
                         style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
                         onclick="viewRequest(${req.request_id})">
                         View
@@ -326,3 +332,85 @@ function closeModal() {
         .classList.remove("show");
 
 }
+
+let currentCancelRequestId = null;
+
+window.openCancelModal = function(requestId) {
+    currentCancelRequestId = requestId;
+    const modal = document.getElementById("cancelRequestModal");
+    if(modal) {
+        modal.classList.add("show");
+        document.getElementById("cancelRequestForm").reset();
+        document.getElementById("otherCancelReasonContainer").style.display = "none";
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const cancelSelect = document.getElementById("cancelReasonSelect");
+    const otherContainer = document.getElementById("otherCancelReasonContainer");
+    const otherInput = document.getElementById("otherCancelReason");
+    const cancelForm = document.getElementById("cancelRequestForm");
+    const closeBtn = document.getElementById("closeCancelModal");
+    const cancelBtn = document.getElementById("cancelCancelBtn");
+    const cancelModal = document.getElementById("cancelRequestModal");
+
+    if(cancelSelect) {
+        cancelSelect.addEventListener("change", (e) => {
+            if (e.target.value === "Others") {
+                otherContainer.style.display = "block";
+                otherInput.required = true;
+            } else {
+                otherContainer.style.display = "none";
+                otherInput.required = false;
+                otherInput.value = "";
+            }
+        });
+    }
+
+    const hideCancelModal = () => {
+        if(cancelModal) cancelModal.classList.remove("show");
+    };
+
+    if(closeBtn) closeBtn.addEventListener("click", hideCancelModal);
+    if(cancelBtn) cancelBtn.addEventListener("click", hideCancelModal);
+
+    if(cancelForm) {
+        cancelForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentCancelRequestId) return;
+            
+            let reason = cancelSelect.value;
+            if (reason === "Others") {
+                reason = otherInput.value.trim();
+            }
+
+            try {
+                const url = `${API_URL}/requests/${currentCancelRequestId}/cancel?reason=${encodeURIComponent(reason)}`;
+                const res = await fetch(url, {
+                    method: "PUT",
+                    headers: getAuthHeaders()
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || "Cancel failed.");
+                    return;
+                }
+
+                alert(`Request #${currentCancelRequestId} cancelled successfully.`);
+                hideCancelModal();
+                
+                // Refresh data
+                const user = JSON.parse(localStorage.getItem("user") || "{}");
+                if (user.user_id) {
+                    // Trigger a reload by reloading the page
+                    window.location.reload();
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Failed to cancel request.");
+            }
+        });
+    }
+});

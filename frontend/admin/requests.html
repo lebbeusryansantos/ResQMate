@@ -250,6 +250,42 @@
             </div>
         </div>
     </div>
+    <!-- DELETE MODAL -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content request-modal-card rejection-card" style="border-left: 5px solid #dc3545;">
+            <div class="request-modal-header">
+                <div>
+                    <h4 style="color: #dc3545;">Warning: Permanent Deletion</h4>
+                    <p>Are you sure you want to permanently delete this record?</p>
+                </div>
+                <button id="closeDeleteModal" aria-label="Close Delete Modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="request-details rejection-details">
+                <form id="deleteForm">
+                    <div class="form-group rejection-group">
+                        <label for="deleteReasonSelect" class="rejection-label">Deletion Reason</label>
+                        <select id="deleteReasonSelect" class="rq-input rejection-input" required>
+                            <option value="" disabled selected>Select a reason...</option>
+                            <option value="Spam/Fake Request">Spam/Fake Request</option>
+                            <option value="Duplicate Data">Duplicate Data</option>
+                            <option value="Test Record">Test Record</option>
+                            <option value="Others">Others (Please specify)</option>
+                        </select>
+                    </div>
+                    <div class="form-group d-none rejection-group" id="otherDeleteReasonContainer">
+                        <label for="otherDeleteReason" class="rejection-label">Specify Reason</label>
+                        <input type="text" id="otherDeleteReason" class="rq-input rejection-input" placeholder="Enter reason here...">
+                    </div>
+                    <div class="rejection-actions">
+                        <button type="button" class="btn-secondary rejection-cancel-btn" id="cancelDeleteBtn">Cancel</button>
+                        <button type="submit" class="rq-btn-reject rejection-submit-btn" id="submitDeleteBtn" style="background-color: #dc3545;">Delete Permanently</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     </div>
 
     <script src="../components/loadAdminSidebar.js"></script>

@@ -483,3 +483,73 @@ def get_user_requests(user_id: int, user: dict = Depends(get_current_user)):
             })
 
         return requests
+
+
+@router.put("/{request_id}/cancel")
+def cancel_request(request_id: int, reason: str = None, user: dict = Depends(get_current_user)):
+    with engine.begin() as conn:
+        req_result = conn.execute(
+            text("SELECT user_id, status FROM assistance_requests WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        ).fetchone()
+
+        if not req_result:
+            raise HTTPException(status_code=404, detail="Request Not Found")
+
+        if req_result.user_id != user["user_id"] and user["role"] != "admin":
+            raise HTTPException(status_code=403, detail="Forbidden: You can only cancel your own requests")
+
+        if req_result.status.lower() != "pending":
+            raise HTTPException(status_code=400, detail="Only pending requests can be cancelled")
+
+        conn.execute(
+            text("""
+                UPDATE assistance_requests
+                SET status = 'cancelled',
+                    rejection_reason = :reason
+                WHERE request_id = :request_id
+            """),
+            {"reason": reason, "request_id": request_id}
+        )
+
+        conn.execute(
+            text("""
+                INSERT INTO request_status_history (request_id, updated_by, status, remarks)
+                VALUES (:request_id, :updated_by, 'cancelled', :remarks)
+            """),
+            {
+                "request_id": request_id,
+                "updated_by": user["user_id"],
+                "remarks": f"Cancelled by user: {reason}"
+            }
+        )
+        
+    return {"message": "Request cancelled successfully"}
+
+
+@router.delete("/{request_id}")
+def delete_request(request_id: int, admin: dict = Depends(get_current_admin)):
+    with engine.begin() as conn:
+        req_result = conn.execute(
+            text("SELECT request_id FROM assistance_requests WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        ).fetchone()
+
+        if not req_result:
+            raise HTTPException(status_code=404, detail="Request Not Found")
+
+        # Manual cleanup of related records to avoid FK constraints
+        conn.execute(
+            text("DELETE FROM distributions WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        )
+        conn.execute(
+            text("DELETE FROM request_status_history WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        )
+        conn.execute(
+            text("DELETE FROM assistance_requests WHERE request_id = :request_id"),
+            {"request_id": request_id}
+        )
+
+    return {"message": "Request permanently deleted"}

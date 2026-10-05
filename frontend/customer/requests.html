@@ -164,6 +164,40 @@
 
     </div>
 
+    <!-- CANCEL REQUEST MODAL -->
+    <div class="custom-modal-overlay" id="cancelRequestModal">
+        <div class="custom-modal">
+            <div class="modal-header">
+                <h3>Cancel Request</h3>
+                <button class="modal-close" id="closeCancelModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px;">Are you sure you want to cancel this request?</p>
+                <form id="cancelRequestForm">
+                    <div style="margin-bottom: 15px;">
+                        <label for="cancelReasonSelect" style="display: block; margin-bottom: 5px;">Reason for cancellation</label>
+                        <select id="cancelReasonSelect" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;" required>
+                            <option value="" disabled selected>Select a reason...</option>
+                            <option value="Found help elsewhere">Found help elsewhere</option>
+                            <option value="Requested by mistake">Requested by mistake</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div id="otherCancelReasonContainer" style="display: none; margin-bottom: 15px;">
+                        <label for="otherCancelReason" style="display: block; margin-bottom: 5px;">Please specify</label>
+                        <input type="text" id="otherCancelReason" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;" placeholder="Enter reason here...">
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="modal-btn" id="cancelCancelBtn" style="background: #e5e7eb; color: #374151;">Close</button>
+                        <button type="submit" class="modal-btn" style="background: #ef4444; color: white;">Cancel Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="../components/loadSidebar.js"></script>
     <script src="../components/profile-modal.js"></script>
     <script src="../components/logout-modal.js"></script>

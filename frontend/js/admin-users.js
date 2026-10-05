@@ -199,6 +199,12 @@ document.getElementById(
         return;
     }
 
+    const phoneRegex = /^09\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.");
+        return;
+    }
+
     const saveBtn =
         document.getElementById(
             "saveUserBtn"

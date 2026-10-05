@@ -140,8 +140,9 @@ def register_user(data: RegisterRequest):
     if " " in data.email:
         raise HTTPException(status_code=400, detail="Email address must not contain spaces.")
 
-    if data.phone_number and not data.phone_number.startswith("09"):
-        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
+    if data.phone_number:
+        if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
     with engine.begin() as conn:
 
@@ -209,8 +210,9 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
     }
     db_role = role_map.get(data.role, "community_user")
 
-    if data.phone_number and not data.phone_number.startswith("09"):
-        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
+    if data.phone_number:
+        if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
     with engine.begin() as conn:
 
@@ -415,8 +417,9 @@ def update_user(
 
     db_role = role_map.get(data.role, "community_user")
 
-    if data.phone_number and not data.phone_number.startswith("09"):
-        raise HTTPException(status_code=400, detail="Phone number must start with 09.")
+    if data.phone_number:
+        if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
+            raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
 
     with engine.begin() as conn:
 

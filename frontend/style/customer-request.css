@@ -447,5 +447,9 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
     opacity: 0.9 !important;
     transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
-. f o r m - i n p u t : d i s a b l e d ,   . f o r m - s e l e c t : d i s a b l e d ,   . f o r m - t e x t a r e a : d i s a b l e d ,   i n p u t [ t y p e = ' c h e c k b o x ' ] : d i s a b l e d ,   . s u b m i t - b u t t o n : d i s a b l e d   {   c u r s o r :   n o t - a l l o w e d ;   o p a c i t y :   0 . 6 ;   }  
- 
+
+textarea:disabled, input:disabled, select:disabled {
+    background-color: #f1f5f9;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}

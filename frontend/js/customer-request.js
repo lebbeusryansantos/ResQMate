@@ -161,18 +161,26 @@ function checkFormProgression() {
 
     const hasBarangay = barangayInput && barangayInput.value !== "";
     if (hasBarangay) {
-        if (specificAddressInput) specificAddressInput.disabled = false;
+        if (specificAddressInput) {
+            specificAddressInput.disabled = false;
+            specificAddressInput.placeholder = "Specific Address (e.g., 123 Main St)";
+        }
         const landmarkInput = document.getElementById("landmark");
-        if (landmarkInput) landmarkInput.disabled = false;
+        if (landmarkInput) {
+            landmarkInput.disabled = false;
+            landmarkInput.placeholder = "Landmark (e.g., near Plaza)";
+        }
     } else {
         if (specificAddressInput) {
             specificAddressInput.disabled = true;
             specificAddressInput.value = "";
+            specificAddressInput.placeholder = "🔒 Please select a Barangay first...";
         }
         const landmarkInput = document.getElementById("landmark");
         if (landmarkInput) {
             landmarkInput.disabled = true;
             landmarkInput.value = "";
+            landmarkInput.placeholder = "🔒 Please select a Barangay first...";
         }
     }
 
@@ -188,11 +196,15 @@ function checkFormProgression() {
 
     const hasCalamity = calamityTypeInput && calamityTypeInput.value !== "";
     if (hasCalamity) {
-        if (detailsInput) detailsInput.disabled = false;
+        if (detailsInput) {
+            detailsInput.disabled = false;
+            detailsInput.placeholder = "Tell us more about your situation...";
+        }
     } else {
         if (detailsInput) {
             detailsInput.disabled = true;
             detailsInput.value = "";
+            detailsInput.placeholder = "🔒 Please select a Calamity Type first...";
         }
         if (characterCount) characterCount.textContent = "0";
     }

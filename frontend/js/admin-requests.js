@@ -336,7 +336,8 @@ window.viewRequest = function (requestId) {
     document.getElementById("modalRequestId").textContent = `#${request.request_id}`;
     document.getElementById("modalRequester").textContent = request.full_name || "—";
     document.getElementById("modalCategory").textContent = request.category_name || "—";
-    document.getElementById("modalLocation").textContent = request.location_name || "—";
+    const fullLocation = request.specific_address ? `${request.specific_address}, ${request.location_name || ""}` : request.location_name || "—";
+    document.getElementById("modalLocation").textContent = fullLocation;
     document.getElementById("modalPriority").textContent = request.priority_level || "—";
     const prioritySpan = document.getElementById("modalPriority");
     const prioritySelect = document.getElementById("modalPriorityEdit");
@@ -370,8 +371,7 @@ window.viewRequest = function (requestId) {
             prioritySelect.value = (request.priority_level || "medium").toLowerCase();
         }
         if (adminFeedbackRow) {
-            adminFeedbackRow.classList.remove("d-none");
-            adminFeedbackRow.style.display = "flex";
+            adminFeedbackRow.style.display = "none";
             adminFeedbackTextarea.value = "";
         }
     } else {
@@ -408,6 +408,10 @@ window.viewRequest = function (requestId) {
             const currentSelectedPriority = prioritySelect ? prioritySelect.value : request.priority_level;
             const originalPriority = (request.priority_level || "medium").toLowerCase();
             const isPriorityChanged = currentSelectedPriority !== originalPriority;
+
+            if (adminFeedbackRow) {
+                adminFeedbackRow.style.display = isPriorityChanged ? "flex" : "none";
+            }
 
             if (isPriorityChanged) {
                 actionContainer.innerHTML += `

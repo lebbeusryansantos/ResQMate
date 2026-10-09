@@ -110,6 +110,12 @@ app.include_router(
     delivery_documentations.router
 )
 
+app.include_router(
+    audit_logs_router,
+    prefix="/audit_logs",
+    tags=["Audit Logs"]
+)
+
 # Root Endpoint
 @app.get("/")
 def home():

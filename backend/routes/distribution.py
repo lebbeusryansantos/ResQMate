@@ -92,11 +92,13 @@ def create_distribution(request_id:     int, resource_id:    int, staff_id:     
             }
         )
 
-        # Deduct from resource stock
-        conn.execute(
-            text("UPDATE resources SET quantity_available = quantity_available - :qty WHERE resource_id = :rid"),
+        # Deduct from resource stock atomically
+        res = conn.execute(
+            text("UPDATE resources SET quantity_available = quantity_available - :qty WHERE resource_id = :rid AND quantity_available >= :qty"),
             {"qty": quantity_given, "rid": resource_id}
         )
+        if res.rowcount == 0:
+            raise HTTPException(status_code=400, detail="Insufficient resource quantity due to concurrent update.")
 
         # Move request to "processing"
         conn.execute(

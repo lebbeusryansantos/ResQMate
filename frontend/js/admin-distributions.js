@@ -225,7 +225,7 @@ if (saveDistribution) {
 
         const originalText = saveDistribution.textContent;
         saveDistribution.disabled = true;
-        saveDistribution.textContent = "Saving...";
+        saveDistribution.textContent = "Processing...";
 
         try {
             let url, method;

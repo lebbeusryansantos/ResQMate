@@ -39,10 +39,10 @@ async def submit_documentation(
     staff: dict = Depends(require_role(["staff"]))
 ):
 
-    if not remarks.strip():
+    if not remarks.strip() or len(remarks.strip()) < 30:
         raise HTTPException(
             status_code=400,
-            detail="Remarks are required."
+            detail="Remarks are required and must be at least 30 characters."
         )
 
     allowed_types = [
@@ -58,6 +58,11 @@ async def submit_documentation(
         )
 
     file_bytes = await proof_file.read()
+    if len(file_bytes) > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=400,
+            detail="File size exceeds 5MB limit."
+        )
 
     if len(file_bytes) > 5 * 1024 * 1024:
         raise HTTPException(

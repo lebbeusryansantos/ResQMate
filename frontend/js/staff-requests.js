@@ -383,6 +383,13 @@ async function submitDocumentation() {
                 localStorage.getItem("user")
             );
 
+        const submitBtnDoc = document.getElementById('submitDocumentation');
+        const originalText = submitBtnDoc ? submitBtnDoc.textContent : 'Submit Documentation';
+        if (submitBtnDoc) {
+            submitBtnDoc.disabled = true;
+            submitBtnDoc.textContent = 'Processing...';
+        }
+
         const formData = new FormData();
 
         formData.append(
@@ -443,6 +450,11 @@ async function submitDocumentation() {
             "Upload failed.",
             false
         );
+    } finally {
+        if (submitBtnDoc) {
+            submitBtnDoc.disabled = false;
+            submitBtnDoc.textContent = originalText;
+        }
     }
 }
 

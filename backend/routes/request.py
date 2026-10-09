@@ -173,6 +173,12 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
         "High": "high"
     }
 
+    if len(request_details) < 30:
+        raise HTTPException(
+            status_code=400,
+            detail="Request details must be at least 30 characters."
+        )
+
     if assistance_type not in category_mapping:
         raise HTTPException(
             status_code=400,

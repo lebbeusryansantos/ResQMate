@@ -423,7 +423,7 @@ if (requestForm) {
 
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = "Submitting...";
+            submitButton.textContent = "Processing...";
         }
 
         try {

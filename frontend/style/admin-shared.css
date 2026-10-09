@@ -117,13 +117,13 @@ body {
 }
 
 .badge.pending {
-  background: #fef3c7;
-  color: #92400e;
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .badge.processing {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .badge.high {
@@ -481,8 +481,8 @@ tbody tr:hover {
 }
 
 .rq-badge-pending {
-  background: #fef3c7;
-  color: #b45309;
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .rq-badge-awaiting_confirmation {
@@ -501,10 +501,14 @@ tbody tr:hover {
   color: #15803d;
 }
 
-.rq-badge-awaiting_verification,
-.rq-badge-processing {
+.rq-badge-awaiting_verification {
   background: #e0e7ff;
   color: #4338ca;
+}
+
+.rq-badge-processing {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .rq-badge-completed {
@@ -512,10 +516,14 @@ tbody tr:hover {
   color: #15803d;
 }
 
-.rq-badge-rejected,
-.rq-badge-cancelled {
+.rq-badge-rejected {
   background: #fee2e2;
   color: #dc2626;
+}
+
+.rq-badge-cancelled {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .rq-badge-high,

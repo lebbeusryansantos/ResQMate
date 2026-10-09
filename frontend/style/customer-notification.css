@@ -169,8 +169,8 @@ body {
 /* Pending */
 
 .notification-icon.pending {
-    background-color: #fef3c7;
-    color: #b45309;
+    background-color: #dbeafe;
+    color: #1d4ed8;
 }
 
 
@@ -185,8 +185,8 @@ body {
 /* Processing */
 
 .notification-icon.processing {
-    background-color: #e0e7ff;
-    color: #4338ca;
+    background-color: #f1f5f9;
+    color: #475569;
 }
 
 
@@ -201,8 +201,8 @@ body {
 /* Cancelled */
 
 .notification-icon.cancelled {
-    background-color: #e5e7eb;
-    color: #4b5563;
+    background-color: #f1f5f9;
+    color: #475569;
 }
 
 
@@ -342,5 +342,5 @@ button:active, .btn:active, input[type="submit"]:active, a.btn:active, .confirm-
 
 .notification-icon.rejected {
     background-color: #fee2e2;
-    color: #b91c1c;
+    color: #dc2626;
 }

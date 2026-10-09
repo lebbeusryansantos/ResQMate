@@ -114,6 +114,7 @@ def get_users(admin: dict = Depends(get_current_admin)):
                     dob,
                     role
                 FROM users
+                ORDER BY user_id ASC
             """)
         )
 

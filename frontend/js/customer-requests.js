@@ -7,7 +7,7 @@ var API_BASE_URL =
 var API_URL = API_BASE_URL;
 
 let currentPage = 1;
-const itemsPerPage = 8;
+let itemsPerPage = 10;
 
 function setupPagination(dataArray, renderCallback) {
     const prevBtn = document.getElementById("prevPageBtn");
@@ -37,13 +37,27 @@ function setupPagination(dataArray, renderCallback) {
     }
     
     if (indicator) {
-        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+        const startItem = (currentPage - 1) * itemsPerPage + 1;
+        const endItem = Math.min(currentPage * itemsPerPage, dataArray.length);
+        const totalItems = dataArray.length;
+        if (totalItems === 0) {
+            indicator.textContent = `Showing 0 to 0 of 0 entries`;
+        } else {
+            indicator.textContent = `Showing ${startItem} to ${endItem} of ${totalItems} entries`;
+        }
     }
     
     renderCallback(slicedData);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("rowsPerPage")?.addEventListener("change", (e) => {
+        itemsPerPage = parseInt(e.target.value, 10);
+        currentPage = 1;
+        if (typeof updatePagination === "function") updatePagination();
+        else if (typeof filterRequests === "function") filterRequests();
+    });
+
     document.getElementById("prevPageBtn")?.addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;

@@ -58,7 +58,15 @@
 
       <!-- Recent Requests Table -->
       <div class="table-card">
-        <h3>My Recent Requests</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px;">
+          <h3 style="margin: 0;">My Recent Requests</h3>
+          <select id="rowsPerPage" class="rq-input rows-filter" aria-label="Rows per page" style="max-width: 120px; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+              <option value="10">10 Rows per page</option>
+              <option value="25">25 Rows per page</option>
+              <option value="50">50 Rows per page</option>
+              <option value="100">100 Rows per page</option>
+          </select>
+        </div>
         <table>
           <thead>
             <tr>

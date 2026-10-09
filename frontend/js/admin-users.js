@@ -101,20 +101,30 @@ async function loadUsers() {
 /* ===========================
    RENDER USERS
 =========================== */
+let currentData = [];
 function renderUsers(users) {
+    currentData = users;
+    currentPage = 1;
+    setupPagination(currentData, renderUsersDOM);
+}
+
+function updatePagination() {
+    setupPagination(currentData, renderUsersDOM);
+}
+
+function renderUsersDOM(users) {
 
     usersTableBody.innerHTML = "";
 
     if (users.length === 0) {
-        document.getElementById(
-            "emptyUsersMessage"
-        ).style.display = "block";
+        usersTableBody.innerHTML = `<tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
+        const emptyMsg = document.getElementById("emptyUsersMessage");
+        if (emptyMsg) emptyMsg.style.display = "none";
         return;
     }
 
-    document.getElementById(
-        "emptyUsersMessage"
-    ).style.display = "none";
+    const emptyMsg = document.getElementById("emptyUsersMessage");
+    if (emptyMsg) emptyMsg.style.display = "none";
 
     users.forEach(user => {
 

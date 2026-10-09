@@ -149,7 +149,6 @@ def register_user(data: RegisterRequest):
         "community":      "community_user",
         "staff":          "staff",
         "admin":          "admin",
-        "superadmin":     "superadmin"
     }
     db_role = role_map.get(data.role, "community_user")
 
@@ -229,7 +228,6 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
         "community":      "community_user",
         "staff":          "staff",
         "admin":          "admin",
-        "superadmin":     "superadmin"
     }
     db_role = role_map.get(data.role, "community_user")
 
@@ -457,10 +455,6 @@ def update_user(
             raise HTTPException(status_code=404, detail="User not found")
             
         # 2. Determine db_role
-        # Protect superadmin@gmail.com
-        if target_user.email in ['superadmin@gmail.com', 'masteradmin@gmail.com']:
-            db_role = 'superadmin'
-        else:
             if not data.role or data.role.strip() == "":
                 db_role = target_user.role
             else:
@@ -469,7 +463,6 @@ def update_user(
                     "community": "community_user",
                     "staff": "staff",
                     "admin": "admin",
-                    "superadmin": "superadmin"
                 }
                 # Preserve original role if the role is unrecognized
                 db_role = role_map.get(data.role, target_user.role)

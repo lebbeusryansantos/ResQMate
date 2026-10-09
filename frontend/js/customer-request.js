@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
     const parsedUser = JSON.parse(storedUser);
-    if (parsedUser.role === "superadmin") { window.location.href = "../superadmin/superadmin-logs.html"; return; }
     if (parsedUser.role === "admin") { window.location.href = "../admin/dashboard.html"; return; }
     if (parsedUser.role === "staff") { window.location.href = "../staff/dashboard.html"; return; }
 });

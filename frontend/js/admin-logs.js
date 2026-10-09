@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Check Superadmin Role
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || user.role !== "superadmin") {
-        alert("Access Denied: Super Admin role required.");
+    if (!user || user.role !== "admin") {
+        alert("Access Denied: Admin role required.");
         window.location.href = "../index.html";
         return;
     }
@@ -83,12 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         paginated.forEach(log => {
             const roleClass = log.user_role === 'admin' ? 'role-admin' :
-                              log.user_role === 'staff' ? 'role-staff' :
-                              log.user_role === 'superadmin' ? 'role-super' : 'role-user';
+                              log.user_role === 'staff' ? 'role-staff' : 'role-user';
                               
             let formattedDate = "N/A";
             if (log.timestamp) {
-                const dateObj = new Date(log.timestamp + "Z"); // SQLite usually returns UTC string
+                const dateObj = new Date(log.timestamp + "Z");
                 formattedDate = dateObj.toLocaleString();
                 if (formattedDate === "Invalid Date") {
                      const dateObj2 = new Date(log.timestamp);

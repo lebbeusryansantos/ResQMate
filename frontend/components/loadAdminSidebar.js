@@ -105,9 +105,6 @@ function loadUserProfile() {
 
     const profileRole = document.getElementById("profileRole");
     if (profileRole) {
-        if (user.role === "superadmin") {
-            profileRole.textContent = "MASTER ADMIN";
-        } else if (user.role === "admin") {
             profileRole.textContent = "ADMIN";
         } else {
             profileRole.textContent = user.role.toUpperCase();

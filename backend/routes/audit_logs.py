@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from backend.database import engine
-from backend.security import get_current_superadmin
+from backend.security import get_current_admin
 
 router = APIRouter()
 
 @router.get("/")
-def get_audit_logs(admin: dict = Depends(get_current_superadmin)):
+def get_audit_logs(admin: dict = Depends(get_current_admin)):
     with engine.connect() as conn:
         result = conn.execute(text("SELECT id, user_id, user_name, user_role, action_description, timestamp FROM audit_logs ORDER BY timestamp DESC"))
         logs = []

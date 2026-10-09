@@ -132,22 +132,18 @@ function renderUsersDOM(users) {
     users.forEach(user => {
 
         const roleClass =
-            user.role === "superadmin"
-                ? "rq-badge-super"
-                : user.role === "admin"
-                    ? "rq-badge-admin"
-                    : user.role === "staff"
-                        ? "rq-badge-staff"
-                        : "rq-badge-community";
+            user.role === "admin"
+                ? "rq-badge-admin"
+                : user.role === "staff"
+                    ? "rq-badge-staff"
+                    : "rq-badge-community";
 
         const roleText =
-            user.role === "superadmin"
-                ? "MASTER ADMIN"
-                : user.role === "admin"
-                    ? "ADMIN"
-                    : user.role === "staff"
-                        ? "STAFF"
-                        : "USER";
+            user.role === "admin"
+                ? "ADMIN"
+                : user.role === "staff"
+                    ? "STAFF"
+                    : "USER";
 
         usersTableBody.innerHTML += `
             <tr data-role="${user.role}">

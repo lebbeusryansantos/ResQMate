@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ResQMate - Master Admin Logs</title>
+  <title>ResQMate - Audit Logs</title>
 
   <link rel="stylesheet" href="../style/customer-sidebar.css">
   <link rel="stylesheet" href="../style/admin-shared.css">
@@ -33,7 +33,6 @@
         <div class="toolbar-row">
           <h5 class="section-title">Audit Records</h5>
           <div class="toolbar-actions">
-            <!-- Filter inputs -->
             <input type="text" id="searchLog" placeholder="Search logs..." class="search-input">
             
             <select id="roleFilter" class="filter-dropdown">
@@ -41,7 +40,6 @@
               <option value="admin">Admin</option>
               <option value="staff">Staff</option>
               <option value="community_user">Community User</option>
-              <option value="superadmin">Master Admin</option>
             </select>
             
             <select id="rowsPerPage" class="filter-dropdown">
@@ -65,12 +63,10 @@
               </tr>
             </thead>
             <tbody>
-              <!-- JS rendered rows -->
             </tbody>
           </table>
         </div>
 
-        <!-- Pagination Standard -->
         <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
           <span id="pageIndicator" class="page-info">Showing 0 to 0 of 0 entries</span>
           <div class="pagination-controls">
@@ -85,9 +81,9 @@
   </div>
 
   <script src="../js/config.js"></script>
-  <script src="../components/loadSuperAdminSidebar.js"></script>
+  <script src="../components/loadAdminSidebar.js"></script>
   <script src="../components/profile-modal.js"></script>
   <script src="../components/logout-modal.js"></script>
-  <script src="../js/superadmin-logs.js"></script>
+  <script src="../js/admin-logs.js"></script>
 </body>
 </html>

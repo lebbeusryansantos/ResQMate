@@ -1,3 +1,103 @@
+
+let allRequests = [];
+let currentPage = 1;
+let itemsPerPage = 10;
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        const startItem = (currentPage - 1) * itemsPerPage + 1;
+        const endItem = Math.min(currentPage * itemsPerPage, dataArray.length);
+        const totalItems = dataArray.length;
+        if (totalItems === 0) {
+            indicator.textContent = `Showing 0 to 0 of 0 entries`;
+        } else {
+            indicator.textContent = `Showing ${startItem} to ${endItem} of ${totalItems} entries`;
+        }
+    }
+    
+    renderCallback(slicedData);
+}
+
+function filterRequests() {
+    const searchVal = document.getElementById("searchRequests") ? document.getElementById("searchRequests").value.toLowerCase() : "";
+    const statusVal = document.getElementById("statusFilter") ? document.getElementById("statusFilter").value : "all";
+    
+    let filtered = allRequests.filter(req => {
+        const idMatch = String(req.request_id).toLowerCase().includes(searchVal);
+        let type = "Other";
+        if (req.category_id == 1) type = "Food";
+        else if (req.category_id == 2) type = "Water";
+        else if (req.category_id == 3) type = "Shelter";
+        else if (req.category_id == 4) type = "Medicine";
+        
+        const typeMatch = type.toLowerCase().includes(searchVal);
+        const matchesSearch = idMatch || typeMatch;
+        
+        const reqStatus = (req.status || "pending").toLowerCase();
+        const matchesStatus = (statusVal === "all") || (reqStatus === statusVal);
+        
+        return matchesSearch && matchesStatus;
+    });
+    
+    setupPagination(filtered, renderRecentRequests);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("rowsPerPage")?.addEventListener("change", (e) => {
+        itemsPerPage = parseInt(e.target.value, 10);
+        currentPage = 1;
+        filterRequests();
+    });
+
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            filterRequests();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        filterRequests();
+    });
+    
+    document.getElementById("searchRequests")?.addEventListener("input", () => {
+        currentPage = 1;
+        filterRequests();
+    });
+    
+    document.getElementById("statusFilter")?.addEventListener("change", () => {
+        currentPage = 1;
+        filterRequests();
+    });
+});
+
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 document.addEventListener(
     "DOMContentLoaded",
@@ -44,12 +144,10 @@ async function loadDashboard() {
             throw new Error("Failed to load requests.");
         }
 
-        const requests =
-            await response.json();
-
+        const requests = await response.json();
+        allRequests = requests;
         loadStats(requests);
-
-        loadRecentRequests(requests);
+        filterRequests();
 
     }
     catch (error) {
@@ -109,7 +207,7 @@ function loadStats(requests) {
     document.getElementById("cancelledCount").textContent = cancelled;
 }
 
-function loadRecentRequests(requests) {
+function renderRecentRequests(requests) {
 
     const tableBody =
         document.getElementById(
@@ -123,9 +221,7 @@ function loadRecentRequests(requests) {
         return;
     }
 
-    requests
-        .slice(0, 5)
-        .forEach(request => {
+    requests.forEach(request => {
 
             let type = "Other";
             if (request.category_id == 1) {

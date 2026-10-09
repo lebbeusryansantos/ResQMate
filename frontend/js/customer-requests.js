@@ -6,6 +6,7 @@ var API_BASE_URL =
 
 var API_URL = API_BASE_URL;
 
+let allRequests = [];
 let currentPage = 1;
 let itemsPerPage = 10;
 
@@ -140,153 +141,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const requests = await response.json();
-
-        tbody.innerHTML = "";
-
-        if (requests.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; color: #718096; padding: 20px;">No data yet</td>
-                </tr>
-            `;
-            return;
-        }
-
-        requests.forEach(req => {
-            const row = document.createElement("tr");
-
-            const typeText = req.category_name || "Other";
-
-            let status = req.status ? req.status.toLowerCase() : "pending";
-
-            let statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            if (status === "cancelled") statusFormatted = "Cancelled by User";
-            if (status === "rejected") statusFormatted = "Rejected by Admin";
-            if (status === "awaiting_confirmation") statusFormatted = "Requires Action";
-
-            const dateFormatted = req.date_requested
-                ? new Date(req.date_requested).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                })
-                : "";
-
-            let actionHTML = "";
-
-            const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
-            const isFollowedUp = followedUpRequests.includes(String(req.request_id));
-
-            if (status === "pending") {
-                if (isFollowedUp) {
-                    actionHTML = `
-                        <button 
-                            class="follow-up-button"
-                            disabled
-                            style="background-color: #9ca3af; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: not-allowed;"
-                            data-request-id="${req.request_id}">
-                            Followed Up
-                        </button>
-                        <button 
-                            class="view-request-button"
-                            style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                            onclick="openCancelModal(${req.request_id})">
-                            Cancel
-                        </button>
-                        <button 
-                            class="view-request-button"
-                            style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                            onclick="viewRequest(${req.request_id})">
-                            View
-                        </button>
-                    `;
-                } else {
-                    actionHTML = `
-                        <button 
-                            class="follow-up-button"
-                            style="background-color: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;"
-                            data-request-id="${req.request_id}">
-                            Follow Up
-                        </button>
-                        <button 
-                            class="view-request-button"
-                            style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                            onclick="openCancelModal(${req.request_id})">
-                            Cancel
-                        </button>
-                        <button 
-                            class="view-request-button"
-                            style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;"
-                            onclick="viewRequest(${req.request_id})">
-                            View
-                        </button>
-                    `;
-                }
-            } else {
-                actionHTML = `
-                    <button 
-                        class="view-request-button"
-                        style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;"
-                        onclick="viewRequest(${req.request_id})">
-                        View
-                    </button>
-                `;
-            }
-
-            const tdId = document.createElement("td");
-            tdId.className = "req-id";
-            tdId.textContent = req.request_id;
-
-            const tdType = document.createElement("td");
-            tdType.textContent = typeText;
-
-            const tdStatus = document.createElement("td");
-            const statusSpan = document.createElement("span");
-            statusSpan.className = `status-badge ${status}`;
-            statusSpan.textContent = statusFormatted;
-            tdStatus.appendChild(statusSpan);
-
-            const tdDate = document.createElement("td");
-            tdDate.textContent = dateFormatted;
-
-            const tdAction = document.createElement("td");
-            tdAction.innerHTML = actionHTML; // actionHTML is hardcoded/safe
-
-            row.appendChild(tdId);
-            row.appendChild(tdType);
-            row.appendChild(tdStatus);
-            row.appendChild(tdDate);
-            row.appendChild(tdAction);
-
-            tbody.appendChild(row);
-        });
-
-        document.querySelectorAll(".follow-up-button").forEach(button => {
-            button.addEventListener("click", () => {
-                // If it's already disabled, do nothing
-                if (button.disabled) return;
-
-                const requestId = button.dataset.requestId;
-
-                alert(
-                    `Follow-up request sent for Request #${requestId}.`
-                );
-
-                // Save to localStorage so it survives refresh
-                const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
-                if (!followedUpRequests.includes(String(requestId))) {
-                    followedUpRequests.push(String(requestId));
-                    localStorage.setItem("followedUpRequests", JSON.stringify(followedUpRequests));
-                }
-
-                // Disable the button after clicking
-                button.disabled = true;
-                button.style.backgroundColor = '#9ca3af'; // gray out
-                button.style.cursor = 'not-allowed';
-                button.textContent = "Followed Up";
-            });
-        });
-
+        allRequests = requests;
+        filterRequests();
     } catch (error) {
         console.error("Error fetching user requests:", error);
 
@@ -644,3 +500,114 @@ window.submitFeedback = async function(requestId) {
         alert("Failed to submit feedback.");
     }
 };
+
+
+function filterRequests() {
+    const searchVal = document.getElementById("searchRequests") ? document.getElementById("searchRequests").value.toLowerCase() : "";
+    const statusVal = document.getElementById("statusFilter") ? document.getElementById("statusFilter").value : "all";
+    
+    let filtered = allRequests.filter(req => {
+        const idMatch = String(req.request_id).toLowerCase().includes(searchVal);
+        const typeText = (req.category_name || "Other").toLowerCase();
+        const typeMatch = typeText.includes(searchVal);
+        const matchesSearch = idMatch || typeMatch;
+        
+        const reqStatus = (req.status || "pending").toLowerCase();
+        const matchesStatus = (statusVal === "all") || (reqStatus === statusVal);
+        
+        return matchesSearch && matchesStatus;
+    });
+    
+    setupPagination(filtered, renderRequests);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("searchRequests")?.addEventListener("input", () => {
+        currentPage = 1;
+        filterRequests();
+    });
+    
+    document.getElementById("statusFilter")?.addEventListener("change", () => {
+        currentPage = 1;
+        filterRequests();
+    });
+});
+
+
+function renderRequests(requests) {
+    const tbody = document.querySelector(".requests-table tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    if (requests.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; color: #718096; padding: 20px;">No matching records found</td>
+            </tr>
+        `;
+        return;
+    }
+
+    requests.forEach(req => {
+        const row = document.createElement("tr");
+        const typeText = req.category_name || "Other";
+        let status = req.status ? req.status.toLowerCase() : "pending";
+        let statusFormatted = status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        if (status === "cancelled") statusFormatted = "Cancelled by User";
+        if (status === "rejected") statusFormatted = "Rejected by Admin";
+        if (status === "awaiting_confirmation") statusFormatted = "Requires Action";
+
+        const dateFormatted = req.date_requested
+            ? new Date(req.date_requested).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+            : "";
+
+        let actionHTML = "";
+        const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
+        const isFollowedUp = followedUpRequests.includes(String(req.request_id));
+
+        if (status === "pending") {
+            if (isFollowedUp) {
+                actionHTML = `
+                    <button class="follow-up-button" disabled style="background-color: #9ca3af; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: not-allowed;" data-request-id="${req.request_id}">Followed Up</button>
+                    <button class="view-request-button" style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;" onclick="openCancelModal(${req.request_id})">Cancel</button>
+                    <button class="view-request-button" style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;" onclick="viewRequest(${req.request_id})">View</button>
+                `;
+            } else {
+                actionHTML = `
+                    <button class="follow-up-button" style="background-color: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;" data-request-id="${req.request_id}">Follow Up</button>
+                    <button class="view-request-button" style="background-color: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;" onclick="openCancelModal(${req.request_id})">Cancel</button>
+                    <button class="view-request-button" style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;" onclick="viewRequest(${req.request_id})">View</button>
+                `;
+            }
+        } else {
+            actionHTML = `
+                <button class="view-request-button" style="background-color: #6b7280; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer;" onclick="viewRequest(${req.request_id})">View</button>
+            `;
+        }
+
+        const tdId = document.createElement("td"); tdId.className = "req-id"; tdId.textContent = req.request_id;
+        const tdType = document.createElement("td"); tdType.textContent = typeText;
+        const tdStatus = document.createElement("td");
+        const statusSpan = document.createElement("span"); statusSpan.className = `status-badge ${status}`; statusSpan.textContent = statusFormatted;
+        tdStatus.appendChild(statusSpan);
+        const tdDate = document.createElement("td"); tdDate.textContent = dateFormatted;
+        const tdAction = document.createElement("td"); tdAction.innerHTML = actionHTML;
+
+        row.appendChild(tdId); row.appendChild(tdType); row.appendChild(tdStatus); row.appendChild(tdDate); row.appendChild(tdAction);
+        tbody.appendChild(row);
+    });
+
+    document.querySelectorAll(".follow-up-button").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.disabled) return;
+            const requestId = button.dataset.requestId;
+            alert(`Follow-up request sent for Request #${requestId}.`);
+            const followedUpRequests = JSON.parse(localStorage.getItem("followedUpRequests") || "[]");
+            if (!followedUpRequests.includes(String(requestId))) {
+                followedUpRequests.push(String(requestId));
+                localStorage.setItem("followedUpRequests", JSON.stringify(followedUpRequests));
+            }
+            button.disabled = true; button.style.backgroundColor = '#9ca3af'; button.style.cursor = 'not-allowed'; button.textContent = "Followed Up";
+        });
+    });
+}

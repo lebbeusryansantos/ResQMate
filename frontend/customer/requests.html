@@ -33,13 +33,24 @@
             </div>
 
             <div class="table-card">
-        <div style="display: flex; justify-content: flex-end; padding: 10px 20px;">
-          <select id="rowsPerPage" class="rq-input rows-filter" aria-label="Rows per page" style="max-width: 120px; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+        <div class="toolbar-row" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 10px;">
+          <div class="toolbar-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%; justify-content: flex-end;">
+            <input type="text" id="searchRequests" placeholder="Search by ID or Type..." class="search-input" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; width: 200px;">
+            <select id="statusFilter" class="filter-dropdown" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <select id="rowsPerPage" class="filter-dropdown" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
               <option value="10">10 Rows per page</option>
               <option value="25">25 Rows per page</option>
               <option value="50">50 Rows per page</option>
               <option value="100">100 Rows per page</option>
-          </select>
+            </select>
+          </div>
         </div>
                 <table class="requests-table">
                     <thead>
@@ -56,9 +67,11 @@
                 </table>
             </div>
                 <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-top: 1px solid #e5e7eb;">
-                    <button id="prevPageBtn" class="rq-btn-reject disabled-btn" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: not-allowed;" disabled>Previous</button>
-                    <span id="pageIndicator" style="font-size: 0.9rem; color: #4b5563; font-weight: 500;">Page 1</span>
-                    <button id="nextPageBtn" class="rq-btn-approve" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Next</button>
+                    <span id="pageIndicator" style="font-size: 0.9rem; color: #4b5563; font-weight: 500;">Showing 0 to 0 of 0 entries</span>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="prevPageBtn" class="rq-btn-reject disabled-btn" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: not-allowed;" disabled>Previous</button>
+                        <button id="nextPageBtn" class="rq-btn-approve" style="background: #e5e7eb; color: #4b5563; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Next</button>
+                    </div>
                 </div>
 
           <button id="backToTopBtn" title="Go to top"><i class="fa-solid fa-arrow-up"></i></button>

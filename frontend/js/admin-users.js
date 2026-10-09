@@ -89,6 +89,9 @@ async function loadUsers() {
         }
 
         const users = await response.json();
+        
+        // Sort users by ID ascending
+        users.sort((a, b) => parseInt(a.user_id) - parseInt(b.user_id));
 
         allUsers = users;
         renderUsers(users);

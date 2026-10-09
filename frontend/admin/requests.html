@@ -257,7 +257,8 @@
 
                 <div class="detail-row" id="adminFeedbackRow" style="display: none;">
                     <label>Admin Feedback / Reason</label>
-                    <textarea id="adminFeedback" class="rq-input" rows="3" placeholder="Explain why the priority was changed..."></textarea>
+                    <textarea minlength="30" id="adminFeedback" class="rq-input" rows="3" placeholder="Explain why the priority was changed..."></textarea>
+<small class="char-counter text-muted" style="display:block; margin-top:4px; font-size:0.8rem; color:#6c757d;">0/30 minimum characters</small>
                 </div>
 
                 <div class="detail-row d-none" id="userFeedbackRow" style="background-color: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #bbf7d0;">
@@ -376,6 +377,7 @@
     <script src="../components/profile-modal.js"></script>
 
   <script src="../components/back-to-top.js"></script>
+  <script src="../js/textarea-validation.js"></script>
 </body>
 
 </html>

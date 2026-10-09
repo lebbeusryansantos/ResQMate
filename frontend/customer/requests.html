@@ -186,7 +186,8 @@
                         </select>
                         
                         <label for="feedbackText" style="display:block; font-size: 0.85rem; color: #475569; margin-bottom: 5px;">Comments:</label>
-                        <textarea id="feedbackText" class="form-input" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: vertical; margin-bottom: 10px;"></textarea>
+                        <textarea minlength="30" id="feedbackText" class="form-input" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: vertical; margin-bottom: 10px;"></textarea>
+<small class="char-counter text-muted" style="display:block; margin-top:4px; font-size:0.8rem; color:#6c757d;">0/30 minimum characters</small>
                         
                         <button id="submitFeedbackBtn" class="modal-btn" style="background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
                             Submit Feedback
@@ -259,6 +260,7 @@
     <script src="../js/customer-requests.js"></script>
 
   <script src="../components/back-to-top.js"></script>
+  <script src="../js/textarea-validation.js"></script>
 </body>
 
 </html>

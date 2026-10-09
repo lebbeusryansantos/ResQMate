@@ -548,16 +548,26 @@ def update_user(
 # DELETE USER
 @router.delete("/{user_id}")
 def delete_user(user_id: int, admin: dict = Depends(get_current_admin)):
+    try:
+        with engine.begin() as conn:
+            # Fetch user details before deletion
+            target = conn.execute(
+                text("SELECT email FROM users WHERE user_id = :uid"),
+                {"uid": user_id}
+            ).fetchone()
 
-    with engine.begin() as conn:
+            if not target:
+                raise HTTPException(status_code=404, detail="User not found")
 
-        result = conn.execute(
-            text("DELETE FROM users WHERE user_id = :user_id"),
-            {"user_id": user_id}
-        )
+            conn.execute(
+                text("DELETE FROM users WHERE user_id = :uid"),
+                {"uid": user_id}
+            )
 
-        if result.rowcount == 0:
-            raise HTTPException(status_code=404, detail="User not found")
-
-    log_audit(admin, f"Deleted user ID #{user_id}")
-    return {"message": "User deleted successfully"}
+        # Log audit outside the transaction to avoid lock/commit issues
+        log_audit(admin, f"Admin deleted user account #{user_id} ({target.email})")
+        return {"message": "User deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete user: {str(e)}")

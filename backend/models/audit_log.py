@@ -6,7 +6,7 @@ class AuditLog(Base):
     __tablename__ = "audit_logs"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="SET NULL"), nullable=True)
     user_name = Column(String(100), nullable=False)
     user_role = Column(String(50), nullable=False)
     action_description = Column(String(255), nullable=False)

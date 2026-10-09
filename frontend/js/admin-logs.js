@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             logsTableBody.innerHTML += `
                 <tr>
                     <td>#${log.id}</td>
-                    <td>#${log.user_id}</td>
+                    <td>${log.user_id ? '#' + log.user_id : '<span style="color:gray;">N/A</span>'}</td>
                     <td><strong>${log.user_name}</strong></td>
                     <td><span class="role-badge ${roleClass}">${log.user_role.replace('_', ' ').toUpperCase()}</span></td>
                     <td>${log.action_description}</td>

@@ -80,7 +80,7 @@ class UpdateUserRequest(BaseModel):
     phone_number: str = ""
     emergency_contact_name: str = ""
     emergency_contact_number: str = ""
-    role: str
+    role: Optional[str] = None
     password: Optional[str] = None
 
 
@@ -437,16 +437,6 @@ def update_user(
     admin: dict = Depends(get_current_admin)
 ):
 
-    role_map = {
-        "community_user": "community_user",
-        "community": "community_user",
-        "staff": "staff",
-        "admin": "admin",
-        "superadmin": "superadmin"
-    }
-
-    db_role = role_map.get(data.role, "community_user")
-
     if data.phone_number:
         if not data.phone_number.isdigit() or len(data.phone_number) != 11 or not data.phone_number.startswith("09"):
             raise HTTPException(status_code=400, detail="Phone number must be exactly 11 digits, start with 09, and contain no letters or spaces.")
@@ -457,14 +447,43 @@ def update_user(
 
     with engine.begin() as conn:
 
-        existing = conn.execute(
+        # 1. Fetch existing user
+        target_user = conn.execute(
+            text("SELECT email, role FROM users WHERE user_id = :uid"),
+            {"uid": user_id}
+        ).fetchone()
+
+        if not target_user:
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        # 2. Determine db_role
+        # Protect superadmin@gmail.com
+        if target_user.email in ['superadmin@gmail.com', 'masteradmin@gmail.com']:
+            db_role = 'superadmin'
+        else:
+            if not data.role or data.role.strip() == "":
+                db_role = target_user.role
+            else:
+                role_map = {
+                    "community_user": "community_user",
+                    "community": "community_user",
+                    "staff": "staff",
+                    "admin": "admin",
+                    "superadmin": "superadmin"
+                }
+                # Preserve original role if the role is unrecognized
+                db_role = role_map.get(data.role, target_user.role)
+
+        # 3. Check email uniqueness
+        existing_email = conn.execute(
             text("SELECT user_id FROM users WHERE email = :email AND user_id != :uid"),
             {"email": data.email, "uid": user_id}
         ).fetchone()
 
-        if existing:
+        if existing_email:
             raise HTTPException(status_code=400, detail="Email already registered")
 
+        # 4. Check phone uniqueness
         if data.phone_number:
             existing_phone = conn.execute(
                 text("SELECT user_id FROM users WHERE phone_number = :phone_number AND phone_number != '' AND user_id != :uid"),
@@ -474,8 +493,8 @@ def update_user(
             if existing_phone:
                 raise HTTPException(status_code=400, detail="Phone number already registered")
 
+        # 5. Execute Update
         if data.password:
-
             result = conn.execute(
                 text("""
                     UPDATE users
@@ -502,9 +521,7 @@ def update_user(
                     "password": pwd_context.hash(data.password)
                 }
             )
-
         else:
-
             result = conn.execute(
                 text("""
                     UPDATE users
@@ -530,56 +547,12 @@ def update_user(
                 }
             )
 
-        if result.rowcount == 0:
-            raise HTTPException(
-                status_code=404,
-                detail="User not found"
-            )
-
     return {
         "message": "User updated successfully"
     }
 
-    role_map = {
-        "community_user": "community_user",
-        "community":      "community_user",
-        "staff":          "staff",
-        "admin":          "admin",
-        "superadmin":     "superadmin"
-    }
-    db_role = role_map.get(data.role, "community_user")
-
-    with engine.begin() as conn:
-
-        result = conn.execute(
-            text("""
-                UPDATE users
-                SET
-                    first_name = :first_name,
-                    last_name  = :last_name,
-                    email      = :email,
-                    role       = :role
-                WHERE user_id = :user_id
-            """),
-            {
-                "user_id":    user_id,
-                "first_name": data.first_name,
-                "last_name":  data.last_name,
-                "email":      data.email,
-                "role":       db_role
-            }
-        )
-
-        if result.rowcount == 0:
-            raise HTTPException(status_code=404, detail="User not found")
-
-    return {"message": "User updated successfully"}
-
-
 # =========================
 # DELETE USER
-# =========================
-
 @router.delete("/{user_id}")
 def delete_user(user_id: int, admin: dict = Depends(get_current_admin)):
 

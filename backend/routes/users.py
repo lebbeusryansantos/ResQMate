@@ -148,7 +148,8 @@ def register_user(data: RegisterRequest):
         "community_user": "community_user",
         "community":      "community_user",
         "staff":          "staff",
-        "admin":          "admin"
+        "admin":          "admin",
+        "superadmin":     "superadmin"
     }
     db_role = role_map.get(data.role, "community_user")
 
@@ -227,7 +228,8 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
         "community_user": "community_user",
         "community":      "community_user",
         "staff":          "staff",
-        "admin":          "admin"
+        "admin":          "admin",
+        "superadmin":     "superadmin"
     }
     db_role = role_map.get(data.role, "community_user")
 
@@ -439,7 +441,8 @@ def update_user(
         "community_user": "community_user",
         "community": "community_user",
         "staff": "staff",
-        "admin": "admin"
+        "admin": "admin",
+        "superadmin": "superadmin"
     }
 
     db_role = role_map.get(data.role, "community_user")
@@ -541,7 +544,8 @@ def update_user(
         "community_user": "community_user",
         "community":      "community_user",
         "staff":          "staff",
-        "admin":          "admin"
+        "admin":          "admin",
+        "superadmin":     "superadmin"
     }
     db_role = role_map.get(data.role, "community_user")
 

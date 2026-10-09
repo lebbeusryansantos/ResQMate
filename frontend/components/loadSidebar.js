@@ -185,11 +185,8 @@ function loadUserProfile() {
     // Determine role
     let displayRole = "Customer";
 
-
-    else if (user.role === "admin") {
-
+    if (user.role === "admin") {
         displayRole = "Admin";
-
     }
     else if (user.role === "staff") {
 

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <nav class="sidebar">
         <div class="sidebar-header">
             <h2><i class="fa-solid fa-shield-halved"></i> ResQMate</h2>
-            <p>Super Admin</p>
+            <p>Master Admin</p>
         </div>
         <ul class="nav-links">
             <li>

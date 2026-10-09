@@ -142,7 +142,7 @@ function renderUsersDOM(users) {
 
         const roleText =
             user.role === "superadmin"
-                ? "SUPER ADMIN"
+                ? "MASTER ADMIN"
                 : user.role === "admin"
                     ? "ADMIN"
                     : user.role === "staff"

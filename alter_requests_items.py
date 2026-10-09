@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, inspect
 
 # Load environment variables
 load_dotenv()
@@ -14,8 +14,8 @@ def run_migration():
         print("Checking for requested_items_summary column in assistance_requests...")
         
         # Check if columns exist
-        result = conn.execute(text("PRAGMA table_info(assistance_requests)"))
-        columns = [row[1] for row in result]
+        inspector = inspect(conn)
+        columns = [col['name'] for col in inspector.get_columns('assistance_requests')]
         
         if "requested_items_summary" not in columns:
             print("Adding requested_items_summary column...")

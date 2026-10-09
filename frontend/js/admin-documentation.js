@@ -120,69 +120,96 @@ function renderDocsDOM(data) {
     }
 
     data.forEach(doc => {
-        const statusBadge =
-            doc.status === "Approved"
-                ? "rq-badge-active"
-                : doc.status === "Rejected"
-                    ? "rq-badge-inactive"
-                    : "rq-badge-medium";
+        let statusBadge = "rq-badge-medium";
+        if (doc.status === "approved") {
+            statusBadge = "rq-badge-approved";
+        } else if (doc.status === "rejected") {
+            statusBadge = "rq-badge-rejected";
+        } else if (doc.status === "pending_review") {
+            statusBadge = "rq-badge-pending";
+        }
+
+        let remarksHTML = `
+            <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick='viewRemarks(${JSON.stringify(doc.remarks || "")})'>
+                View
+            </button>
+        `;
 
         let attachmentsHTML = "";
-        if (doc.image_url) {
-            attachmentsHTML += `<button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="window.open('${doc.image_url}', '_blank')"><i class="fa-solid fa-image"></i> View Image</button>`;
-        }
-        if (doc.signature_url) {
-            attachmentsHTML += ` <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="window.open('${doc.signature_url}', '_blank')"><i class="fa-solid fa-signature"></i> Signature</button>`;
+        if (doc.file_path) {
+            attachmentsHTML += `<a href="${doc.file_path}" target="_blank" class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem; text-decoration: none;"><i class="fa-solid fa-file"></i> View File</a>`;
+        } else {
+            attachmentsHTML = "—";
         }
 
         let actionsHTML = "";
-        if (doc.status === "Pending") {
+        if (doc.status === "pending_review") {
             actionsHTML = `
-                <button class="rq-btn-approve" onclick="updateDocStatus(${doc.doc_id}, 'Approved')" style="padding: 6px 12px; margin-right: 5px;">Approve</button>
-                <button class="rq-btn-reject" onclick="updateDocStatus(${doc.doc_id}, 'Rejected')" style="padding: 6px 12px;">Reject</button>
+                <button class="rq-btn-approve" onclick="updateDocStatus(${doc.documentation_id}, 'approve')" style="padding: 6px 12px; margin-right: 5px;">Approve</button>
+                <button class="rq-btn-reject" onclick="updateDocStatus(${doc.documentation_id}, 'reject')" style="padding: 6px 12px;">Reject</button>
             `;
+        } else if (doc.status === "approved") {
+            actionsHTML = `<span style="color: #10b981; font-weight: 500;"><i class="fas fa-check-circle me-1"></i> COMPLETED</span>`;
+        } else if (doc.status === "rejected") {
+            actionsHTML = `<span style="color: #ef4444; font-weight: 500;"><i class="fas fa-times-circle me-1"></i> REJECTED</span>`;
+        } else {
+            actionsHTML = "—";
         }
 
         tbody.innerHTML += `
             <tr>
-                <td><strong>#DOC${doc.doc_id}</strong></td>
-                <td>Dist #${doc.distribution_id}</td>
-                <td>User #${doc.staff_id}</td>
-                <td>${doc.submitted_at ? new Date(doc.submitted_at).toLocaleString() : 'N/A'}</td>
+                <td><strong>#DOC${doc.documentation_id}</strong></td>
+                <td>Dist #${doc.request_id}</td>
+                <td>${doc.staff_name || "—"}</td>
+                <td>${remarksHTML}</td>
+                <td>${attachmentsHTML}</td>
                 <td>
                     <span class="rq-badge ${statusBadge}">
-                        ${doc.status}
+                        ${(doc.status || "—").replace(/_/g, ' ').toUpperCase()}
                     </span>
                 </td>
-                <td>${doc.notes || '—'}</td>
-                <td>${attachmentsHTML || '—'}</td>
-                <td>${actionsHTML || '—'}</td>
+                <td>${doc.submitted_at ? new Date(doc.submitted_at).toLocaleString() : '—'}</td>
+                <td style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;">${actionsHTML}</td>
             </tr>
         `;
     });
 }
 
-async function updateDocStatus(doc_id, new_status) {
-    if (!confirm(`Are you sure you want to mark this documentation as ${new_status}?`)) return;
+async function updateDocStatus(doc_id, action) {
+    if (!confirm(`Are you sure you want to ${action} this documentation?`)) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/delivery-documentations/${doc_id}/status`, {
+        const response = await fetch(`${API_BASE_URL}/delivery-documentations/${doc_id}/${action}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`
-            },
-            body: JSON.stringify({ status: new_status })
+            }
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to update to ${new_status}`);
+            throw new Error(`Failed to ${action} documentation`);
         }
 
-        alert(`Documentation successfully marked as ${new_status}.`);
+        alert(`Documentation successfully ${action}d.`);
         loadDocumentations();
     } catch (error) {
         console.error(error);
-        alert(`Error updating documentation status: ${error.message}`);
+        alert(`Error: ${error.message}`);
     }
 }
+
+function viewRemarks(remarks) {
+    document.getElementById("remarksContent").textContent = remarks || "No remarks provided.";
+    document.getElementById("remarksModal")?.classList.add("show");
+}
+
+document.getElementById("closeRemarksModal")?.addEventListener("click", () => {
+    document.getElementById("remarksModal")?.classList.remove("show");
+});
+
+document.getElementById("remarksModal")?.addEventListener("click", e => {
+    if (e.target === document.getElementById("remarksModal")) {
+        document.getElementById("remarksModal")?.classList.remove("show");
+    }
+});

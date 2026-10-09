@@ -59,15 +59,17 @@
 
             <div class="table-card">
 
-                <div class="toolbar-row">
+                <div class="toolbar-row" style="align-items: flex-start;">
 
-                    <h5 class="section-title">
-                        Assistance Requests
-                    </h5>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <h5 class="section-title">
+                            Assistance Requests
+                        </h5>
 
-                    <div class="tabs-container" style="display: flex; gap: 10px; margin-left: 20px;">
-                        <button class="rq-badge rq-badge-processing tab-btn active" data-tab="active" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500;">Active Requests</button>
-                        <button class="rq-badge rq-badge-pending tab-btn" data-tab="completed" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500; background: #f3f4f6; color: #4b5563;">Completed</button>
+                        <div class="tabs-container" style="display: flex; gap: 10px;">
+                            <button class="rq-badge rq-badge-processing tab-btn active" data-tab="active" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500;">Active Requests</button>
+                            <button class="rq-badge rq-badge-pending tab-btn" data-tab="completed" style="border: none; cursor: pointer; padding: 8px 15px; font-weight: 500; background: #f3f4f6; color: #4b5563;">Completed</button>
+                        </div>
                     </div>
 
                     <div class="toolbar-actions">
@@ -155,7 +157,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Requester</th>
-                                <th>Category</th>
+                                <th>Calamity</th>
                                 <th>Location</th>
                                 <th>Priority</th>
                                 <th>Status</th>

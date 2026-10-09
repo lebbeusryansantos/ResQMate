@@ -287,22 +287,19 @@ body {
 }
 
 .toolbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   flex: 1;
-  justify-content: flex-end;
+  max-width: 800px;
 }
 
 .search-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 280px;
-  flex: 1 1 200px;
-  min-width: 160px;
-  max-width: 340px;
+  grid-column: 1 / -1;
+  width: 100%;
   height: 48px;
   padding: 0 16px;
   border: 1px solid #d1d5db;
@@ -322,8 +319,7 @@ body {
 =========================== */
 
 .rq-input {
-  width: 160px;
-  flex: 0 1 160px;
+  width: 100%;
   height: 48px;
   padding: 0 14px;
   border: 1px solid #d1d5db;
@@ -463,7 +459,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: #fff8f8;
+  background: #f1f5f9;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }

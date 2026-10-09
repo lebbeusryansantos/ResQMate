@@ -98,7 +98,7 @@ function renderRequestsTable(data = requestsData) {
             <tr data-status="${status}">
                 <td><strong>#${request.request_id}</strong></td>
                 <td>${request.full_name || "—"}</td>
-                <td>${request.calamity_type || request.category_name || "—"}</td>
+                <td>${request.calamity_type || "—"}</td>
                 <td>${request.location_name || "—"}</td>
                 <td><span class="rq-badge rq-badge-${priority}">${priority.toUpperCase()}</span></td>
                 <td><span class="rq-badge rq-badge-${status}">${request.status.replace(/_/g, ' ').toUpperCase()}</span></td>

@@ -6,6 +6,58 @@ var API_BASE_URL =
 
 var API_URL = `${API_BASE_URL}/users`;
 
+let currentPage = 1;
+const itemsPerPage = 8;
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    renderCallback(slicedData);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (typeof updatePagination === "function") updatePagination();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        if (typeof updatePagination === "function") updatePagination();
+    });
+});
+
+
 const usersTableBody = document.getElementById("usersTableBody");
 const modal = document.getElementById("userModal");
 

@@ -10,7 +10,7 @@ let usersData = [];
 let filteredRequestsData = [];
 let currentTab = 'active';
 let currentPage = 1;
-const itemsPerPage = 20;
+const itemsPerPage = 8;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRequests();
@@ -80,7 +80,7 @@ function renderRequestsTable(data = requestsData) {
     tbody.innerHTML = "";
 
     if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No data yet</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
         return;
     }
 

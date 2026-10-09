@@ -5,6 +5,58 @@ var API_BASE_URL =
         : "https://resqmate-backend.onrender.com";
 const API_BASE = API_BASE_URL;
 
+let currentPage = 1;
+const itemsPerPage = 8;
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    renderCallback(slicedData);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (typeof updatePagination === "function") updatePagination();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        if (typeof updatePagination === "function") updatePagination();
+    });
+});
+
+
 const distributionModal = document.getElementById("distributionModal");
 const deleteDistributionModal = document.getElementById("deleteDistributionModal");
 const addDistributionBtn = document.getElementById("addDistributionBtn");
@@ -41,12 +93,23 @@ async function loadDistributions() {
 /* ===========================
    RENDER TABLE
 =========================== */
+
+let currentData = [];
 function renderTable(data) {
+    currentData = data;
+    currentPage = 1; // Reset to page 1 on new data/filter
+    setupPagination(currentData, renderTableDOM);
+}
+function updatePagination() {
+    setupPagination(currentData, renderTableDOM);
+}
+
+function renderTableDOM(data) {
     distributionTableBody.innerHTML = "";
 
     if (data.length === 0) {
         distributionTableBody.innerHTML = `
-            <tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No data yet</td></tr>`;
+            <tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
         return;
     }
 
@@ -298,11 +361,22 @@ deleteDistributionModal?.addEventListener("click", e => { if (e.target === delet
 /* ===========================
    SEARCH + STATUS FILTER
 =========================== */
-document.getElementById("distributionSearch")?.addEventListener("keyup", () => {
-    const value = document.getElementById("distributionSearch").value.toLowerCase();
-    const filtered = allDistributions.filter(d => JSON.stringify(d).toLowerCase().includes(value));
+function applyFilters() {
+    const searchValue = (document.getElementById("distributionSearch")?.value || "").toLowerCase();
+    const statusValue = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
+
+    const filtered = allDistributions.filter(d => {
+        const matchesSearch = JSON.stringify(d).toLowerCase().includes(searchValue);
+        const status = (d.status || "").toLowerCase();
+        const matchesStatus = statusValue === "all" || status === statusValue;
+        return matchesSearch && matchesStatus;
+    });
+    
     renderTable(filtered);
-});
+}
+
+document.getElementById("distributionSearch")?.addEventListener("input", applyFilters);
+document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
 
 /* ===========================
    POPULATE DROPDOWNS (REQUESTS, RESOURCES, STAFF)

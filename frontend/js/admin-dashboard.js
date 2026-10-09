@@ -151,7 +151,7 @@ async function loadActiveDistributions() {
         tbody.innerHTML = "";
 
         if (distributions.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:20px;">No data yet</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
             return;
         }
 

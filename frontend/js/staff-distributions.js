@@ -8,6 +8,58 @@ var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.h
 
 var API_URL = API_BASE_URL;
 
+let currentPage = 1;
+const itemsPerPage = 8;
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    renderCallback(slicedData);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (typeof updatePagination === "function") updatePagination();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        if (typeof updatePagination === "function") updatePagination();
+    });
+});
+
+
 document.addEventListener("DOMContentLoaded", () => {
     loadDistributions();
 
@@ -45,16 +97,24 @@ async function loadDistributions() {
     }
 }
 
+let currentData = [];
 function renderDistributions(distributions) {
+    currentData = distributions;
+    currentPage = 1;
+    setupPagination(currentData, renderDistributionsDOM);
+}
+
+function updatePagination() {
+    setupPagination(currentData, renderDistributionsDOM);
+}
+
+function renderDistributionsDOM(distributions) {
 
     const table = document.getElementById("distributionTableBody");
     table.innerHTML = "";
 
     if (distributions.length === 0) {
-        table.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align:center; padding: 30px; color: #6b7280;">No data yet</td>
-            </tr>`;
+        table.innerHTML = `<tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
         return;
     }
 
@@ -77,12 +137,10 @@ function renderDistributions(distributions) {
 
 function filterDistributions() {
     const search = document.getElementById("searchInput").value.toLowerCase();
-    const rows = document.querySelectorAll("#distributionTableBody tr");
-
-    rows.forEach(row => {
-        row.style.display = row.textContent.toLowerCase().includes(search) ? "" : "none";
-    });
+    const filtered = allDistributions.filter(d => JSON.stringify(d).toLowerCase().includes(search));
+    renderDistributions(filtered);
 }
+document.getElementById("searchInput")?.addEventListener("input", filterDistributions);
 
 function showMessage(message, success) {
     const box = document.getElementById("messageBox");

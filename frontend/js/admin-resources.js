@@ -1,6 +1,58 @@
 var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" ? "http://127.0.0.1:8000" : "https://resqmate-backend.onrender.com";
 var API_URL = `${API_BASE_URL}/resources`;
 
+let currentPage = 1;
+const itemsPerPage = 8;
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    renderCallback(slicedData);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (typeof updatePagination === "function") updatePagination();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        if (typeof updatePagination === "function") updatePagination();
+    });
+});
+
+
 const resourceTableBody = document.querySelector("#resourcesTable tbody");
 const resourceForm = document.getElementById("resourceForm");
 const resourceModal = document.getElementById("resourceModal");
@@ -43,7 +95,7 @@ function renderTable(resources) {
 
     if (resources.length === 0) {
         resourceTableBody.innerHTML = `
-            <tr><td colspan="7" style="text-align:center;padding:30px;color:#9ca3af;">No data yet</td></tr>`;
+            <tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
         return;
     }
 
@@ -525,19 +577,22 @@ document.getElementById("cancelModal")?.addEventListener("click", () => resource
 /* ==================================
    SEARCH + CATEGORY FILTER
 ================================== */
-document.getElementById("resourceSearch")?.addEventListener("input", () => {
-    const v = document.getElementById("resourceSearch").value.toLowerCase();
-    document.querySelectorAll("#resourcesTable tbody tr").forEach(row => {
-        row.style.display = row.textContent.toLowerCase().includes(v) ? "" : "none";
-    });
-});
+function applyFilters() {
+    const searchValue = (document.getElementById("resourceSearch")?.value || "").toLowerCase();
+    const categoryValue = (document.getElementById("categoryFilter")?.value || "all").toLowerCase();
 
-document.getElementById("categoryFilter")?.addEventListener("change", () => {
-    const cat = document.getElementById("categoryFilter").value.toLowerCase();
-    document.querySelectorAll("#resourcesTable tbody tr").forEach(row => {
-        row.style.display = (cat === "all" || row.textContent.toLowerCase().includes(cat)) ? "" : "none";
+    const filtered = resourcesData.filter(r => {
+        const matchesSearch = JSON.stringify(r).toLowerCase().includes(searchValue);
+        const category = (r.category_name || "").toLowerCase();
+        const matchesCategory = categoryValue === "all" || category === categoryValue;
+        return matchesSearch && matchesCategory;
     });
-});
+
+    renderTable(filtered);
+}
+
+document.getElementById("resourceSearch")?.addEventListener("input", applyFilters);
+document.getElementById("categoryFilter")?.addEventListener("change", applyFilters);
 
 /* ==================================
    INITIAL LOAD

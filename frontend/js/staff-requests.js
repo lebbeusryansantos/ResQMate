@@ -9,6 +9,59 @@ var API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.h
 
 var API_URL = API_BASE_URL;
 
+let currentPage = 1;
+const itemsPerPage = 8;
+let allStaffRequests = [];
+
+function setupPagination(dataArray, renderCallback) {
+    const prevBtn = document.getElementById("prevPageBtn");
+    const nextBtn = document.getElementById("nextPageBtn");
+    const indicator = document.getElementById("pageIndicator");
+    
+    const totalPages = Math.ceil(dataArray.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const slicedData = dataArray.slice(startIdx, endIdx);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.style.cursor = currentPage === 1 ? "not-allowed" : "pointer";
+        if (currentPage === 1) prevBtn.classList.add("disabled-btn");
+        else prevBtn.classList.remove("disabled-btn");
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.style.cursor = currentPage === totalPages ? "not-allowed" : "pointer";
+        if (currentPage === totalPages) nextBtn.classList.add("disabled-btn");
+        else nextBtn.classList.remove("disabled-btn");
+    }
+    
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    renderCallback(slicedData);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("prevPageBtn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (typeof updatePagination === "function") updatePagination();
+        }
+    });
+    
+    document.getElementById("nextPageBtn")?.addEventListener("click", () => {
+        currentPage++;
+        if (typeof updatePagination === "function") updatePagination();
+    });
+});
+
+
 const documentationModal =
     document.getElementById("documentationModal");
 
@@ -123,8 +176,9 @@ async function loadRequests() {
             distribution: distMap[r.request_id] || null
         }));
 
-        renderTable(myRequests);
-        updateCounts(myRequests);
+        allStaffRequests = myRequests;
+        renderTable(allStaffRequests);
+        updateCounts(allStaffRequests);
 
     } catch (error) {
         console.error("Error loading requests:", error);
@@ -141,19 +195,25 @@ async function loadRequests() {
 /* ============================================================
    RENDER TABLE
    ============================================================ */
+let currentData = [];
 function renderTable(requests) {
+    currentData = requests;
+    currentPage = 1;
+    setupPagination(currentData, renderTableDOM);
+}
+
+function updatePagination() {
+    setupPagination(currentData, renderTableDOM);
+}
+
+function renderTableDOM(requests) {
 
     const tbody = document.getElementById("requestsTableBody");
     tbody.innerHTML = "";
 
     if (requests.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9" style="text-align: center; padding: 20px; color: #6b7280;">
-                    No requests assigned to you right now.
-                </td>
-            </tr>`;
-        document.getElementById("emptyState").style.display = "block";
+        tbody.innerHTML = `<tr><td colspan="12" class="text-center" style="text-align:center;padding:30px;color:#9ca3af;">No matching records found.</td></tr>`;
+        document.getElementById("emptyState") && (document.getElementById("emptyState").style.display = "block");
         return;
     }
 
@@ -198,7 +258,6 @@ function renderTable(requests) {
             </tr>`;
     });
 
-    filterRequests();
 }
 
 
@@ -250,24 +309,15 @@ function updateCounts(requests) {
 function filterRequests() {
     const search = (document.getElementById("searchBar")?.value || "").toLowerCase();
     const status = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
-    const rows = document.querySelectorAll("#requestsTableBody tr");
-    let visible = 0;
 
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.dataset.status || "";
-        const matchSearch = text.includes(search);
-        const matchStatus = status === "all" || rowStatus === status;
-
-        if (matchSearch && matchStatus) {
-            row.style.display = "";
-            visible++;
-        } else {
-            row.style.display = "none";
-        }
+    const filtered = allStaffRequests.filter(r => {
+        const textMatch = JSON.stringify(r).toLowerCase().includes(search);
+        const rowStatus = (r.status || "").toLowerCase();
+        const statusMatch = status === "all" || rowStatus === status;
+        return textMatch && statusMatch;
     });
 
-    document.getElementById("emptyState")?.classList.toggle("d-none", visible > 0);
+    renderTable(filtered);
 }
 
 document

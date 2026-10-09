@@ -64,7 +64,7 @@ if (regionInput) {
         } else {
             if (provinceInput) provinceInput.disabled = true;
         }
-        checkFormValidity();
+        checkFormProgression();
     });
 }
 
@@ -85,7 +85,7 @@ if (provinceInput) {
                 barangayInput.value = "";
             }
         }
-        checkFormValidity();
+        checkFormProgression();
     });
 }
 
@@ -100,23 +100,126 @@ if (cityInput) {
                 barangayInput.value = "";
             }
         }
-        checkFormValidity();
+        checkFormProgression();
     });
 }
 
 if (barangayInput) {
-    barangayInput.addEventListener("change", checkFormValidity);
+    barangayInput.addEventListener("change", checkFormProgression);
+}
+
+if (specificAddressInput) {
+    specificAddressInput.addEventListener("input", checkFormProgression);
+}
+
+if (calamityTypeInput) {
+    calamityTypeInput.addEventListener("change", checkFormProgression);
 }
 
 if (detailsInput) {
-    detailsInput.addEventListener("input", checkFormValidity);
+    detailsInput.addEventListener("input", checkFormProgression);
 }
 
 if (priorityInput) {
-    priorityInput.addEventListener("change", checkFormValidity);
+    priorityInput.addEventListener("change", checkFormProgression);
 }
 
-function checkFormValidity() {
+function checkFormProgression() {
+    let hasAssistance = false;
+    assistanceOptions.forEach(option => {
+        if (option.classList.contains("active")) {
+            const qtyInput = option.querySelector('.cart-qty');
+            if (qtyInput && parseInt(qtyInput.value) > 0) {
+                hasAssistance = true;
+            }
+        }
+    });
+
+    const locationHelperText = document.getElementById("locationHelperText");
+    if (hasAssistance) {
+        if (locationHelperText) locationHelperText.style.display = "none";
+        if (regionInput) regionInput.disabled = false;
+    } else {
+        if (locationHelperText) locationHelperText.style.display = "block";
+        if (regionInput) {
+            regionInput.disabled = true;
+            regionInput.value = "";
+        }
+        if (provinceInput) {
+            provinceInput.disabled = true;
+            provinceInput.value = "";
+        }
+        if (cityInput) {
+            cityInput.disabled = true;
+            cityInput.value = "";
+        }
+        if (barangayInput) {
+            barangayInput.disabled = true;
+            barangayInput.value = "";
+        }
+    }
+
+    const hasBarangay = barangayInput && barangayInput.value !== "";
+    if (hasBarangay) {
+        if (specificAddressInput) specificAddressInput.disabled = false;
+        const landmarkInput = document.getElementById("landmark");
+        if (landmarkInput) landmarkInput.disabled = false;
+    } else {
+        if (specificAddressInput) {
+            specificAddressInput.disabled = true;
+            specificAddressInput.value = "";
+        }
+        const landmarkInput = document.getElementById("landmark");
+        if (landmarkInput) {
+            landmarkInput.disabled = true;
+            landmarkInput.value = "";
+        }
+    }
+
+    const hasSpecificAddress = specificAddressInput && specificAddressInput.value.trim().length >= 5;
+    if (hasSpecificAddress) {
+        if (calamityTypeInput) calamityTypeInput.disabled = false;
+    } else {
+        if (calamityTypeInput) {
+            calamityTypeInput.disabled = true;
+            calamityTypeInput.value = "";
+        }
+    }
+
+    const hasCalamity = calamityTypeInput && calamityTypeInput.value !== "";
+    if (hasCalamity) {
+        if (detailsInput) detailsInput.disabled = false;
+    } else {
+        if (detailsInput) {
+            detailsInput.disabled = true;
+            detailsInput.value = "";
+        }
+        if (characterCount) characterCount.textContent = "0";
+    }
+
+    const detailsLen = detailsInput ? detailsInput.value.trim().length : 0;
+    const detailsHelperText = document.getElementById("detailsHelperText");
+    if (detailsLen >= 30) {
+        if (detailsHelperText) detailsHelperText.style.color = "green";
+        if (priorityInput) priorityInput.disabled = false;
+    } else {
+        if (detailsHelperText) detailsHelperText.style.color = "#ef4444";
+        if (priorityInput) {
+            priorityInput.disabled = true;
+            priorityInput.value = "";
+        }
+    }
+
+    const hasPriority = priorityInput && priorityInput.value !== "";
+    if (hasPriority) {
+        if (confirmationCheckbox) confirmationCheckbox.disabled = false;
+    } else {
+        if (confirmationCheckbox) {
+            confirmationCheckbox.disabled = true;
+            confirmationCheckbox.checked = false;
+        }
+    }
+
     if (requestForm && submitButton) {
         if (requestForm.checkValidity() && confirmationCheckbox && confirmationCheckbox.checked) {
             submitButton.disabled = false;
@@ -127,7 +230,7 @@ function checkFormValidity() {
 }
 
 if (confirmationCheckbox) {
-    confirmationCheckbox.addEventListener("change", checkFormValidity);
+    confirmationCheckbox.addEventListener("change", checkFormProgression);
 }
 
 assistanceOptions.forEach(option => {
@@ -145,7 +248,14 @@ assistanceOptions.forEach(option => {
         
         // Let assistanceType be "Multiple" always if anything is selected, or keep it generic
         assistanceTypeInput.value = "Other"; // Use Other as a fallback category, since we now rely on requested_items_summary
+        
+        checkFormProgression();
     });
+});
+
+document.querySelectorAll('.cart-qty, .cart-unit').forEach(input => {
+    input.addEventListener("change", checkFormProgression);
+    input.addEventListener("input", checkFormProgression);
 });
 
 if (detailsInput && characterCount) {
@@ -176,8 +286,14 @@ if (cancelButton) {
         if (characterCount) {
             characterCount.textContent = "0";
         }
+        
+        setTimeout(checkFormProgression, 50); // Small delay to let reset() finish
     });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    checkFormProgression();
+});
 
 if (requestForm) {
     requestForm.addEventListener("submit", async function (event) {

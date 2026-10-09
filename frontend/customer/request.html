@@ -130,22 +130,23 @@
                         <label class="form-label">
                             Location <span>*</span>
                         </label>
+                        <p id="locationHelperText" style="font-size: 0.85rem; color: #6b7280; margin-bottom: 10px;">(Please select at least one assistance item to unlock the next steps)</p>
 
                         <div class="location-fields">
 
-                            <select id="region" title="Region" aria-label="Region" class="form-select" required>
+                            <select id="region" title="Region" aria-label="Region" class="form-select" required disabled>
                                 <option value="">Select Region</option>
                             </select>
 
-                            <select id="province" title="Province" aria-label="Province" class="form-select" required>
+                            <select id="province" title="Province" aria-label="Province" class="form-select" required disabled>
                                 <option value="">Select Province</option>
                             </select>
 
-                            <select id="city" title="City/Municipality" aria-label="City/Municipality" class="form-select" required>
+                            <select id="city" title="City/Municipality" aria-label="City/Municipality" class="form-select" required disabled>
                                 <option value="">Select City</option>
                             </select>
 
-                            <select id="barangay" title="Barangay" aria-label="Barangay" class="form-select" required>
+                            <select id="barangay" title="Barangay" aria-label="Barangay" class="form-select" required disabled>
                                 <option value="">Select Barangay</option>
                             </select>
                             
@@ -163,7 +164,7 @@
                             Calamity Type <span>*</span>
                         </label>
 
-                        <select id="calamityType" name="calamity_type" class="form-select" required>
+                        <select id="calamityType" name="calamity_type" class="form-select" required disabled>
                             <option value="">Select Calamity Type</option>
                             <option value="Typhoon">Typhoon</option>
                             <option value="Earthquake">Earthquake</option>
@@ -180,10 +181,11 @@
                             Details <span>*</span>
                         </label>
 
-                        <textarea id="details" name="details" class="form-textarea" maxlength="1000"
-                            placeholder="Tell us more about your situation..." required></textarea>
+                        <textarea id="details" name="details" class="form-textarea" maxlength="1000" minlength="30"
+                            placeholder="Tell us more about your situation..." required disabled></textarea>
 
                         <div class="character-counter">
+                            <span id="detailsHelperText" style="float: left; color: #ef4444;">Minimum 30 characters required</span>
                             <span id="characterCount">0</span>/1000
                         </div>
 
@@ -195,8 +197,9 @@
                             Priority Level <span>*</span>
                         </label>
 
-                        <select id="priority" name="priority" class="form-select" required>
+                        <select id="priority" name="priority" class="form-select" required disabled>
 
+                            <option value="" disabled selected>Select Priority Level</option>
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
@@ -207,7 +210,7 @@
 
                     <div class="confirmation-section">
                         <label class="confirmation-label">
-                            <input type="checkbox" id="confirmationCheckbox">
+                            <input type="checkbox" id="confirmationCheckbox" disabled>
                             I confirm that the information provided is accurate, and I understand that submitting false or exaggerated emergency requests may lead to account suspension.
                         </label>
                     </div>
@@ -218,7 +221,7 @@
                             Clear Form
                         </button>
 
-                        <button type="submit" class="submit-button">
+                        <button type="submit" class="submit-button" disabled>
                             Submit Request
                         </button>
 

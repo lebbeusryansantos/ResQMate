@@ -209,6 +209,13 @@ body {
     width: 100%;
 }
 
+.location-fields .address-input,
+.location-fields .landmark-input {
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+}
+
 
 /* ===========================
    LOCATION RESPONSIVE DESIGN
@@ -220,6 +227,11 @@ body {
     }
 
     .location-fields .form-input:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .location-fields .address-input,
+    .location-fields .landmark-input {
         grid-column: 1 / -1;
     }
 }

@@ -1,3 +1,17 @@
+
+document.addEventListener("DOMContentLoaded", () => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+        alert("You are not logged in. Please log in first.");
+        window.location.href = "../index.html";
+        return;
+    }
+    const parsedUser = JSON.parse(storedUser);
+    if (parsedUser.role === "superadmin") { window.location.href = "../superadmin/superadmin-logs.html"; return; }
+    if (parsedUser.role === "admin") { window.location.href = "../admin/dashboard.html"; return; }
+    if (parsedUser.role === "staff") { window.location.href = "../staff/dashboard.html"; return; }
+});
+
 var API_URL =
     window.location.hostname === "127.0.0.1" ||
         window.location.hostname === "localhost"

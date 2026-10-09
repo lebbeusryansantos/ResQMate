@@ -471,3 +471,42 @@ function showToast(message, success = true) {
         setTimeout(() => { toast.style.display = "none"; }, 300);
     }, 3000);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const deliveryFileInput = document.getElementById('deliveryFile');
+    const submitBtn = document.getElementById('submitDocumentation');
+    
+    if (deliveryFileInput) {
+        deliveryFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            let errorMsg = '';
+            
+            if (!validTypes.includes(file.type)) {
+                errorMsg = 'Invalid file type. Please upload a JPG, PNG, or PDF file.';
+            } else if (file.size > maxSize) {
+                errorMsg = 'File is too large. Maximum size is 5MB.';
+            }
+
+            if (errorMsg) {
+                alert(errorMsg);
+                e.target.value = '';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.5';
+                    submitBtn.style.cursor = 'not-allowed';
+                }
+            } else {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                }
+            }
+        });
+    }
+});

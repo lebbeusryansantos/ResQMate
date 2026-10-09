@@ -1,3 +1,4 @@
+from backend.audit import log_audit
 from fastapi import (
     APIRouter,
     Depends,

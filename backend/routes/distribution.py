@@ -1,3 +1,5 @@
+from backend.audit import log_audit
+from fastapi import APIRouter
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy import text
 from backend.database import engine
@@ -121,6 +123,7 @@ def create_distribution(request_id:     int, resource_id:    int, staff_id:     
                 {"uid": requester.user_id}
             )
 
+    log_audit(admin, f"Processed Distribution for Request #{request_id}")
     return {"message": "Distribution created successfully"}
 
 

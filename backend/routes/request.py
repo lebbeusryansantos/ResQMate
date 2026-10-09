@@ -1,3 +1,5 @@
+from backend.audit import log_audit
+from fastapi import APIRouter
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy import text

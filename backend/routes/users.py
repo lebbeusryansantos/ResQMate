@@ -1,3 +1,5 @@
+from backend.audit import log_audit
+from fastapi import APIRouter
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import Optional
@@ -587,4 +589,5 @@ def delete_user(user_id: int, admin: dict = Depends(get_current_admin)):
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="User not found")
 
+    log_audit(admin, f"Deleted user ID #{user_id}")
     return {"message": "User deleted successfully"}

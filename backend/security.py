@@ -49,3 +49,7 @@ def get_current_staff(user: dict = Depends(require_role(["staff"]))):
 
 def get_current_customer(user: dict = Depends(require_role(["community_user"]))):
     return user
+
+
+def get_current_superadmin(user: dict = Depends(require_role(["superadmin"]))):
+    return user

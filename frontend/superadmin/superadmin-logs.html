@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResQMate - Super Admin Logs</title>
+
+  <link rel="stylesheet" href="../style/customer-sidebar.css">
+  <link rel="stylesheet" href="../style/admin-shared.css">
+  <link rel="stylesheet" href="../style/logout-modal.css">
+  <link rel="stylesheet" href="../style/profile-modal.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="dashboard-container">
+
+    <div id="sidebar-container"></div>
+    <div id="logout-modal-wrapper"></div>
+    <div id="profile-modal-wrapper"></div>
+
+    <main class="main-content">
+
+      <div class="topbar">
+        <h2>Global Audit Logs</h2>
+        <p>Monitor system-wide administrative actions</p>
+      </div>
+
+      <div class="table-card">
+        <div class="toolbar-row">
+          <h5 class="section-title">Audit Records</h5>
+          <div class="toolbar-actions">
+            <!-- Filter inputs -->
+            <input type="text" id="searchLog" placeholder="Search logs..." class="search-input">
+            
+            <select id="roleFilter" class="filter-dropdown">
+              <option value="all">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="staff">Staff</option>
+              <option value="community_user">Community User</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+            
+            <select id="rowsPerPage" class="filter-dropdown">
+                <option value="10">10 Rows per page</option>
+                <option value="25">25 Rows per page</option>
+                <option value="50">50 Rows per page</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="logsTable">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- JS rendered rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Standard -->
+        <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+          <span id="pageIndicator" class="page-info">Showing 0 to 0 of 0 entries</span>
+          <div class="pagination-controls">
+            <button id="prevPageBtn" class="rq-btn-secondary" disabled>Previous</button>
+            <button id="nextPageBtn" class="rq-btn-secondary" disabled>Next</button>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../components/loadSuperAdminSidebar.js"></script>
+  <script src="../components/profile-modal.js"></script>
+  <script src="../components/logout-modal.js"></script>
+  <script src="../js/superadmin-logs.js"></script>
+</body>
+</html>

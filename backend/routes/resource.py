@@ -1,3 +1,5 @@
+from backend.audit import log_audit
+from fastapi import APIRouter
 from fastapi import APIRouter, HTTPException, Depends
 from backend.security import get_current_user, get_current_admin, require_role
 from sqlalchemy import text
@@ -134,6 +136,7 @@ def update_resource(
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Resource not found")
 
+    log_audit(admin, f"Edited inventory resource ID #{resource_id}")
     return {"message": "Resource updated successfully"}
 
 

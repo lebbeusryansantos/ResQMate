@@ -160,7 +160,10 @@ loginForm.addEventListener("submit", async (e) => {
 
         alert("Login Successful");
 
-        if (data.role === "admin") {
+        if (data.role === "superadmin") {
+            window.location.href = "superadmin/superadmin-logs.html";
+        }
+        else if (data.role === "admin") {
             window.location.href = "admin/dashboard.html";
         }
         else if (data.role === "staff") {

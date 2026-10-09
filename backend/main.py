@@ -13,11 +13,13 @@ from backend.models.resource import Resource
 from backend.models.distribution import Distribution
 from backend.models.notification import Notification
 from backend.models.request_status_history import RequestStatusHistory
+from backend.models.audit_log import AuditLog
 
 # Import Routers
 from backend.routes.users import router as user_router
 from backend.routes.notification import router as notification_router
 from backend.routes.history import router as history_router
+from backend.routes.audit_logs import router as audit_logs_router
 from backend.routes.request import router as request_router
 from backend.routes.resource import router as resource_router
 from backend.routes.distribution import router as distribution_router

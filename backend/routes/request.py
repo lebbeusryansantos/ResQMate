@@ -358,6 +358,9 @@ def create_request(data: CreateRequestData, customer: dict = Depends(get_current
 
         request_id = result.lastrowid
 
+    from backend.audit import log_audit
+    log_audit(customer, f"Customer {customer.get('full_name', '')} submitted Assistance Request #{request_id}")
+
     return {
         "message": "Request Created Successfully",
         "request_id": request_id,
@@ -462,6 +465,9 @@ def update_request_status(request_id: int, status: str, updated_by: int, rejecti
                 "message": f"Your request status is now {status}"
             }
         )
+
+    from backend.audit import log_audit
+    log_audit(admin, f"Admin {admin.get('full_name', '')} changed status of Request #{request_id} to {status}")
 
     return {
         "message": "Request Updated Successfully"
@@ -645,6 +651,9 @@ def cancel_request(request_id: int, reason: str = None, user: dict = Depends(get
             }
         )
         
+    from backend.audit import log_audit
+    log_audit(user, f"Customer {user.get('full_name', '')} canceled Request #{request_id}")
+
     return {"message": "Request cancelled successfully"}
 
 

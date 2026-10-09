@@ -203,6 +203,9 @@ async def submit_documentation(
             }
         )
 
+    from backend.audit import log_audit
+    log_audit(staff, f"Staff {staff.get('full_name', '')} uploaded delivery proof for Request #{request_id}")
+
     return {
         "message": "Documentation submitted successfully.",
         "request_id": request_id,

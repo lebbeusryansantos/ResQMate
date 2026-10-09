@@ -123,7 +123,7 @@ def create_distribution(request_id:     int, resource_id:    int, staff_id:     
                 {"uid": requester.user_id}
             )
 
-    log_audit(admin, f"Processed Distribution for Request #{request_id}")
+    log_audit(admin, f"Admin {admin.get('full_name', '')} processed distribution for Request #{request_id}")
     return {"message": "Distribution created successfully"}
 
 

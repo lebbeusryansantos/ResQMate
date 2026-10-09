@@ -279,6 +279,9 @@ def create_user(data: CreateUserRequest, admin: dict = Depends(get_current_admin
 
         user_id = result.lastrowid
 
+    from backend.audit import log_audit
+    log_audit(admin, f"Admin {admin.get('full_name', '')} created user account {data.email}")
+
     return {
         "message":  "User created successfully",
         "user_id":  user_id,

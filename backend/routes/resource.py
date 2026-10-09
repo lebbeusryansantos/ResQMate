@@ -93,6 +93,9 @@ def create_resource(
             }
         )
 
+    from backend.audit import log_audit
+    log_audit(admin, f"Admin {admin.get('full_name', '')} added {quantity_available} to {resource_name}")
+
     return {"message": "Resource added successfully"}
 
 

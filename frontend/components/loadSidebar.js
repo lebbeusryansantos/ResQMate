@@ -186,7 +186,10 @@ function loadUserProfile() {
     let displayRole = "Customer";
 
 
-    if (user.role === "admin") {
+    if (user.role === "superadmin") {
+        displayRole = "Master Admin";
+    }
+    else if (user.role === "admin") {
 
         displayRole = "Admin";
 

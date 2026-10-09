@@ -319,6 +319,14 @@ def approve_documentation(
             }
         )
 
+        log_audit(
+            conn=conn,
+            user_id=admin["user_id"],
+            user_name=admin.get("full_name", "Unknown Admin"),
+            user_role=admin.get("role", "admin"),
+            action_description=f"Approved delivery documentation for request #{documentation.request_id}"
+        )
+
     return {
         "message": "Request completed successfully."
     }
@@ -378,6 +386,14 @@ def reject_documentation(
             {
                 "request_id": documentation.request_id
             }
+        )
+
+        log_audit(
+            conn=conn,
+            user_id=admin["user_id"],
+            user_name=admin.get("full_name", "Unknown Admin"),
+            user_role=admin.get("role", "admin"),
+            action_description=f"Rejected delivery documentation for request #{documentation.request_id}"
         )
 
     return {

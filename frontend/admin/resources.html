@@ -59,7 +59,20 @@
               <option value="medicine">Medicine</option>
               <option value="other">Other</option>
             </select>
-            <button class="btn-primary" id="addResourceBtn">
+            <select id="statusFilter" class="rq-input" aria-label="Filter by Status">
+              <option value="all">All Statuses</option>
+              <option value="available">Available</option>
+              <option value="low stock">Low Stock</option>
+              <option value="depleted">Depleted</option>
+            </select>
+            
+          <select id="rowsPerPage" class="rq-input rows-filter" aria-label="Rows per page" style="max-width: 120px;">
+            <option value="10">10 Rows</option>
+            <option value="25">25 Rows</option>
+            <option value="50">50 Rows</option>
+          </select>
+
+<button class="btn-primary" id="addResourceBtn">
               <i class="fa-solid fa-plus"></i> Add Resource
             </button>
           </div>

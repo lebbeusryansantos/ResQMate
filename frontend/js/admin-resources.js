@@ -580,19 +580,31 @@ document.getElementById("cancelModal")?.addEventListener("click", () => resource
 function applyFilters() {
     const searchValue = (document.getElementById("resourceSearch")?.value || "").toLowerCase();
     const categoryValue = (document.getElementById("categoryFilter")?.value || "all").toLowerCase();
+    const statusValue = (document.getElementById("statusFilter")?.value || "all").toLowerCase();
 
     const filtered = resourcesData.filter(r => {
         const matchesSearch = JSON.stringify(r).toLowerCase().includes(searchValue);
-        const category = (r.category_name || "").toLowerCase();
+        const category = (r.category || r.category_name || "").toLowerCase();
         const matchesCategory = categoryValue === "all" || category === categoryValue;
-        return matchesSearch && matchesCategory;
+        
+        const qty = parseInt(r.quantity) || 0;
+        const maxStock = parseInt(r.max_stock) || 1;
+        const stockPercentage = (qty / maxStock) * 100;
+        const isDepleted = qty === 0;
+        
+        const statusTxt = isDepleted ? "depleted" : stockPercentage <= 30 ? "low stock" : "available";
+        const matchesStatus = statusValue === "all" || statusTxt === statusValue;
+        
+        return matchesSearch && matchesCategory && matchesStatus;
     });
 
+    currentPage = 1;
     renderTable(filtered);
 }
 
 document.getElementById("resourceSearch")?.addEventListener("input", applyFilters);
 document.getElementById("categoryFilter")?.addEventListener("change", applyFilters);
+document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
 
 /* ==================================
    INITIAL LOAD

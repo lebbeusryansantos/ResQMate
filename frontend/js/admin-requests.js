@@ -10,7 +10,7 @@ let usersData = [];
 let filteredRequestsData = [];
 let currentTab = 'active';
 let currentPage = 1;
-const itemsPerPage = 8;
+let itemsPerPage = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRequests();
@@ -494,6 +494,12 @@ function setupTabsAndPagination() {
             updatePagination();
         }
     });
+    
+    document.getElementById("rowsPerPage")?.addEventListener("change", (e) => {
+        itemsPerPage = parseInt(e.target.value, 10);
+        currentPage = 1;
+        filterRequests();
+    });
 }
 
 function filterRequests() {
@@ -547,7 +553,7 @@ function updatePagination() {
     if (currentPage < 1) currentPage = 1;
 
     const startIdx = (currentPage - 1) * itemsPerPage;
-    const endIdx = startIdx + itemsPerPage;
+    const endIdx = Math.min(startIdx + itemsPerPage, filteredRequestsData.length);
     const slicedData = filteredRequestsData.slice(startIdx, endIdx);
 
     const prevBtn = document.getElementById("prevPageBtn");
@@ -566,7 +572,7 @@ function updatePagination() {
     }
 
     if (nextBtn) {
-        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.disabled = currentPage >= totalPages || filteredRequestsData.length === 0;
         if (nextBtn.disabled) {
             nextBtn.classList.add("disabled-btn");
             nextBtn.style.cursor = "not-allowed";
@@ -577,7 +583,11 @@ function updatePagination() {
     }
 
     if (indicator) {
-        indicator.textContent = `Page ${currentPage} of ${totalPages} (${filteredRequestsData.length} items)`;
+        if (filteredRequestsData.length === 0) {
+            indicator.textContent = 'Showing 0 to 0 of 0 entries';
+        } else {
+            indicator.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${filteredRequestsData.length} entries`;
+        }
     }
 
     renderRequestsTable(slicedData);
